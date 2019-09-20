@@ -1,5 +1,5 @@
 {
-  "name": "comit-js-sdk",
+  "name": "comit-sdk",
   "version": "0.1.0",
   "description": "An SDK for developing COMIT applications.",
   "main": "dist/index.js",
