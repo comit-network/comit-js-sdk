@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ethers_1 = require("ethers");
 const hdnode_1 = require("ethers/utils/hdnode");
 class EthereumWallet {
-    constructor(hdKey) {
-        const provider = new ethers_1.ethers.providers.JsonRpcProvider("http://localhost:8545");
+    constructor(hdKey, jsonRpcUrl) {
+        const provider = new ethers_1.ethers.providers.JsonRpcProvider(jsonRpcUrl);
         this.wallet = new ethers_1.ethers.Wallet(hdnode_1.fromExtendedKey(hdKey)).connect(provider);
     }
     getAccount() {

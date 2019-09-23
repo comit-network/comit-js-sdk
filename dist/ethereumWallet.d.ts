@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { BigNumber } from "ethers/utils";
 export declare class EthereumWallet {
     private readonly wallet;
-    constructor(hdKey: string);
+    constructor(hdKey: string, jsonRpcUrl: string);
     getAccount(): string;
     getBalance(): Promise<ethers.utils.BigNumber>;
     deployContract(data: string, value: BigNumber, gasLimit: string): Promise<ethers.providers.TransactionResponse>;

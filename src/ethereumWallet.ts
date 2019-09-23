@@ -6,10 +6,8 @@ import { fromExtendedKey } from "ethers/utils/hdnode";
 export class EthereumWallet {
   private readonly wallet: Wallet;
 
-  public constructor(hdKey: string) {
-    const provider = new ethers.providers.JsonRpcProvider(
-      "http://localhost:8545"
-    );
+  public constructor(hdKey: string, jsonRpcUrl: string) {
+    const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl);
     this.wallet = new ethers.Wallet(fromExtendedKey(hdKey)).connect(provider);
   }
 
