@@ -7,7 +7,7 @@ export declare class BitcoinWallet {
     private readonly chain;
     private readonly logger;
     constructor(network: string);
-    init(peerUri: string): Promise<void>;
+    init(peerUri: string, hdKey: string): Promise<void>;
     getBalance(): Promise<any>;
     getAddress(): any;
     sendToAddress(address: string, satoshis: number, network: string): Promise<{

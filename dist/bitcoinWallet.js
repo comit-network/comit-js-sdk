@@ -37,7 +37,7 @@ class BitcoinWallet {
             logger: this.logger
         });
     }
-    init(peerUri) {
+    init(peerUri, hdKey) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.logger.open();
             yield this.pool.open();
@@ -46,7 +46,8 @@ class BitcoinWallet {
             yield this.pool.connect();
             this.wallet = yield this.walletdb.create({
                 logger: this.logger,
-                network: this.network
+                network: this.network,
+                key: hdKey
             });
             this.address = yield this.wallet.receiveAddress();
             this.pool.watchAddress(this.address);

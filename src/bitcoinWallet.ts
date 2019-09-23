@@ -33,7 +33,7 @@ export class BitcoinWallet {
     });
   }
 
-  public async init(peerUri: string) {
+  public async init(peerUri: string, hdKey: string) {
     await this.logger.open();
     await this.pool.open();
     await this.walletdb.open();
@@ -41,7 +41,8 @@ export class BitcoinWallet {
     await this.pool.connect();
     this.wallet = await this.walletdb.create({
       logger: this.logger,
-      network: this.network
+      network: this.network,
+      key: hdKey
     });
     this.address = await this.wallet.receiveAddress();
 
