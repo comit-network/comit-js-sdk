@@ -203,7 +203,7 @@ export class Cnd {
     return info.id;
   }
 
-  public async getPeerAddresses(): Promise<string[]> {
+  public async getPeerListenAddresses(): Promise<string[]> {
     const info = await this.getInfo();
     if (!info.listen_addresses) {
       throw new Error("listen addresses field not present");
