@@ -31,6 +31,15 @@ class Cnd {
             return info.id;
         });
     }
+    getPeerListenAddresses() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const info = yield this.getInfo();
+            if (!info.listen_addresses) {
+                throw new Error("listen addresses field not present");
+            }
+            return info.listen_addresses;
+        });
+    }
     postSwap(swap) {
         return axios_1.default.post(this.rootUrl()
             .path("swaps/rfc003")

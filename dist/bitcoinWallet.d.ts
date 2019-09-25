@@ -1,13 +1,12 @@
 export declare class BitcoinWallet {
     readonly network: any;
     private readonly walletdb;
-    private wallet;
-    private address;
     private readonly pool;
     private readonly chain;
-    private readonly logger;
-    constructor(network: string);
-    init(peerUri: string): Promise<void>;
+    private readonly wallet;
+    private readonly address;
+    static newInstance(network: string, peerUri: string, hdKey: string): Promise<BitcoinWallet>;
+    private constructor();
     getBalance(): Promise<any>;
     getAddress(): any;
     sendToAddress(address: string, satoshis: number, network: string): Promise<{
@@ -15,6 +14,5 @@ export declare class BitcoinWallet {
         broadcast: any;
     }>;
     broadcastTransaction(transactionHex: string, network: string): Promise<any>;
-    private isInit;
     private assertNetwork;
 }

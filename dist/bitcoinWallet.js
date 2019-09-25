@@ -15,61 +15,71 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const bcoin_1 = require("bcoin");
 const blgr_1 = __importDefault(require("blgr"));
 class BitcoinWallet {
-    constructor(network) {
-        this.logger = new blgr_1.default({
-            level: "warning"
-        });
-        this.walletdb = new bcoin_1.WalletDB({
-            network,
-            memory: true,
-            witness: true,
-            logger: this.logger
-        });
+    constructor(network, 
+    // @ts-ignore
+    walletdb, pool, 
+    // @ts-ignore
+    chain, wallet, address) {
         this.network = network;
-        this.chain = new bcoin_1.Chain({
-            spv: true,
-            network,
-            logger: this.logger
-        });
-        this.pool = new bcoin_1.Pool({
-            chain: this.chain,
-            network,
-            logger: this.logger
-        });
+        this.walletdb = walletdb;
+        this.pool = pool;
+        this.chain = chain;
+        this.wallet = wallet;
+        this.address = address;
     }
-    init(peerUri) {
+    static newInstance(network, peerUri, hdKey) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.logger.open();
-            yield this.pool.open();
-            yield this.walletdb.open();
-            yield this.chain.open();
-            yield this.pool.connect();
-            this.wallet = yield this.walletdb.create({
-                logger: this.logger,
-                network: this.network
+            const parsedNetwork = bcoin_1.Network.get(network);
+            const logger = new blgr_1.default({
+                level: "warning"
             });
-            this.address = yield this.wallet.receiveAddress();
-            this.pool.watchAddress(this.address);
-            this.pool.startSync();
-            this.pool.on("tx", (tx) => {
-                this.walletdb.addTX(tx);
+            const walletdb = new bcoin_1.WalletDB({
+                memory: true,
+                witness: true,
+                logger,
+                network: parsedNetwork
             });
-            this.pool.on("block", (block) => {
-                this.walletdb.addBlock(block);
+            const chain = new bcoin_1.Chain({
+                spv: true,
+                logger,
+                network: parsedNetwork
+            });
+            const pool = new bcoin_1.Pool({
+                chain,
+                logger
+            });
+            yield logger.open();
+            yield pool.open();
+            yield walletdb.open();
+            yield chain.open();
+            yield pool.connect();
+            const wallet = yield walletdb.create({
+                logger,
+                network: parsedNetwork,
+                master: hdKey
+            });
+            const address = yield wallet.receiveAddress();
+            pool.watchAddress(address);
+            pool.startSync();
+            pool.on("tx", (tx) => {
+                walletdb.addTX(tx);
+            });
+            pool.on("block", (block) => {
+                walletdb.addBlock(block);
                 if (block.txs.length > 0) {
                     block.txs.forEach((tx) => {
-                        this.walletdb.addTX(tx);
+                        walletdb.addTX(tx);
                     });
                 }
             });
-            const netAddr = yield this.pool.hosts.addNode(peerUri);
-            const peer = this.pool.createOutbound(netAddr);
-            this.pool.peers.add(peer);
+            const netAddr = yield pool.hosts.addNode(peerUri);
+            const peer = pool.createOutbound(netAddr);
+            pool.peers.add(peer);
+            return new BitcoinWallet(parsedNetwork, walletdb, pool, chain, wallet, address);
         });
     }
     getBalance() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.isInit();
             const balance = yield this.wallet.getBalance();
             // TODO: Balances stay unconfirmed, try to use bcoin.SPVNode (and set node.http to undefined) see if it catches the confirmations
             const amount = new bcoin_1.Amount(balance.toJSON().unconfirmed, "sat");
@@ -77,12 +87,10 @@ class BitcoinWallet {
         });
     }
     getAddress() {
-        this.isInit();
         return this.address.toString(this.network);
     }
     sendToAddress(address, satoshis, network) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.isInit();
             this.assertNetwork(network);
             const tx = yield this.wallet.send({
                 witness: true,
@@ -104,14 +112,9 @@ class BitcoinWallet {
             return this.pool.broadcast(transaction);
         });
     }
-    isInit() {
-        if (!this.wallet) {
-            throw new Error("Bitcoin wallet is not initialized");
-        }
-    }
     assertNetwork(network) {
-        if (network !== this.network) {
-            throw new Error(`This wallet is only connected to the ${this.network} network and cannot perform actions on the ${network} network`);
+        if (network !== this.network.type) {
+            throw new Error(`This wallet is only connected to the ${this.network.type} network and cannot perform actions on the ${network} network`);
         }
     }
 }

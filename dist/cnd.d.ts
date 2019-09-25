@@ -157,6 +157,7 @@ export declare class Cnd {
     private readonly cndUrl;
     constructor(cndUrl: string);
     getPeerId(): Promise<string>;
+    getPeerListenAddresses(): Promise<string[]>;
     postSwap(swap: SwapRequest): Promise<string>;
     getSwaps(): Promise<EmbeddedRepresentationSubEntity[]>;
     executeAction(action: Action, resolver?: FieldValueResolverFn): Promise<AxiosResponse>;

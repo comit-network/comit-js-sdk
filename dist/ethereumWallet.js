@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const ethers_1 = require("ethers");
 class EthereumWallet {
-    constructor() {
-        const provider = new ethers_1.ethers.providers.JsonRpcProvider("http://localhost:8545");
-        this.wallet = ethers_1.ethers.Wallet.createRandom().connect(provider);
+    constructor(key, jsonRpcUrl) {
+        const provider = new ethers_1.ethers.providers.JsonRpcProvider(jsonRpcUrl);
+        this.wallet = new ethers_1.ethers.Wallet(key).connect(provider);
     }
     getAccount() {
         return this.wallet.address;
