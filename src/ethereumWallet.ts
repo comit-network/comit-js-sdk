@@ -1,14 +1,14 @@
 import { ethers, Wallet } from "ethers";
 import { TransactionRequest } from "ethers/providers";
-import { BigNumber } from "ethers/utils";
-import { fromExtendedKey } from "ethers/utils/hdnode";
+import { Arrayish, BigNumber, SigningKey } from "ethers/utils";
+import { HDNode } from "ethers/utils/hdnode";
 
 export class EthereumWallet {
   private readonly wallet: Wallet;
 
-  public constructor(hdKey: string, jsonRpcUrl: string) {
+  public constructor(key: SigningKey | HDNode | Arrayish, jsonRpcUrl: string) {
     const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl);
-    this.wallet = new ethers.Wallet(fromExtendedKey(hdKey)).connect(provider);
+    this.wallet = new ethers.Wallet(key).connect(provider);
   }
 
   public getAccount() {

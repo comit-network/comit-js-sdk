@@ -1,74 +1,91 @@
-import { Amount, Chain, Pool, TX, WalletDB } from "bcoin";
+import { Amount, Chain, Network, Pool, TX, WalletDB } from "bcoin";
 import Logger from "blgr";
 
 export class BitcoinWallet {
-  public readonly network: any;
-  private readonly walletdb: any;
-  private wallet: any;
-  private address: any;
-  private readonly pool: any;
-  private readonly chain: any;
-  private readonly logger: any;
+  public static async newInstance(
+    network: string,
+    peerUri: string,
+    hdKey: string
+  ) {
+    const parsedNetwork = Network.get(network);
 
-  constructor(network: string) {
-    this.logger = new Logger({
+    const logger = new Logger({
       level: "warning"
     });
-    this.walletdb = new WalletDB({
-      network,
+    const walletdb = new WalletDB({
       memory: true,
       witness: true,
-      logger: this.logger
+      logger,
+      network: parsedNetwork
     });
-    this.network = network;
-    this.chain = new Chain({
+    const chain = new Chain({
       spv: true,
-      network,
-      logger: this.logger
+      logger,
+      network: parsedNetwork
     });
-    this.pool = new Pool({
-      chain: this.chain,
-      network,
-      logger: this.logger
-    });
-  }
-
-  public async init(peerUri: string, hdKey: string) {
-    await this.logger.open();
-    await this.pool.open();
-    await this.walletdb.open();
-    await this.chain.open();
-    await this.pool.connect();
-    this.wallet = await this.walletdb.create({
-      logger: this.logger,
-      network: this.network,
-      key: hdKey
-    });
-    this.address = await this.wallet.receiveAddress();
-
-    this.pool.watchAddress(this.address);
-    this.pool.startSync();
-
-    this.pool.on("tx", (tx: any) => {
-      this.walletdb.addTX(tx);
+    const pool = new Pool({
+      chain,
+      logger
     });
 
-    this.pool.on("block", (block: any) => {
-      this.walletdb.addBlock(block);
+    await logger.open();
+    await pool.open();
+    await walletdb.open();
+    await chain.open();
+    await pool.connect();
+
+    const wallet = await walletdb.create({
+      logger,
+      network: parsedNetwork,
+      master: hdKey
+    });
+
+    const address = await wallet.receiveAddress();
+
+    pool.watchAddress(address);
+    pool.startSync();
+
+    pool.on("tx", (tx: any) => {
+      walletdb.addTX(tx);
+    });
+
+    pool.on("block", (block: any) => {
+      walletdb.addBlock(block);
       if (block.txs.length > 0) {
         block.txs.forEach((tx: any) => {
-          this.walletdb.addTX(tx);
+          walletdb.addTX(tx);
         });
       }
     });
 
-    const netAddr = await this.pool.hosts.addNode(peerUri);
-    const peer = this.pool.createOutbound(netAddr);
-    this.pool.peers.add(peer);
+    const netAddr = await pool.hosts.addNode(peerUri);
+    const peer = pool.createOutbound(netAddr);
+    pool.peers.add(peer);
+
+    return new BitcoinWallet(
+      parsedNetwork,
+      walletdb,
+      pool,
+      chain,
+      wallet,
+      address
+    );
   }
 
+  private constructor(
+    public readonly network: any,
+
+    // @ts-ignore
+    private readonly walletdb: any,
+    private readonly pool: any,
+
+    // @ts-ignore
+    private readonly chain: any,
+    private readonly wallet: any,
+    private readonly address: any
+  ) {}
+
   public async getBalance() {
-    this.isInit();
     const balance = await this.wallet.getBalance();
     // TODO: Balances stay unconfirmed, try to use bcoin.SPVNode (and set node.http to undefined) see if it catches the confirmations
     const amount = new Amount(balance.toJSON().unconfirmed, "sat");
@@ -76,7 +93,6 @@ export class BitcoinWallet {
   }
 
   public getAddress() {
-    this.isInit();
     return this.address.toString(this.network);
   }
 
@@ -85,7 +101,6 @@ export class BitcoinWallet {
     satoshis: number,
     network: string
   ) {
-    this.isInit();
     this.assertNetwork(network);
 
     const tx = await this.wallet.send({
@@ -108,16 +123,10 @@ export class BitcoinWallet {
     return this.pool.broadcast(transaction);
   }
 
-  private isInit() {
-    if (!this.wallet) {
-      throw new Error("Bitcoin wallet is not initialized");
-    }
-  }
-
   private assertNetwork(network: string) {
-    if (network !== this.network) {
+    if (network !== this.network.type) {
       throw new Error(
-        `This wallet is only connected to the ${this.network} network and cannot perform actions on the ${network} network`
+        `This wallet is only connected to the ${this.network.type} network and cannot perform actions on the ${network} network`
       );
     }
   }
