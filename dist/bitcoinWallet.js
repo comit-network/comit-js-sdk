@@ -19,13 +19,12 @@ class BitcoinWallet {
     // @ts-ignore
     walletdb, pool, 
     // @ts-ignore
-    chain, wallet, address) {
+    chain, wallet) {
         this.network = network;
         this.walletdb = walletdb;
         this.pool = pool;
         this.chain = chain;
         this.wallet = wallet;
-        this.address = address;
     }
     static newInstance(network, peerUri, hdKey) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -58,8 +57,17 @@ class BitcoinWallet {
                 network: parsedNetwork,
                 master: hdKey
             });
-            const address = yield wallet.receiveAddress();
-            pool.watchAddress(address);
+            const account = yield wallet.getAccount(0);
+            for (let i = 0; i < 100; i++) {
+                const address = yield account.receiveAddress();
+                pool.watchAddress(address);
+            }
+            account.receiveDepth = 0;
+            for (let i = 0; i < 100; i++) {
+                const address = yield account.changeAddress();
+                pool.watchAddress(address);
+            }
+            account.changeDepth = 0;
             pool.startSync();
             pool.on("tx", (tx) => {
                 walletdb.addTX(tx);
@@ -75,7 +83,7 @@ class BitcoinWallet {
             const netAddr = yield pool.hosts.addNode(peerUri);
             const peer = pool.createOutbound(netAddr);
             pool.peers.add(peer);
-            return new BitcoinWallet(parsedNetwork, walletdb, pool, chain, wallet, address);
+            return new BitcoinWallet(parsedNetwork, walletdb, pool, chain, wallet);
         });
     }
     getBalance() {
@@ -87,7 +95,11 @@ class BitcoinWallet {
         });
     }
     getAddress() {
-        return this.address.toString(this.network);
+        return __awaiter(this, void 0, void 0, function* () {
+            const receiveAddress = yield this.wallet.receiveAddress();
+            this.pool.watchAddress(receiveAddress);
+            return receiveAddress.toString(this.network);
+        });
     }
     sendToAddress(address, satoshis, network) {
         return __awaiter(this, void 0, void 0, function* () {

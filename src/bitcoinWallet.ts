@@ -40,9 +40,20 @@ export class BitcoinWallet {
       master: hdKey
     });
 
-    const address = await wallet.receiveAddress();
+    const account = await wallet.getAccount(0);
 
-    pool.watchAddress(address);
+    for (let i = 0; i < 100; i++) {
+      const address = await account.receiveAddress();
+      pool.watchAddress(address);
+    }
+    account.receiveDepth = 0;
+
+    for (let i = 0; i < 100; i++) {
+      const address = await account.changeAddress();
+      pool.watchAddress(address);
+    }
+    account.changeDepth = 0;
+
     pool.startSync();
 
     pool.on("tx", (tx: any) => {
@@ -62,14 +73,7 @@ export class BitcoinWallet {
     const peer = pool.createOutbound(netAddr);
     pool.peers.add(peer);
 
-    return new BitcoinWallet(
-      parsedNetwork,
-      walletdb,
-      pool,
-      chain,
-      wallet,
-      address
-    );
+    return new BitcoinWallet(parsedNetwork, walletdb, pool, chain, wallet);
   }
 
   private constructor(
@@ -81,8 +85,7 @@ export class BitcoinWallet {
 
     // @ts-ignore
     private readonly chain: any,
-    private readonly wallet: any,
-    private readonly address: any
+    private readonly wallet: any
   ) {}
 
   public async getBalance() {
@@ -92,8 +95,11 @@ export class BitcoinWallet {
     return amount.toBTC();
   }
 
-  public getAddress() {
-    return this.address.toString(this.network);
+  public async getAddress() {
+    const receiveAddress = await this.wallet.receiveAddress();
+    this.pool.watchAddress(receiveAddress);
+
+    return receiveAddress.toString(this.network);
   }
 
   public async sendToAddress(
