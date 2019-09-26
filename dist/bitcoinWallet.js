@@ -59,15 +59,9 @@ class BitcoinWallet {
             });
             const account = yield wallet.getAccount(0);
             for (let i = 0; i < 100; i++) {
-                const address = yield account.receiveAddress();
-                pool.watchAddress(address);
+                pool.watchAddress(yield account.deriveReceive(i).getAddress());
+                pool.watchAddress(yield account.deriveChange(i).getAddress());
             }
-            account.receiveDepth = 0;
-            for (let i = 0; i < 100; i++) {
-                const address = yield account.changeAddress();
-                pool.watchAddress(address);
-            }
-            account.changeDepth = 0;
             pool.startSync();
             pool.on("tx", (tx) => {
                 walletdb.addTX(tx);
@@ -96,8 +90,7 @@ class BitcoinWallet {
     }
     getAddress() {
         return __awaiter(this, void 0, void 0, function* () {
-            const receiveAddress = yield this.wallet.receiveAddress();
-            this.pool.watchAddress(receiveAddress);
+            const receiveAddress = yield this.wallet.receiveAddress(0);
             return receiveAddress.toString(this.network);
         });
     }
