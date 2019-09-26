@@ -43,16 +43,9 @@ export class BitcoinWallet {
     const account = await wallet.getAccount(0);
 
     for (let i = 0; i < 100; i++) {
-      const address = await account.receiveAddress();
-      pool.watchAddress(address);
+      pool.watchAddress(await account.deriveReceive(i).getAddress());
+      pool.watchAddress(await account.deriveChange(i).getAddress());
     }
-    account.receiveDepth = 0;
-
-    for (let i = 0; i < 100; i++) {
-      const address = await account.changeAddress();
-      pool.watchAddress(address);
-    }
-    account.changeDepth = 0;
 
     pool.startSync();
 
@@ -96,9 +89,7 @@ export class BitcoinWallet {
   }
 
   public async getAddress() {
-    const receiveAddress = await this.wallet.receiveAddress();
-    this.pool.watchAddress(receiveAddress);
-
+    const receiveAddress = await this.wallet.receiveAddress(0);
     return receiveAddress.toString(this.network);
   }
 
