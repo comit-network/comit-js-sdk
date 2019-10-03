@@ -211,13 +211,15 @@ export class Cnd {
     return info.listen_addresses;
   }
 
-  public postSwap(swap: SwapRequest): Promise<string> {
-    return axios.post(
-      this.rootUrl()
-        .path("swaps/rfc003")
-        .toString(),
-      swap
-    );
+  public async postSwap(swap: SwapRequest): Promise<string> {
+    return axios
+      .post(
+        this.rootUrl()
+          .path("swaps/rfc003")
+          .toString(),
+        swap
+      )
+      .then(res => res.data.id);
   }
 
   public async getSwaps(): Promise<EmbeddedRepresentationSubEntity[]> {
