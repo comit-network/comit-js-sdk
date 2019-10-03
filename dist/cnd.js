@@ -41,9 +41,13 @@ class Cnd {
         });
     }
     postSwap(swap) {
-        return axios_1.default.post(this.rootUrl()
-            .path("swaps/rfc003")
-            .toString(), swap);
+        return __awaiter(this, void 0, void 0, function* () {
+            return axios_1.default
+                .post(this.rootUrl()
+                .path("swaps/rfc003")
+                .toString(), swap)
+                .then(res => res.data.id);
+        });
     }
     getSwaps() {
         return __awaiter(this, void 0, void 0, function* () {
