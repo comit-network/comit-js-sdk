@@ -120,6 +120,11 @@ export class BitcoinWallet {
     return this.pool.broadcast(transaction);
   }
 
+  public getFee() {
+    // should be dynamic in a real application
+    return "150";
+  }
+
   private assertNetwork(network: string) {
     if (network !== this.network.type) {
       throw new Error(

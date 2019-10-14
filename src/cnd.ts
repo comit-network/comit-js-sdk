@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosPromise, AxiosResponse } from "axios";
 import URI from "urijs";
 import { Action, EmbeddedRepresentationSubEntity, Entity } from "../gen/siren";
 import actionToHttpRequest, {
@@ -80,7 +80,7 @@ export type LedgerAction =
       payload: EthereumCallContractPayload;
     };
 
-export interface Swap {
+export interface SwapEntity {
   /**
    * The id of the swap.
    */
@@ -219,17 +219,21 @@ export class Cnd {
           .toString(),
         swap
       )
-      .then(res => res.data.id);
+      .then(res => res.headers.Location);
   }
 
   public async getSwaps(): Promise<EmbeddedRepresentationSubEntity[]> {
-    const response = await axios.get(
-      this.rootUrl()
-        .path("swaps")
-        .toString()
-    );
+    const response = await this.fetch("swaps");
     const entity = response.data as Entity;
     return entity.entities as EmbeddedRepresentationSubEntity[];
+  }
+
+  public fetch<T>(path: string): AxiosPromise<T> {
+    return axios.get(
+      this.rootUrl()
+        .path(path)
+        .toString()
+    );
   }
 
   public async executeAction(
