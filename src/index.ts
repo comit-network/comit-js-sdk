@@ -1,5 +1,5 @@
 export {
-  Swap,
+  SwapEntity,
   Ledger,
   LedgerAction,
   Asset,
@@ -11,8 +11,11 @@ export {
   Peer,
   SwapRequest
 } from "./cnd";
+
 export { BitcoinWallet } from "./bitcoinWallet";
 export * from "../gen/siren";
 
 export { EthereumWallet } from "./ethereumWallet";
 export { BigNumber } from "ethers/utils";
+
+export { ComitClient } from "./comitClient";

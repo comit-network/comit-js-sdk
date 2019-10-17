@@ -1,4 +1,4 @@
-import { AxiosResponse } from "axios";
+import { AxiosPromise, AxiosResponse } from "axios";
 import { Action, EmbeddedRepresentationSubEntity } from "../gen/siren";
 import { FieldValueResolverFn } from "./actionToHttpRequest";
 export interface Ledger {
@@ -58,7 +58,7 @@ export declare type LedgerAction = {
     type: "ethereum-call-contract";
     payload: EthereumCallContractPayload;
 };
-export interface Swap {
+export interface SwapEntity {
     /**
      * The id of the swap.
      */
@@ -160,8 +160,8 @@ export declare class Cnd {
     getPeerListenAddresses(): Promise<string[]>;
     postSwap(swap: SwapRequest): Promise<string>;
     getSwaps(): Promise<EmbeddedRepresentationSubEntity[]>;
+    fetch<T>(path: string): AxiosPromise<T>;
     executeAction(action: Action, resolver?: FieldValueResolverFn): Promise<AxiosResponse>;
-    getSwap(id: string): Promise<EmbeddedRepresentationSubEntity>;
     private rootUrl;
     private getInfo;
 }

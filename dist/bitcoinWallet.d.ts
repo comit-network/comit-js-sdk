@@ -8,10 +8,8 @@ export declare class BitcoinWallet {
     private constructor();
     getBalance(): Promise<any>;
     getAddress(): Promise<any>;
-    sendToAddress(address: string, satoshis: number, network: string): Promise<{
-        tx: any;
-        broadcast: any;
-    }>;
-    broadcastTransaction(transactionHex: string, network: string): Promise<any>;
+    sendToAddress(address: string, satoshis: number, network: string): Promise<string>;
+    broadcastTransaction(transactionHex: string, network: string): Promise<string>;
+    getFee(): string;
     private assertNetwork;
 }

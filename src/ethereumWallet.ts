@@ -19,21 +19,33 @@ export class EthereumWallet {
     return this.wallet.getBalance();
   }
 
-  public deployContract(data: string, value: BigNumber, gasLimit: string) {
+  public async deployContract(
+    data: string,
+    value: BigNumber,
+    gasLimit: string
+  ) {
     const transaction: TransactionRequest = {
       data,
       value,
       gasLimit
     };
-    return this.wallet.sendTransaction(transaction);
+    const response = await this.wallet.sendTransaction(transaction);
+
+    return response.hash;
   }
 
-  public callContract(data: string, contractAddress: string, gasLimit: string) {
+  public async callContract(
+    data: string,
+    contractAddress: string,
+    gasLimit: string
+  ) {
     const transaction: TransactionRequest = {
       data,
       to: contractAddress,
       gasLimit
     };
-    return this.wallet.sendTransaction(transaction);
+    const response = await this.wallet.sendTransaction(transaction);
+
+    return response.hash;
   }
 }

@@ -97,7 +97,7 @@ class BitcoinWallet {
     sendToAddress(address, satoshis, network) {
         return __awaiter(this, void 0, void 0, function* () {
             this.assertNetwork(network);
-            const tx = yield this.wallet.send({
+            const transaction = yield this.wallet.send({
                 witness: true,
                 outputs: [
                     {
@@ -106,16 +106,21 @@ class BitcoinWallet {
                     }
                 ]
             });
-            const broadcast = yield this.pool.broadcast(tx);
-            return { tx, broadcast };
+            yield this.pool.broadcast(transaction);
+            return transaction.hash("hex");
         });
     }
     broadcastTransaction(transactionHex, network) {
         return __awaiter(this, void 0, void 0, function* () {
             this.assertNetwork(network);
             const transaction = bcoin_1.TX.fromRaw(transactionHex, "hex");
-            return this.pool.broadcast(transaction);
+            yield this.pool.broadcast(transaction);
+            return transaction.hash("hex");
         });
+    }
+    getFee() {
+        // should be dynamic in a real application
+        return "150";
     }
     assertNetwork(network) {
         if (network !== this.network.type) {

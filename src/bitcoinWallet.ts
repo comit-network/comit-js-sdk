@@ -97,10 +97,10 @@ export class BitcoinWallet {
     address: string,
     satoshis: number,
     network: string
-  ) {
+  ): Promise<string> {
     this.assertNetwork(network);
 
-    const tx = await this.wallet.send({
+    const transaction = await this.wallet.send({
       witness: true,
       outputs: [
         {
@@ -109,15 +109,27 @@ export class BitcoinWallet {
         }
       ]
     });
-    const broadcast = await this.pool.broadcast(tx);
-    return { tx, broadcast };
+    await this.pool.broadcast(transaction);
+
+    return transaction.hash("hex");
   }
 
-  public async broadcastTransaction(transactionHex: string, network: string) {
+  public async broadcastTransaction(
+    transactionHex: string,
+    network: string
+  ): Promise<string> {
     this.assertNetwork(network);
 
     const transaction = TX.fromRaw(transactionHex, "hex");
-    return this.pool.broadcast(transaction);
+
+    await this.pool.broadcast(transaction);
+
+    return transaction.hash("hex");
+  }
+
+  public getFee() {
+    // should be dynamic in a real application
+    return "150";
   }
 
   private assertNetwork(network: string) {
