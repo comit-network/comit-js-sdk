@@ -6,6 +6,6 @@ export declare class EthereumWallet {
     constructor(key: SigningKey | HDNode | Arrayish, jsonRpcUrl: string);
     getAccount(): string;
     getBalance(): Promise<ethers.utils.BigNumber>;
-    deployContract(data: string, value: BigNumber, gasLimit: string): Promise<ethers.providers.TransactionResponse>;
-    callContract(data: string, contractAddress: string, gasLimit: string): Promise<ethers.providers.TransactionResponse>;
+    deployContract(data: string, value: BigNumber, gasLimit: string): Promise<string | undefined>;
+    callContract(data: string, contractAddress: string, gasLimit: string): Promise<string | undefined>;
 }

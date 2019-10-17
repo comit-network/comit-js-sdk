@@ -13,10 +13,10 @@ export declare class Swap {
     constructor(bitcoinWallet: BitcoinWallet, ethereumWallet: EthereumWallet, cnd: Cnd, self: string);
     accept(params: ActionParams): Promise<import("axios").AxiosResponse<any>>;
     decline(params: ActionParams): Promise<import("axios").AxiosResponse<any>>;
-    deploy(params: ActionParams): Promise<any>;
-    fund(params: ActionParams): Promise<any>;
-    redeem(params: ActionParams): Promise<any>;
-    refund(params: ActionParams): Promise<any>;
+    deploy(params: ActionParams): Promise<string | undefined>;
+    fund(params: ActionParams): Promise<string | undefined>;
+    redeem(params: ActionParams): Promise<string | undefined>;
+    refund(params: ActionParams): Promise<string | undefined>;
     private tryExecuteAction;
     private timeoutPromise;
     private executeAction;
