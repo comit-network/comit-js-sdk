@@ -25,6 +25,11 @@ export class Swap {
     return await this.tryExecuteAction("decline", params);
   }
 
+  public async deploy(params: ActionParams) {
+    const response = await this.tryExecuteAction("deploy", params);
+    return await this.doLedgerAction(response.data);
+  }
+
   public async fund(params: ActionParams) {
     const response = await this.tryExecuteAction("fund", params);
     return await this.doLedgerAction(response.data);
