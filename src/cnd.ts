@@ -219,7 +219,9 @@ export class Cnd {
           .toString(),
         swap
       )
-      .then(res => res.headers.Location);
+      .then(res => {
+        return res.headers.location;
+      });
   }
 
   public async getSwaps(): Promise<EmbeddedRepresentationSubEntity[]> {
