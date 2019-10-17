@@ -46,31 +46,27 @@ class Cnd {
                 .post(this.rootUrl()
                 .path("swaps/rfc003")
                 .toString(), swap)
-                .then(res => res.data.id);
+                .then(res => {
+                return res.headers.location;
+            });
         });
     }
     getSwaps() {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield axios_1.default.get(this.rootUrl()
-                .path("swaps")
-                .toString());
+            const response = yield this.fetch("swaps");
             const entity = response.data;
             return entity.entities;
         });
+    }
+    fetch(path) {
+        return axios_1.default.get(this.rootUrl()
+            .path(path)
+            .toString());
     }
     executeAction(action, resolver) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = yield actionToHttpRequest_1.default(action, resolver);
             return axios_1.default.request(Object.assign({ baseURL: this.cndUrl }, request));
-        });
-    }
-    getSwap(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const response = yield axios_1.default.get(this.rootUrl()
-                .path("swaps/rfc003/")
-                .segment(id)
-                .toString());
-            return response.data;
         });
     }
     rootUrl() {

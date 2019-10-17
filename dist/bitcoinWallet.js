@@ -117,6 +117,10 @@ class BitcoinWallet {
             return this.pool.broadcast(transaction);
         });
     }
+    getFee() {
+        // should be dynamic in a real application
+        return "150";
+    }
     assertNetwork(network) {
         if (network !== this.network.type) {
             throw new Error(`This wallet is only connected to the ${this.network.type} network and cannot perform actions on the ${network} network`);

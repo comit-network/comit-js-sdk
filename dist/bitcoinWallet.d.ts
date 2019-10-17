@@ -13,5 +13,6 @@ export declare class BitcoinWallet {
         broadcast: any;
     }>;
     broadcastTransaction(transactionHex: string, network: string): Promise<any>;
+    getFee(): string;
     private assertNetwork;
 }
