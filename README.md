@@ -2,7 +2,7 @@
 
 A software development kit for developing Javascript applications on top of the COMIT protocol reference implementation [comit-rs](https://github.com/comit-network/comit-rs).
 
-Currently [comit-rs](https://github.com/comit-network/comit-rs) is shipped as a binary called [cnd](https://github.com/comit-network/comit-rs/releases) (Comit Network Daemon).
+Currently [comit-rs](https://github.com/comit-network/comit-rs) is shipped as a binary called [cnd](https://github.com/comit-network/comit-rs/releases) (COMIT Network Daemon).
 
 ## Getting started
 
