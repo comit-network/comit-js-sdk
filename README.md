@@ -17,11 +17,11 @@ Create a project using [create-comit-app](https://github.com/comit-network/creat
 The SDK exports the `ComitClient` class which is a first starting point for the communication with cnd. The `ComitClient` allows you to:
 
 * `sendSwaps`: when the taker initiates a swap with the maker (after successful negotiation)
-* get new swaps: when the maker has received a swap from the taker
-* get ongoing swaps: for both maker and taker during the execution of the swap (fund, redeem)
-* get done swaps: for both maker and taker to retrieve swaps that are finished
+* `getNewSwaps`: when the maker has received a swap from the taker
+* `getOngoingSwaps`: for both maker and taker during the execution of the swap (fund, redeem)
+* `getDoneSwaps`: for both maker and taker to retrieve swaps that are finished
 
-Additionally the SDK exports more fine-grained functionality to communicate with cnd, take at the classes in `cnd.ts` for details. 
+Additionally the SDK exports more fine-grained functionality to communicate with cnd, take a look at the classes in `cnd.ts` for details. 
 
 ### Wallets
 
