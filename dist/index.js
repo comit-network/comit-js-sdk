@@ -10,4 +10,6 @@ var utils_1 = require("ethers/utils");
 exports.BigNumber = utils_1.BigNumber;
 var comitClient_1 = require("./comitClient");
 exports.ComitClient = comitClient_1.ComitClient;
+var swap_1 = require("./swap");
+exports.Swap = swap_1.Swap;
 //# sourceMappingURL=index.js.map

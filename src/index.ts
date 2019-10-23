@@ -19,3 +19,5 @@ export { EthereumWallet } from "./ethereumWallet";
 export { BigNumber } from "ethers/utils";
 
 export { ComitClient } from "./comitClient";
+
+export { Swap } from "./swap";
