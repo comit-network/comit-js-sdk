@@ -9,7 +9,7 @@ export declare class Swap {
     private readonly bitcoinWallet;
     private readonly ethereumWallet;
     private readonly cnd;
-    private readonly self;
+    readonly self: string;
     constructor(bitcoinWallet: BitcoinWallet, ethereumWallet: EthereumWallet, cnd: Cnd, self: string);
     accept(params: ActionParams): Promise<import("axios").AxiosResponse<any>>;
     decline(params: ActionParams): Promise<import("axios").AxiosResponse<any>>;
