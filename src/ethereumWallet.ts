@@ -8,7 +8,7 @@ export class EthereumWallet {
 
   public constructor(jsonRpcUrl: string, key?: SigningKey | HDNode | Arrayish) {
     const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl);
-    const wallet = !key ? ethers.Wallet.createRandom() : new ethers.Wallet(key);
+    const wallet = key ? new ethers.Wallet(key) : ethers.Wallet.createRandom();
 
     this.wallet = wallet.connect(provider);
   }

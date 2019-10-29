@@ -13,7 +13,7 @@ const ethers_1 = require("ethers");
 class EthereumWallet {
     constructor(jsonRpcUrl, key) {
         const provider = new ethers_1.ethers.providers.JsonRpcProvider(jsonRpcUrl);
-        const wallet = !key ? ethers_1.ethers.Wallet.createRandom() : new ethers_1.ethers.Wallet(key);
+        const wallet = key ? new ethers_1.ethers.Wallet(key) : ethers_1.ethers.Wallet.createRandom();
         this.wallet = wallet.connect(provider);
     }
     getAccount() {
