@@ -45,6 +45,11 @@ export class Swap {
     return await this.doLedgerAction(response.data);
   }
 
+  public async getEntity(): Promise<SwapEntity> {
+    const response = await this.cnd.fetch<SwapEntity>(this.self);
+    return response.data;
+  }
+
   private tryExecuteAction(
     actionName: string,
     { timeout, tryInterval }: ActionParams
@@ -70,8 +75,7 @@ export class Swap {
     while (true) {
       await this.sleep(repeatInterval);
 
-      const response = await this.cnd.fetch<SwapEntity>(this.self);
-      const swap = response.data;
+      const swap = await this.getEntity();
       const actions = swap.actions;
 
       if (!actions || actions.length === 0) {

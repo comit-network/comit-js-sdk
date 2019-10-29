@@ -1,5 +1,5 @@
 import { BitcoinWallet } from "./bitcoinWallet";
-import { Cnd } from "./cnd";
+import { Cnd, SwapEntity } from "./cnd";
 import { EthereumWallet } from "./ethereumWallet";
 export interface ActionParams {
     timeout: number;
@@ -17,6 +17,7 @@ export declare class Swap {
     fund(params: ActionParams): Promise<string | undefined>;
     redeem(params: ActionParams): Promise<string | undefined>;
     refund(params: ActionParams): Promise<string | undefined>;
+    getEntity(): Promise<SwapEntity>;
     private tryExecuteAction;
     private timeoutPromise;
     private executeAction;
