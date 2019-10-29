@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `Swap.getEntity()` to get details of the swap.
+- `ComitClient.getPeerId()` to get peer id of cnd.
+- `ComitClient.getPeerListenAddresses()` to get addresses on which cnd is listening (comit-p2p protocol).
+
+### Changed
+- Replace Siren types with Expect Swap types to improve interfaces accuracy.
+
 ## [0.4.1] - 2019-10-29
 ### Changed
 - Allow creation of Ethereum wallet without HD key. Instead a random HD key is used.
