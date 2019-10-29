@@ -6,9 +6,11 @@ import { HDNode } from "ethers/utils/hdnode";
 export class EthereumWallet {
   private readonly wallet: Wallet;
 
-  public constructor(key: SigningKey | HDNode | Arrayish, jsonRpcUrl: string) {
+  public constructor(jsonRpcUrl: string, key?: SigningKey | HDNode | Arrayish) {
     const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl);
-    this.wallet = new ethers.Wallet(key).connect(provider);
+    const wallet = key ? new ethers.Wallet(key) : ethers.Wallet.createRandom();
+
+    this.wallet = wallet.connect(provider);
   }
 
   public getAccount() {

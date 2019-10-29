@@ -11,9 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const ethers_1 = require("ethers");
 class EthereumWallet {
-    constructor(key, jsonRpcUrl) {
+    constructor(jsonRpcUrl, key) {
         const provider = new ethers_1.ethers.providers.JsonRpcProvider(jsonRpcUrl);
-        this.wallet = new ethers_1.ethers.Wallet(key).connect(provider);
+        const wallet = key ? new ethers_1.ethers.Wallet(key) : ethers_1.ethers.Wallet.createRandom();
+        this.wallet = wallet.connect(provider);
     }
     getAccount() {
         return this.wallet.address;

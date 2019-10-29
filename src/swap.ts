@@ -14,7 +14,7 @@ export class Swap {
     private readonly bitcoinWallet: BitcoinWallet,
     private readonly ethereumWallet: EthereumWallet,
     private readonly cnd: Cnd,
-    private readonly self: string
+    readonly self: string
   ) {}
 
   public async accept(params: ActionParams) {
