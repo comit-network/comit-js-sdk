@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers/utils";
-import { Entity, Field } from "../gen/siren";
+import { Field } from "../gen/siren";
 import { BitcoinWallet } from "./bitcoinWallet";
-import { Cnd, LedgerAction } from "./cnd";
+import { Cnd, LedgerAction, SwapEntity } from "./cnd";
 import { EthereumWallet } from "./ethereumWallet";
 
 export interface ActionParams {
@@ -70,7 +70,7 @@ export class Swap {
     while (true) {
       await this.sleep(repeatInterval);
 
-      const response = await this.cnd.fetch<Entity>(this.self);
+      const response = await this.cnd.fetch<SwapEntity>(this.self);
       const swap = response.data;
       const actions = swap.actions;
 

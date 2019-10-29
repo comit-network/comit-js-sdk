@@ -80,7 +80,15 @@ export type LedgerAction =
       payload: EthereumCallContractPayload;
     };
 
-export interface SwapEntity {
+export interface SwapEntity extends Entity {
+  properties?: SwapProperties;
+}
+
+export interface SwapSubEntity extends EmbeddedRepresentationSubEntity {
+  properties?: SwapProperties;
+}
+
+export interface SwapProperties {
   /**
    * The id of the swap.
    */
@@ -224,10 +232,10 @@ export class Cnd {
       });
   }
 
-  public async getSwaps(): Promise<EmbeddedRepresentationSubEntity[]> {
+  public async getSwaps(): Promise<SwapSubEntity[]> {
     const response = await this.fetch("swaps");
     const entity = response.data as Entity;
-    return entity.entities as EmbeddedRepresentationSubEntity[];
+    return entity.entities as SwapSubEntity[];
   }
 
   public fetch<T>(path: string): AxiosPromise<T> {
