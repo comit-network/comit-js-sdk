@@ -11,5 +11,7 @@ export declare class ComitClient {
     getNewSwaps(): Promise<Swap[]>;
     getOngoingSwaps(): Promise<Swap[]>;
     getDoneSwaps(): Promise<Swap[]>;
+    getPeerId(): Promise<string>;
+    getPeerListenAddresses(): Promise<string[]>;
     private newSwap;
 }
