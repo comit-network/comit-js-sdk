@@ -68,6 +68,14 @@ export class ComitClient {
       .map(swap => this.newSwap(swap));
   }
 
+  public getPeerId(): Promise<string> {
+    return this.cnd.getPeerId();
+  }
+
+  public getPeerListenAddresses(): Promise<string[]> {
+    return this.cnd.getPeerListenAddresses();
+  }
+
   private newSwap(swap: EmbeddedRepresentationSubEntity | Entity) {
     return new Swap(
       this.bitcoinWallet,

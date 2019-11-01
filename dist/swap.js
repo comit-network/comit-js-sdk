@@ -51,6 +51,12 @@ class Swap {
             return yield this.doLedgerAction(response.data);
         });
     }
+    getEntity() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.cnd.fetch(this.self);
+            return response.data;
+        });
+    }
     tryExecuteAction(actionName, { timeout, tryInterval }) {
         return this.timeoutPromise(timeout, this.executeAction(actionName, tryInterval));
     }
@@ -67,8 +73,7 @@ class Swap {
         return __awaiter(this, void 0, void 0, function* () {
             while (true) {
                 yield this.sleep(repeatInterval);
-                const response = yield this.cnd.fetch(this.self);
-                const swap = response.data;
+                const swap = yield this.getEntity();
                 const actions = swap.actions;
                 if (!actions || actions.length === 0) {
                     continue;

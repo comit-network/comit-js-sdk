@@ -68,6 +68,12 @@ class ComitClient {
                 .map(swap => this.newSwap(swap));
         });
     }
+    getPeerId() {
+        return this.cnd.getPeerId();
+    }
+    getPeerListenAddresses() {
+        return this.cnd.getPeerListenAddresses();
+    }
     newSwap(swap) {
         return new swap_1.Swap(this.bitcoinWallet, this.ethereumWallet, this.cnd, swap.links.find(link => link.rel.includes("self")).href);
     }

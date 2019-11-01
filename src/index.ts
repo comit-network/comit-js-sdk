@@ -1,5 +1,5 @@
 export {
-  SwapEntity,
+  SwapProperties,
   Ledger,
   LedgerAction,
   Asset,
