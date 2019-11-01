@@ -1,7 +1,8 @@
-import { ethers, Wallet } from "ethers";
+import { Contract, ethers, Wallet } from "ethers";
 import { TransactionRequest } from "ethers/providers";
-import { Arrayish, BigNumber, SigningKey } from "ethers/utils";
+import { Arrayish, BigNumber, ParamType, SigningKey } from "ethers/utils";
 import { HDNode } from "ethers/utils/hdnode";
+import erc20 from "../ethereum_abi/erc20.json";
 
 export class EthereumWallet {
   private readonly wallet: Wallet;
@@ -19,6 +20,27 @@ export class EthereumWallet {
 
   public getBalance() {
     return this.wallet.getBalance();
+  }
+
+  public async getErc20Balance(contractAddress: string, decimals?: number) {
+    const abi = erc20 as ParamType[];
+    const contract = new Contract(contractAddress, abi, this.wallet.provider);
+
+    let dec;
+    if (decimals === undefined) {
+      try {
+        dec = await contract.decimals();
+      } catch (e) {
+        // decimals() not present on token contract, defaulting to 18
+        dec = 18;
+      }
+    } else {
+      dec = decimals;
+    }
+
+    const strBalance = await contract.balanceOf(this.wallet.address);
+    const intBalance = new BigNumber(strBalance);
+    return intBalance.div(new BigNumber(10).pow(dec));
   }
 
   public async deployContract(
