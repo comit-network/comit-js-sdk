@@ -19,6 +19,7 @@ jobs:
         run: |
           yarn install
           yarn tsc
+          yarn test
       - name: Release to GitHub
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
