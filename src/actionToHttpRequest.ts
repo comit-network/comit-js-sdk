@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from "axios";
 import contentType from "content-type";
 import URI from "urijs";
-import { Action, Field } from "../gen/siren";
+import { Action, Field } from "../types/siren";
 
 export type FieldValueResolverFn = (
   field: Field

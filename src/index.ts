@@ -13,7 +13,7 @@ export {
 } from "./cnd";
 
 export { BitcoinWallet } from "./bitcoinWallet";
-export * from "../gen/siren";
+export * from "../types/siren";
 
 export { EthereumWallet } from "./ethereumWallet";
 export { BigNumber } from "ethers/utils";

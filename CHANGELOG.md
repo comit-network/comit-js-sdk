@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Able to install comit-sdk from npm package.
+
 ## [0.5.1] - 2019-11-04
 ### Fixed
 - `postinstall` task.

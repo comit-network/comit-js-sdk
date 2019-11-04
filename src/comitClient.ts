@@ -1,4 +1,8 @@
-import { Action, EmbeddedRepresentationSubEntity, Entity } from "../gen/siren";
+import {
+  Action,
+  EmbeddedRepresentationSubEntity,
+  Entity
+} from "../types/siren";
 import { BitcoinWallet } from "./bitcoinWallet";
 import { Cnd, SwapRequest } from "./cnd";
 import { EthereumWallet } from "./ethereumWallet";
