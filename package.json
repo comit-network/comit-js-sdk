@@ -9,7 +9,7 @@
   "scripts": {
     "check": "tsc --noEmit && tslint -p . && prettier --check '**/*.{ts,js,json,yml}'",
     "rebuild": "rimraf dist/ && tsc",
-    "postinstall": "mkdir -p ./gen && json2ts -i ./siren.schema.json -o ./gen/siren.d.ts && prettier --write ./gen/siren.d.ts",
+    "postinstall": "mkdir -p ./gen && yarn json2ts -i ./siren.schema.json -o ./gen/siren.d.ts && yarn prettier --write ./gen/siren.d.ts",
     "fix": "tslint -p . --fix && prettier --write '**/*.{ts,js,json,yml}'",
     "test": "jest"
   },
