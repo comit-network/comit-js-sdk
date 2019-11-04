@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `postinstall` task.
+
 ## [0.5.0] - 2019-11-04
 ### Added
 - `Swap.getEntity()` to get details of the swap.
