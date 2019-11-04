@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers/utils";
-import { Field } from "../gen/siren";
+import { Field } from "../types/siren";
 import { BitcoinWallet } from "./bitcoinWallet";
 import { Cnd, LedgerAction, SwapEntity } from "./cnd";
 import { EthereumWallet } from "./ethereumWallet";

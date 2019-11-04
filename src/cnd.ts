@@ -1,6 +1,10 @@
 import axios, { AxiosPromise, AxiosResponse } from "axios";
 import URI from "urijs";
-import { Action, EmbeddedRepresentationSubEntity, Entity } from "../gen/siren";
+import {
+  Action,
+  EmbeddedRepresentationSubEntity,
+  Entity
+} from "../types/siren";
 import actionToHttpRequest, {
   FieldValueResolverFn
 } from "./actionToHttpRequest";
