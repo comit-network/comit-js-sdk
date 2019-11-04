@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.2] - 2019-11-05
 ### Fixed
 - Able to install comit-sdk from npm package.
 
@@ -60,7 +61,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.5.1...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.5.2...HEAD
+[0.5.1]: https://github.com/comit-network/comit-js-sdk/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/comit-network/comit-js-sdk/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/comit-network/comit-js-sdk/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/comit-network/comit-js-sdk/compare/0.4.0...0.4.1
