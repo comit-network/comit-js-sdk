@@ -21,7 +21,7 @@ export default async function actionToHttpRequest(
       url: action.href,
       method: action.method,
       params: fieldValues,
-      paramsSerializer: params => {
+      paramsSerializer: (params: any) => {
         return URI.buildQuery(params);
       },
       data: {} // Need to set this because of https://github.com/axios/axios/issues/86

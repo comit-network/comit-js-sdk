@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Swap.getEntity()` to get details of the swap.
 - `ComitClient.getPeerId()` to get peer id of cnd.
 - `ComitClient.getPeerListenAddresses()` to get addresses on which cnd is listening (comit-p2p protocol).
+- `EthereumWallet.getErc20Balance()` to retrieve any ERC20 balance.
 
 ### Changed
 - Replace Siren types with Expect Swap types to improve interfaces accuracy.
