@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Ensure siren types are added to `dist/` dir when publishing.
 
 ## [0.5.5] - 2019-11-05
 ### Fixed
