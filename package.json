@@ -9,6 +9,7 @@
   "scripts": {
     "check": "tsc --noEmit && tslint -p . && prettier --check '**/*.{ts,js,json,yml}'",
     "rebuild": "rimraf dist/ && tsc",
+    "prepare": "tsc",
     "fix": "tslint -p . --fix && prettier --write '**/*.{ts,js,json,yml}'",
     "test": "jest"
   },
