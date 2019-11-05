@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.5.6] - 2019-11-05
 ### Fixed
 - Ensure siren types are added to `dist/` dir when publishing.
 
@@ -75,7 +77,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.5.5...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.5.6...HEAD
+[0.5.6]: https://github.com/comit-network/comit-js-sdk/compare/0.5.5...0.5.6
 [0.5.5]: https://github.com/comit-network/comit-js-sdk/compare/0.5.4...0.5.5
 [0.5.4]: https://github.com/comit-network/comit-js-sdk/compare/0.5.3...0.5.4
 [0.5.3]: https://github.com/comit-network/comit-js-sdk/compare/0.5.2...0.5.3
