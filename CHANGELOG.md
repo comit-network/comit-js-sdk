@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.5] - 2019-11-05
 ### Fixed
 - Move siren types to appropriate location.
 
@@ -73,7 +74,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Common code that can be used to build applications on top of COMIT.
 
 [Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.5.5...HEAD
-[0.5.3]: https://github.com/comit-network/comit-js-sdk/compare/0.5.4...0.5.4
+[0.5.5]: https://github.com/comit-network/comit-js-sdk/compare/0.5.4...0.5.5
+[0.5.4]: https://github.com/comit-network/comit-js-sdk/compare/0.5.3...0.5.4
 [0.5.3]: https://github.com/comit-network/comit-js-sdk/compare/0.5.2...0.5.3
 [0.5.2]: https://github.com/comit-network/comit-js-sdk/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/comit-network/comit-js-sdk/compare/0.5.0...0.5.1
