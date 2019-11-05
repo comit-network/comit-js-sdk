@@ -7,10 +7,9 @@
   "repository": "git@github.com:comit-network/comit-js-sdk.git",
   "author": "CoBloX developers <team@coblox.tech>",
   "scripts": {
-    "check": "tsc --noEmit && tslint -p . && prettier --check '**/*.{ts,js,json,yml}'",
-    "rebuild": "rimraf dist/ && tsc",
+    "prepare": "tsc",
     "fix": "tslint -p . --fix && prettier --write '**/*.{ts,js,json,yml}'",
-    "test": "jest"
+    "test": "tsc --noEmit && tslint -p . && prettier --check '**/*.{ts,js,json,yml}' && jest"
   },
   "dependencies": {
     "axios": "^0.19.0",
@@ -27,7 +26,6 @@
     "jest": "^24.9.0",
     "nock": "^11.3.4",
     "prettier": "^1.18.2",
-    "rimraf": "^3.0.0",
     "ts-jest": "^24.1.0",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
