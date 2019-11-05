@@ -14,7 +14,9 @@ jobs:
           node-version: "10.x"
           registry-url: "https://registry.npmjs.org"
       - name: Release to NPM
-        run: yarn publish
+        run: |
+          yarn install
+          yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Release to GitHub
