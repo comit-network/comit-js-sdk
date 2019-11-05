@@ -1,8 +1,8 @@
 import { BigNumber } from "ethers/utils";
-import { Field } from "../types/siren";
 import { BitcoinWallet } from "./bitcoinWallet";
 import { Cnd, LedgerAction, SwapEntity } from "./cnd";
 import { EthereumWallet } from "./ethereumWallet";
+import { Field } from "./siren";
 
 export interface ActionParams {
   timeout: number;

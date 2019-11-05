@@ -1,13 +1,9 @@
 import axios, { AxiosPromise, AxiosResponse } from "axios";
 import URI from "urijs";
-import {
-  Action,
-  EmbeddedRepresentationSubEntity,
-  Entity
-} from "../types/siren";
 import actionToHttpRequest, {
   FieldValueResolverFn
 } from "./actionToHttpRequest";
+import { Action, EmbeddedRepresentationSubEntity, Entity } from "./siren";
 
 interface GetInfo {
   id: string;
