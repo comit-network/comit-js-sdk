@@ -1,11 +1,7 @@
-import {
-  Action,
-  EmbeddedRepresentationSubEntity,
-  Entity
-} from "../types/siren";
 import { BitcoinWallet } from "./bitcoinWallet";
 import { Cnd, SwapRequest } from "./cnd";
 import { EthereumWallet } from "./ethereumWallet";
+import { Action, EmbeddedRepresentationSubEntity, Entity } from "./siren";
 import { Swap } from "./swap";
 
 export class ComitClient {
