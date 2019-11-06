@@ -7,30 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.5.6] - 2019-11-05
-### Fixed
-- Ensure siren types are added to `dist/` dir when publishing.
 
-## [0.5.5] - 2019-11-05
 ### Fixed
-- Move siren types to appropriate location.
+- Issue with generated files when publishing.
 
-## [0.5.4] - 2019-11-05
-### Fixed
-- Pack dist files when publishing.
-
-## [0.5.3] - 2019-11-05
-### Fixed
-- Generate dist files before publishing.
-
-## [0.5.2] - 2019-11-05
-### Fixed
-- Able to install comit-sdk from npm package.
-
-## [0.5.1] - 2019-11-04
-### Fixed
-- `postinstall` task.
-
-## [0.5.0] - 2019-11-04
 ### Added
 - `Swap.getEntity()` to get details of the swap.
 - `ComitClient.getPeerId()` to get peer id of cnd.
@@ -78,13 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Common code that can be used to build applications on top of COMIT.
 
 [Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.5.6...HEAD
-[0.5.6]: https://github.com/comit-network/comit-js-sdk/compare/0.5.5...0.5.6
-[0.5.5]: https://github.com/comit-network/comit-js-sdk/compare/0.5.4...0.5.5
-[0.5.4]: https://github.com/comit-network/comit-js-sdk/compare/0.5.3...0.5.4
-[0.5.3]: https://github.com/comit-network/comit-js-sdk/compare/0.5.2...0.5.3
-[0.5.2]: https://github.com/comit-network/comit-js-sdk/compare/0.5.1...0.5.2
-[0.5.1]: https://github.com/comit-network/comit-js-sdk/compare/0.5.0...0.5.1
-[0.5.0]: https://github.com/comit-network/comit-js-sdk/compare/0.4.1...0.5.0
+[0.5.6]: https://github.com/comit-network/comit-js-sdk/compare/0.4.1...0.5.6
 [0.4.1]: https://github.com/comit-network/comit-js-sdk/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/comit-network/comit-js-sdk/compare/0.3.2...0.4.0
 [0.3.2]: https://github.com/comit-network/comit-js-sdk/compare/0.3.1...0.3.2
