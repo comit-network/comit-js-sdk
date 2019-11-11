@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Return the tx-id instead of the tx-hash for Bitcoin because it is the canonical way of identifying a transaction.
+
 ## [0.5.6] - 2019-11-05
 
 ### Fixed

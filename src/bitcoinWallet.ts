@@ -111,7 +111,7 @@ export class BitcoinWallet {
     });
     await this.pool.broadcast(transaction);
 
-    return transaction.hash("hex");
+    return transaction.txid();
   }
 
   public async broadcastTransaction(
@@ -124,7 +124,7 @@ export class BitcoinWallet {
 
     await this.pool.broadcast(transaction);
 
-    return transaction.hash("hex");
+    return transaction.txid();
   }
 
   public getFee() {
