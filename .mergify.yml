@@ -14,7 +14,6 @@ pull_request_rules:
         method: merge
         strict: smart
         strict_method: merge
-      delete_head_branch:
   - name: merge green dependabot PRs
     conditions:
       - "status-success=build"
@@ -24,4 +23,8 @@ pull_request_rules:
         method: merge
         strict: smart
         strict_method: merge
+  - name: Delete branch if the pull request is merged
+    conditions:
+      - merged
+    actions:
       delete_head_branch:
