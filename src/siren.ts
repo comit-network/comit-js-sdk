@@ -81,7 +81,8 @@ export type RelValue =
       | "via"
       | "webmention"
       | "working-copy"
-      | "working-copy-of");
+      | "working-copy-of"
+    );
 /**
  * Defines media type of the linked resource, per Web Linking (RFC5988). For the syntax, see RFC2045 (section 5.1), RFC4288 (section 4.2), RFC6838 (section 4.2)
  */
@@ -90,7 +91,7 @@ export type EmbeddedRepresentationSubEntity = Entity & {
   /**
    * Defines the relationship of the sub-entity to its parent, per Web Linking (RFC5899).
    */
-  rel: [RelValue, ...(RelValue)[]];
+  rel: [RelValue, ...RelValue[]];
   [k: string]: any;
 };
 
@@ -134,7 +135,7 @@ export interface EmbeddedLinkSubEntity {
   /**
    * Defines the relationship of the sub-entity to its parent, per Web Linking (RFC5899).
    */
-  rel: [RelValue, ...(RelValue)[]];
+  rel: [RelValue, ...RelValue[]];
   /**
    * The URI of the linked sub-entity.
    */
