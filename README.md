@@ -34,5 +34,3 @@ The SDK includes two Javascript wallets:
 * Bitcoin wallet based on [bcoin](https://github.com/bcoin-org/bcoin)
 * Ethereum wallet based on [ethers.js](https://github.com/ethers-io/ethers.js/)
 
-When starting an environment using the `start-env` command of [create-comit-app](https://github.com/comit-network/create-comit-app) an `.env` file is created that is read by an application using the SDK. 
-The wallets are used to request balances and sending transactions.
