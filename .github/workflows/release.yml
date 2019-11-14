@@ -16,6 +16,7 @@ jobs:
       - name: Release to NPM
         run: |
           yarn install
+          yarn list
           yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
