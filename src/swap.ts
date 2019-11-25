@@ -3,11 +3,7 @@ import { BitcoinWallet } from "./bitcoinWallet";
 import { Cnd, LedgerAction, SwapEntity } from "./cnd";
 import { EthereumWallet } from "./ethereumWallet";
 import { Field } from "./siren";
-
-export interface ActionParams {
-  timeout: number;
-  tryInterval: number;
-}
+import { sleep, timeoutPromise, TryParams } from "./timeout_promise";
 
 export class Swap {
   constructor(
@@ -17,34 +13,35 @@ export class Swap {
     readonly self: string
   ) {}
 
-  public async accept(params: ActionParams) {
+  public async accept(params: TryParams) {
     return await this.tryExecuteAction("accept", params);
   }
 
-  public async decline(params: ActionParams) {
+  public async decline(params: TryParams) {
     return await this.tryExecuteAction("decline", params);
   }
 
-  public async deploy(params: ActionParams) {
+  public async deploy(params: TryParams) {
     const response = await this.tryExecuteAction("deploy", params);
     return await this.doLedgerAction(response.data);
   }
 
-  public async fund(params: ActionParams) {
+  public async fund(params: TryParams) {
     const response = await this.tryExecuteAction("fund", params);
     return await this.doLedgerAction(response.data);
   }
 
-  public async redeem(params: ActionParams) {
+  public async redeem(params: TryParams) {
     const response = await this.tryExecuteAction("redeem", params);
     return await this.doLedgerAction(response.data);
   }
 
-  public async refund(params: ActionParams) {
+  public async refund(params: TryParams) {
     const response = await this.tryExecuteAction("refund", params);
     return await this.doLedgerAction(response.data);
   }
 
+  // TODO: Poor naming
   public async getEntity(): Promise<SwapEntity> {
     const response = await this.cnd.fetch<SwapEntity>(this.self);
     return response.data;
@@ -52,28 +49,14 @@ export class Swap {
 
   private tryExecuteAction(
     actionName: string,
-    { timeout, tryInterval }: ActionParams
+    { timeout, tryInterval }: TryParams
   ) {
-    return this.timeoutPromise(
-      timeout,
-      this.executeAction(actionName, tryInterval)
-    );
-  }
-
-  private timeoutPromise<T>(ms: number, promise: Promise<T>): Promise<T> {
-    const timeout = new Promise<T>((_, reject) => {
-      const id = setTimeout(() => {
-        clearTimeout(id);
-        reject("Timed out in " + ms + "ms.");
-      }, ms);
-    });
-
-    return Promise.race([promise, timeout]);
+    return timeoutPromise(timeout, this.executeAction(actionName, tryInterval));
   }
 
   private async executeAction(actionName: string, repeatInterval: number) {
     while (true) {
-      await this.sleep(repeatInterval);
+      await sleep(repeatInterval);
 
       const swap = await this.getEntity();
       const actions = swap.actions;
@@ -92,10 +75,6 @@ export class Swap {
         this.fieldValueResolver(field)
       );
     }
-  }
-
-  private async sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   private async fieldValueResolver(field: Field): Promise<string | undefined> {
