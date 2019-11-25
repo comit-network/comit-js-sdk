@@ -1,6 +1,7 @@
 import { BitcoinWallet } from "./bitcoinWallet";
-import { Cnd, SwapRequest } from "./cnd";
+import { Cnd, SwapRequest, SwapSubEntity } from "./cnd";
 import { EthereumWallet } from "./ethereumWallet";
+import { Order, orderSwapMatchesForMaker } from "./negotiation/order";
 import { Action, EmbeddedRepresentationSubEntity, Entity } from "./siren";
 import { Swap } from "./swap";
 
@@ -12,6 +13,19 @@ export class ComitClient {
   ) {}
 
   public async sendSwap(swapRequest: SwapRequest): Promise<Swap> {
+    if (
+      swapRequest.alpha_ledger.name === "ethereum" &&
+      !swapRequest.alpha_ledger_refund_identity
+    ) {
+      swapRequest.alpha_ledger_refund_identity = this.ethereumWallet.getAccount();
+    }
+    if (
+      swapRequest.beta_ledger.name === "ethereum" &&
+      !swapRequest.beta_ledger_redeem_identity
+    ) {
+      swapRequest.beta_ledger_redeem_identity = this.ethereumWallet.getAccount();
+    }
+
     const swapLocation = await this.cnd.postSwap(swapRequest);
     if (!swapLocation) {
       throw new Error("Problem creating swap, no swap location returned.");
@@ -74,6 +88,30 @@ export class ComitClient {
 
   public getPeerListenAddresses(): Promise<string[]> {
     return this.cnd.getPeerListenAddresses();
+  }
+
+  public async retrieveSwapByOrder(order: Order) {
+    const swaps = await this.cnd.getSwaps();
+    const matchingSwaps = swaps
+      .filter((swap: SwapSubEntity) => {
+        if (swap.properties && swap.properties.parameters) {
+          // This should be simplified by retrieving via order id
+          // Or by doing an extra round trip:
+          // Taker -->(ask exec params)--> Maker
+          // Taker <--(exec params)<-- Maker
+          // Taker -->(send swap req)--> Taker cnd
+          // Taker -->(accept order, inc. swap id)--> Maker
+          // Maker -->(retrieve. check and accept with swap id)--> Maker cnd
+          // In any case, a matching logic to verify that the taker sent
+          // the correct parameter needs to happen but this verification
+          // step may not be done in the ComitClient
+          return orderSwapMatchesForMaker(order, swap.properties);
+        }
+      })
+      .map(swap => this.newSwap(swap));
+    // Only one matching swaps is expect but it is not certain
+    // Until cnd can handle the order id
+    return matchingSwaps ? matchingSwaps[0] : matchingSwaps;
   }
 
   private newSwap(swap: EmbeddedRepresentationSubEntity | Entity) {
