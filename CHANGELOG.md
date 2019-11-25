@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Make alpha and beta expiries optional in `SwapRequest`.
+
 ## [0.6.0] - 2019-11-25
 
 ### Fixed
