@@ -12,12 +12,14 @@ interface GetInfo {
 
 export interface Ledger {
   name: string;
-  [k: string]: any;
+  chain_id?: number;
+  network?: string;
 }
 
 export interface Asset {
   name: string;
-  [k: string]: any;
+  quantity: string;
+  token_contract?: string;
 }
 
 export interface Peer {
@@ -80,6 +82,7 @@ export type LedgerAction =
       payload: EthereumCallContractPayload;
     };
 
+// TODO: This is exported, a more descriptive name should be found
 export interface SwapEntity extends Entity {
   properties?: SwapProperties;
 }
@@ -114,7 +117,7 @@ export interface SwapProperties {
    */
   parameters: {
     alpha_asset: Asset;
-    alpha_ledger: LedgerAction;
+    alpha_ledger: Ledger;
     beta_asset: Asset;
     beta_ledger: Ledger;
     [k: string]: any;
@@ -124,11 +127,11 @@ export interface SwapProperties {
    */
   state?: {
     /**
-     * The state of the alpha ledger regarding the swap.
+     * The state of the alpha ledgers regarding the swap.
      */
     alpha_ledger: {
       /**
-       * The transaction ID of the deployment transaction on the alpha ledger.
+       * The transaction ID of the deployment transaction on the alpha ledgers.
        */
       deploy_tx: string | null;
       fund_tx: string | null;
@@ -136,7 +139,7 @@ export interface SwapProperties {
       redeem_tx: string | null;
       refund_tx: string | null;
       /**
-       * The status of the HTLC on the alpha ledger.
+       * The status of the HTLC on the alpha ledgers.
        */
       status:
         | "NOT_DEPLOYED"
@@ -148,11 +151,11 @@ export interface SwapProperties {
       [k: string]: any;
     };
     /**
-     * The state of the beta ledger regarding the swap.
+     * The state of the beta ledgers regarding the swap.
      */
     beta_ledger: {
       /**
-       * The transaction ID of the deployment transaction on the beta ledger.
+       * The transaction ID of the deployment transaction on the beta ledgers.
        */
       deploy_tx: string | null;
       fund_tx: string | null;
@@ -160,7 +163,7 @@ export interface SwapProperties {
       redeem_tx: string | null;
       refund_tx: string | null;
       /**
-       * The status of the HTLC on the beta ledger.
+       * The status of the HTLC on the beta ledgers.
        */
       status:
         | "NOT_DEPLOYED"
@@ -176,7 +179,7 @@ export interface SwapProperties {
      */
     communication: {
       /**
-       * The expiry value of the HTLC on the alpha ledger. The semantic value depends on the ledger.
+       * The expiry value of the HTLC on the alpha ledgers. The semantic value depends on the ledgers.
        */
       alpha_expiry: number;
       alpha_redeem_identity: string | null;
