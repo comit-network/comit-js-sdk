@@ -4,7 +4,7 @@ import { getToken } from "../tokens/tokens";
 export interface Order {
   tradingPair: string;
   id: string;
-  valid_until: number;
+  validUntil: number;
   bid: OrderAsset;
   ask: OrderAsset;
 }

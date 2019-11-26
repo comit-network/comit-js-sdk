@@ -10,7 +10,7 @@ import {
 const ethBtcOrder = {
   tradingPair: "ETH-BTC",
   id: "123",
-  valid_until: 123456,
+  validUntil: 123456,
   bid: {
     ledger: "bitcoin",
     asset: "bitcoin",
@@ -26,7 +26,7 @@ const ethBtcOrder = {
 const erc20BtcOrder = {
   tradingPair: "PAY-BTC",
   id: "123",
-  valid_until: 123456,
+  validUntil: 123456,
   bid: {
     ledger: "bitcoin",
     asset: "bitcoin",
