@@ -41,8 +41,7 @@ export class Swap {
     return await this.doLedgerAction(response.data);
   }
 
-  // TODO: Poor naming
-  public async getEntity(): Promise<SwapEntity> {
+  public async fetchDetails(): Promise<SwapEntity> {
     const response = await this.cnd.fetch<SwapEntity>(this.self);
     return response.data;
   }
@@ -58,7 +57,7 @@ export class Swap {
     while (true) {
       await sleep(repeatInterval);
 
-      const swap = await this.getEntity();
+      const swap = await this.fetchDetails();
       const actions = swap.actions;
 
       if (!actions || actions.length === 0) {
