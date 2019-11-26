@@ -48,14 +48,17 @@ export class Swap {
 
   private tryExecuteAction(
     actionName: string,
-    { timeout, tryInterval }: TryParams
+    { maxTimeoutSecs, tryIntervalSecs }: TryParams
   ) {
-    return timeoutPromise(timeout, this.executeAction(actionName, tryInterval));
+    return timeoutPromise(
+      maxTimeoutSecs * 1000,
+      this.executeAction(actionName, tryIntervalSecs)
+    );
   }
 
-  private async executeAction(actionName: string, repeatInterval: number) {
+  private async executeAction(actionName: string, tryIntervalSecs: number) {
     while (true) {
-      await sleep(repeatInterval);
+      await sleep(tryIntervalSecs * 1000);
 
       const swap = await this.fetchDetails();
       const actions = swap.actions;

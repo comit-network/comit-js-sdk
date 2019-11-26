@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve `TakerNegotiator` API.
 - Change `Order` to have all fields in camelCase.
 - Rename `Swap.getEntity()` & `SwapEntity` to `Swap.fetchDetails()` & `SwapDetails` for clarity.
+- Improve `TryParams` terminology, use of seconds.
 
 ## [0.6.0] - 2019-11-25
 

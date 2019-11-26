@@ -1,11 +1,6 @@
-// TODO: This is not an intuitive interface
-// timeout: Maximum time to wait
-// tryInterval: how long to wait between 2 tries
-// Need to either rename or move to: timeout + Number of tries
-// Also need to make it clearer it's milliseconds
 export interface TryParams {
-  timeout: number;
-  tryInterval: number;
+  maxTimeoutSecs: number;
+  tryIntervalSecs: number;
 }
 
 export function timeoutPromise<T>(ms: number, promise: Promise<T>): Promise<T> {
