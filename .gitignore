@@ -1,7 +1,5 @@
 node_modules/
 
-dist/
-
 .idea/
 
 # This is a library
