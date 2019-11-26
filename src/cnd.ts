@@ -82,8 +82,7 @@ export type LedgerAction =
       payload: EthereumCallContractPayload;
     };
 
-// TODO: This is exported, a more descriptive name should be found
-export interface SwapEntity extends Entity {
+export interface SwapDetails extends Entity {
   properties?: SwapProperties;
 }
 

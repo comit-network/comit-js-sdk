@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ExecutionParams.ledgers` is now optional and defaulted to mainnet values. `chain_id` is used for Ethereum meaning that `comit-rs:^0.4.0` is needed.
 - Improve `TakerNegotiator` API.
 - Change `Order` to have all fields in camelCase.
-- Rename `Swap.getEntity()` to `Swap.fetchDetails()` for clarity.
+- Rename `Swap.getEntity()` & `SwapEntity` to `Swap.fetchDetails()` & `SwapDetails` for clarity.
 
 ## [0.6.0] - 2019-11-25
 

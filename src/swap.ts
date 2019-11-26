@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers/utils";
 import { BitcoinWallet } from "./bitcoinWallet";
-import { Cnd, LedgerAction, SwapEntity } from "./cnd";
+import { Cnd, LedgerAction, SwapDetails } from "./cnd";
 import { EthereumWallet } from "./ethereumWallet";
 import { Field } from "./siren";
 import { sleep, timeoutPromise, TryParams } from "./timeout_promise";
@@ -41,8 +41,8 @@ export class Swap {
     return await this.doLedgerAction(response.data);
   }
 
-  public async fetchDetails(): Promise<SwapEntity> {
-    const response = await this.cnd.fetch<SwapEntity>(this.self);
+  public async fetchDetails(): Promise<SwapDetails> {
+    const response = await this.cnd.fetch<SwapDetails>(this.self);
     return response.data;
   }
 
