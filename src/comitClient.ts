@@ -1,7 +1,6 @@
 import { BitcoinWallet } from "./bitcoinWallet";
 import { Cnd, SwapRequest, SwapSubEntity } from "./cnd";
 import { EthereumWallet } from "./ethereumWallet";
-import { Order, orderSwapMatchesForMaker } from "./negotiation/order";
 import { Action, EmbeddedRepresentationSubEntity, Entity } from "./siren";
 import { Swap } from "./swap";
 
@@ -90,31 +89,22 @@ export class ComitClient {
     return this.cnd.getPeerListenAddresses();
   }
 
-  public async retrieveSwapByOrder(order: Order) {
+  public async retrieveSwapById(swapId: string): Promise<Swap | undefined> {
     const swaps = await this.cnd.getSwaps();
     const matchingSwaps = swaps
       .filter((swap: SwapSubEntity) => {
-        if (swap.properties && swap.properties.parameters) {
-          // This should be simplified by retrieving via order id
-          // Or by doing an extra round trip:
-          // Taker -->(ask exec params)--> Maker
-          // Taker <--(exec params)<-- Maker
-          // Taker -->(send swap req)--> Taker cnd
-          // Taker -->(accept order, inc. swap id)--> Maker
-          // Maker -->(retrieve. check and accept with swap id)--> Maker cnd
-          // In any case, a matching logic to verify that the taker sent
-          // the correct parameter needs to happen but this verification
-          // step may not be done in the ComitClient
-          return orderSwapMatchesForMaker(order, swap.properties);
-        }
+        return swap.properties!.id === swapId;
       })
       .map(swap => this.newSwap(swap));
-    // Only one matching swaps is expect but it is not certain
-    // Until cnd can handle the order id
-    return matchingSwaps ? matchingSwaps[0] : matchingSwaps;
+    // Only one matching swaps is expected as swap id is unique
+    if (matchingSwaps && matchingSwaps.length > 0) {
+      return matchingSwaps[0];
+    } else {
+      return undefined;
+    }
   }
 
-  private newSwap(swap: EmbeddedRepresentationSubEntity | Entity) {
+  private newSwap(swap: EmbeddedRepresentationSubEntity | Entity): Swap {
     return new Swap(
       this.bitcoinWallet,
       this.ethereumWallet,

@@ -1,5 +1,5 @@
 import moment = require("moment");
-import { ExecutionParams, validateExecutionParams } from "./execution_params";
+import { ExecutionParams, isValidExecutionParams } from "./execution_params";
 
 const defaultExecutionParams = () => {
   return {
@@ -20,7 +20,7 @@ describe("Taker Negotiator", () => {
   it("Validates mainnet execution parameters", () => {
     const executionParams: ExecutionParams = { ...defaultExecutionParams() };
 
-    expect(validateExecutionParams(executionParams)).toBeTruthy();
+    expect(isValidExecutionParams(executionParams)).toBeTruthy();
   });
 
   it("Validates test execution parameters", () => {
@@ -34,7 +34,7 @@ describe("Taker Negotiator", () => {
       }
     };
 
-    expect(validateExecutionParams(executionParams)).toBeTruthy();
+    expect(isValidExecutionParams(executionParams)).toBeTruthy();
   });
 
   it("Invalidates mainnet execution parameters due to expiry length", () => {
@@ -44,7 +44,7 @@ describe("Taker Negotiator", () => {
       beta_expiry: moment().unix() + 1 * 60 * 60
     };
 
-    expect(validateExecutionParams(executionParams)).toBeFalsy();
+    expect(isValidExecutionParams(executionParams)).toBeFalsy();
   });
 
   it("Invalidates mainnet execution parameters due to expiry order", () => {
@@ -54,7 +54,7 @@ describe("Taker Negotiator", () => {
       beta_expiry: moment().unix() + 72 * 60 * 60
     };
 
-    expect(validateExecutionParams(executionParams)).toBeFalsy();
+    expect(isValidExecutionParams(executionParams)).toBeFalsy();
   });
 
   it("Invalidates test execution parameters due to expiry", () => {
@@ -68,7 +68,7 @@ describe("Taker Negotiator", () => {
       }
     };
 
-    expect(validateExecutionParams(executionParams)).toBeFalsy();
+    expect(isValidExecutionParams(executionParams)).toBeFalsy();
   });
 
   it("Invalidates mixed network execution parameters", () => {
@@ -80,6 +80,6 @@ describe("Taker Negotiator", () => {
       }
     };
 
-    expect(validateExecutionParams(executionParams)).toBeFalsy();
+    expect(isValidExecutionParams(executionParams)).toBeFalsy();
   });
 });

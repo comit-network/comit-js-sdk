@@ -5,7 +5,7 @@ import { Swap } from "../swap";
 import {
   defaultLedgerParams,
   ExecutionParams,
-  validateExecutionParams
+  isValidExecutionParams
 } from "./execution_params";
 import { assetOrderToSwap, Order } from "./order";
 
@@ -70,14 +70,19 @@ export class TakerNegotiator {
     makerNegotiator: MakerClient,
     order: Order
   ): Promise<Swap | undefined> {
-    const executionParams = await makerNegotiator.acceptOrder(order);
-    if (executionParams && validateExecutionParams(executionParams)) {
+    const executionParams = await makerNegotiator.getExecutionParams(order);
+    if (executionParams && isValidExecutionParams(executionParams)) {
       const swapRequest = TakerNegotiator.newSwapRequest(
         order,
         executionParams
       );
       if (swapRequest) {
-        return this.comitClient.sendSwap(swapRequest);
+        const swapHandle = await this.comitClient.sendSwap(swapRequest);
+
+        const swapDetails = await swapHandle.fetchDetails();
+        const swapId = swapDetails.properties!.id;
+        await makerNegotiator.acceptOrder(order, swapId);
+        return swapHandle;
       }
     }
   }
@@ -102,9 +107,17 @@ export class MakerClient {
     return response.data;
   }
 
-  public async acceptOrder(order: Order) {
+  public async getExecutionParams(order: Order) {
+    const response = await axios.get(
+      `${this.makerUrl}orders/${order.tradingPair}/${order.id}/executionParams`
+    );
+    return response.data;
+  }
+
+  public async acceptOrder(order: Order, swapId: string) {
     const response = await axios.post(
-      `${this.makerUrl}orders/${order.tradingPair}/${order.id}/accept`
+      `${this.makerUrl}orders/${order.tradingPair}/${order.id}/accept`,
+      { swapId }
     );
     return response.data;
   }
