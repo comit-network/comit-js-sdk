@@ -2,7 +2,11 @@ import axios from "axios";
 import { SwapRequest } from "../cnd";
 import { ComitClient } from "../comitClient";
 import { Swap } from "../swap";
-import { ExecutionParams, validateExecutionParams } from "./execution_params";
+import {
+  defaultLedgerParams,
+  ExecutionParams,
+  validateExecutionParams
+} from "./execution_params";
 import { assetOrderToSwap, Order } from "./order";
 
 export class TakerNegotiator {
@@ -10,6 +14,10 @@ export class TakerNegotiator {
     order: Order,
     executionParams: ExecutionParams
   ): undefined | SwapRequest {
+    if (!executionParams.ledgers) {
+      executionParams.ledgers = defaultLedgerParams();
+    }
+
     const alphaAsset = assetOrderToSwap(order.ask);
     const alphaLedgerName = order.ask.ledger;
 
