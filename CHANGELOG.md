@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Make alpha and beta expiries optional in `SwapRequest`.
 - `ExecutionParams.ledgers` is now optional and defaulted to mainnet values. `chain_id` is used for Ethereum meaning that `comit-rs:^0.4.0` is needed.
+- Improve `TakerNegotiator` API.
 
 ## [0.6.0] - 2019-11-25
 

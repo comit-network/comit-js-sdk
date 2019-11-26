@@ -45,33 +45,48 @@ export class TakerNegotiator {
     }
     return undefined;
   }
+
   private readonly comitClient: ComitClient;
 
   constructor(comitClient: ComitClient) {
     this.comitClient = comitClient;
   }
 
-  public async negotiateAndSendRequest(
+  public async negotiateAndInitiateSwap(
     makerNegotiator: MakerClient,
     tradingPair: string,
     isOrderAcceptable: (order: Order) => boolean
   ): Promise<{ order: Order; swap?: Swap }> {
-    const order = await makerNegotiator.getOrderByTradingPair(tradingPair);
+    const order = await this.negotiate(makerNegotiator, tradingPair);
 
     if (order && isOrderAcceptable(order)) {
-      const executionParams = await makerNegotiator.acceptOrder(order);
-      if (executionParams && validateExecutionParams(executionParams)) {
-        const swapRequest = TakerNegotiator.newSwapRequest(
-          order,
-          executionParams
-        );
-        if (swapRequest) {
-          const swap = await this.comitClient.sendSwap(swapRequest);
-          return { order, swap };
-        }
-      }
+      const swap = await this.initiateSwap(makerNegotiator, order);
+      return { swap, order };
     }
     return { order };
+  }
+
+  public async initiateSwap(
+    makerNegotiator: MakerClient,
+    order: Order
+  ): Promise<Swap | undefined> {
+    const executionParams = await makerNegotiator.acceptOrder(order);
+    if (executionParams && validateExecutionParams(executionParams)) {
+      const swapRequest = TakerNegotiator.newSwapRequest(
+        order,
+        executionParams
+      );
+      if (swapRequest) {
+        return this.comitClient.sendSwap(swapRequest);
+      }
+    }
+  }
+
+  public async negotiate(
+    makerNegotiator: MakerClient,
+    tradingPair: string
+  ): Promise<Order> {
+    return makerNegotiator.getOrderByTradingPair(tradingPair);
   }
 }
 
