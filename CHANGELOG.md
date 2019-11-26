@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change `Order` to have all fields in camelCase.
 - Rename `Swap.getEntity()` & `SwapEntity` to `Swap.fetchDetails()` & `SwapDetails` for clarity.
 - Improve `TryParams` terminology, use of seconds.
+- Use nominal amounts (Bitcoin, Ether instead of Satoshi or Wei) in `Order`.
 
 ## [0.6.0] - 2019-11-25
 

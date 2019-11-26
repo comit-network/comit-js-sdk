@@ -14,12 +14,12 @@ const ethBtcOrder = {
   bid: {
     ledger: "bitcoin",
     asset: "bitcoin",
-    amount: "1000000000"
+    nominalAmount: "10"
   },
   ask: {
     ledger: "ethereum",
     asset: "ether",
-    amount: "5000000000000000000"
+    nominalAmount: "5"
   }
 };
 
@@ -30,12 +30,12 @@ const erc20BtcOrder = {
   bid: {
     ledger: "bitcoin",
     asset: "bitcoin",
-    amount: "1000000000"
+    nominalAmount: "10"
   },
   ask: {
     ledger: "ethereum",
     asset: "PAY",
-    amount: "5000000000000000000"
+    nominalAmount: "70"
   }
 };
 
@@ -81,7 +81,7 @@ describe("Payload module", () => {
     const swapAsset = {
       name: "erc20",
       token_contract: "0xB97048628DB6B661D4C2aA833e95Dbe1A905B280",
-      quantity: "5000000000000000000"
+      quantity: "70000000000000000000"
     };
     const swapLedger = {
       name: "ethereum",
@@ -133,7 +133,7 @@ describe("Payload module", () => {
         alpha_asset: {
           name: "erc20",
           token_contract: "0xB97048628DB6B661D4C2aA833e95Dbe1A905B280",
-          quantity: "5000000000000000000"
+          quantity: "70000000000000000000"
         },
         alpha_ledger: {
           name: "ethereum",
@@ -187,7 +187,7 @@ describe("Payload module", () => {
     const orderAsset: OrderAsset = {
       ledger: "bitcoin",
       asset: "bitcoin",
-      amount: "1000000000"
+      nominalAmount: "10"
     };
     const expectedSwapAsset: Asset = {
       name: "bitcoin",
@@ -201,7 +201,7 @@ describe("Payload module", () => {
     const orderAsset: OrderAsset = {
       ledger: "ethereum",
       asset: "ether",
-      amount: "42000000000000000000"
+      nominalAmount: "42"
     };
     const expectedSwapAsset: Asset = {
       name: "ether",
@@ -215,12 +215,12 @@ describe("Payload module", () => {
     const orderAsset: OrderAsset = {
       ledger: "ethereum",
       asset: "PAY",
-      amount: "42000000000000000000"
+      nominalAmount: "123"
     };
     const expectedSwapAsset: Asset = {
       name: "erc20",
       token_contract: "0xB97048628DB6B661D4C2aA833e95Dbe1A905B280",
-      quantity: "42000000000000000000"
+      quantity: "123000000000000000000"
     };
     const actualSwapAsset = assetOrderToSwap(orderAsset);
     expect(actualSwapAsset).toStrictEqual(expectedSwapAsset);
