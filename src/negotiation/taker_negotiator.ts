@@ -45,8 +45,13 @@ export class TakerNegotiator {
     }
     return undefined;
   }
+  private readonly comitClient: ComitClient;
+
+  constructor(comitClient: ComitClient) {
+    this.comitClient = comitClient;
+  }
+
   public async negotiateAndSendRequest(
-    comitClient: ComitClient,
     makerNegotiator: MakerClient,
     tradingPair: string,
     isOrderAcceptable: (order: Order) => boolean
@@ -61,7 +66,7 @@ export class TakerNegotiator {
           executionParams
         );
         if (swapRequest) {
-          const swap = await comitClient.sendSwap(swapRequest);
+          const swap = await this.comitClient.sendSwap(swapRequest);
           return { order, swap };
         }
       }
