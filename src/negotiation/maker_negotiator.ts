@@ -21,6 +21,12 @@ export class MakerNegotiator {
     this.tryParams = tryParams;
   }
 
+  public addOrder(order: Order) {
+    this.ordersByTradingPair[order.tradingPair] = order;
+    this.ordersById[order.id] = order;
+  }
+
+  // Below are methods related to the negotiation protocol
   public getOrderByTradingPair(tradingPair: string): Order | undefined {
     return this.ordersByTradingPair[tradingPair];
   }
@@ -43,11 +49,7 @@ export class MakerNegotiator {
     })();
     return this.executionParams;
   }
-
-  public addOrder(order: Order) {
-    this.ordersByTradingPair[order.tradingPair] = order;
-    this.ordersById[order.id] = order;
-  }
+  // End of methods related to the negotiation protocol
 
   private async tryAcceptSwap(
     order: Order,
