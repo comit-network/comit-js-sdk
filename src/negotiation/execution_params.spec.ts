@@ -37,11 +37,21 @@ describe("Taker Negotiator", () => {
     expect(validateExecutionParams(executionParams)).toBeTruthy();
   });
 
-  it("Invalidates mainnet execution parameters due to expiry", () => {
+  it("Invalidates mainnet execution parameters due to expiry length", () => {
     const executionParams: ExecutionParams = {
       ...defaultExecutionParams(),
       alpha_expiry: moment().unix() + 2 * 60 * 60,
       beta_expiry: moment().unix() + 1 * 60 * 60
+    };
+
+    expect(validateExecutionParams(executionParams)).toBeFalsy();
+  });
+
+  it("Invalidates mainnet execution parameters due to expiry order", () => {
+    const executionParams: ExecutionParams = {
+      ...defaultExecutionParams(),
+      alpha_expiry: moment().unix() + 48 * 60 * 60,
+      beta_expiry: moment().unix() + 72 * 60 * 60
     };
 
     expect(validateExecutionParams(executionParams)).toBeFalsy();
