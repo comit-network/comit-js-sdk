@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2019-11-27
+
 ### Changed
 - Make alpha and beta expiries optional in `SwapRequest`.
 - `ExecutionParams.ledgers` is now optional and defaulted to mainnet values. `chain_id` is used for Ethereum meaning that `comit-rs:^0.4.0` is needed.
@@ -74,7 +76,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.6.0...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.7.0...HEAD
+[0.7.0]: https://github.com/comit-network/comit-js-sdk/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/comit-network/comit-js-sdk/compare/0.5.6...0.6.0
 [0.5.6]: https://github.com/comit-network/comit-js-sdk/compare/0.4.1...0.5.6
 [0.4.1]: https://github.com/comit-network/comit-js-sdk/compare/0.4.0...0.4.1
