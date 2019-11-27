@@ -7,8 +7,8 @@ const defaultExecutionParams = () => {
       peer_id: "QmWsfYSJ1fzeCWG7N3y2RPQMrWNXtqWPWqKqqKbXQq2MMs",
       address_hint: "/ip4/a.b.c.d/tcp/9939"
     },
-    alpha_expiry: moment().unix() + 48 * 60 * 60,
-    beta_expiry: moment().unix() + 24 * 60 * 60,
+    alpha_expiry: moment().unix() + 24 * 60 * 60,
+    beta_expiry: moment().unix() + 12 * 60 * 60,
     ledgers: {
       bitcoin: { network: "mainnet" },
       ethereum: { chain_id: 1 }
