@@ -40,7 +40,9 @@ export function validateExecutionParams(
       // For mainnet, we expect 24 hours and 48 hours expiry.
       // Checking 23 hours/47 hours cause we're lazy and it's still good enough
       return (
-        relativeAlphaExpiry > 47 * 60 * 60 && relativeBetaExpiry > 23 * 60 * 60
+        relativeAlphaExpiry > 47 * 60 * 60 &&
+        relativeBetaExpiry > 23 * 60 * 60 &&
+        relativeAlphaExpiry > relativeBetaExpiry
       );
     }
     case NetworkType.AllTest: {
