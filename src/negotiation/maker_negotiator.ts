@@ -51,14 +51,17 @@ export class MakerNegotiator {
 
   private async tryAcceptSwap(
     order: Order,
-    { timeout, tryInterval }: TryParams
+    { maxTimeoutSecs, tryIntervalSecs }: TryParams
   ) {
-    return timeoutPromise(timeout, this.acceptSwap(order, tryInterval));
+    return timeoutPromise(
+      maxTimeoutSecs * 1000,
+      this.acceptSwap(order, tryIntervalSecs)
+    );
   }
 
-  private async acceptSwap(order: Order, tryInterval: number) {
+  private async acceptSwap(order: Order, tryIntervalSecs: number) {
     while (true) {
-      await sleep(tryInterval);
+      await sleep(tryIntervalSecs * 1000);
 
       const swap = await this.comitClient.retrieveSwapByOrder(order);
 

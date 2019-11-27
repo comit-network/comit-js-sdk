@@ -2,7 +2,11 @@ import axios from "axios";
 import { SwapRequest } from "../cnd";
 import { ComitClient } from "../comitClient";
 import { Swap } from "../swap";
-import { ExecutionParams, validateExecutionParams } from "./execution_params";
+import {
+  defaultLedgerParams,
+  ExecutionParams,
+  validateExecutionParams
+} from "./execution_params";
 import { assetOrderToSwap, Order } from "./order";
 
 export class TakerNegotiator {
@@ -10,6 +14,10 @@ export class TakerNegotiator {
     order: Order,
     executionParams: ExecutionParams
   ): undefined | SwapRequest {
+    if (!executionParams.ledgers) {
+      executionParams.ledgers = defaultLedgerParams();
+    }
+
     const alphaAsset = assetOrderToSwap(order.ask);
     const alphaLedgerName = order.ask.ledger;
 
@@ -37,28 +45,48 @@ export class TakerNegotiator {
     }
     return undefined;
   }
-  public async negotiateAndSendRequest(
-    comitClient: ComitClient,
+
+  private readonly comitClient: ComitClient;
+
+  constructor(comitClient: ComitClient) {
+    this.comitClient = comitClient;
+  }
+
+  public async negotiateAndInitiateSwap(
     makerNegotiator: MakerClient,
     tradingPair: string,
     isOrderAcceptable: (order: Order) => boolean
   ): Promise<{ order: Order; swap?: Swap }> {
-    const order = await makerNegotiator.getOrderByTradingPair(tradingPair);
+    const order = await this.negotiate(makerNegotiator, tradingPair);
 
     if (order && isOrderAcceptable(order)) {
-      const executionParams = await makerNegotiator.acceptOrder(order);
-      if (executionParams && validateExecutionParams(executionParams)) {
-        const swapRequest = TakerNegotiator.newSwapRequest(
-          order,
-          executionParams
-        );
-        if (swapRequest) {
-          const swap = await comitClient.sendSwap(swapRequest);
-          return { order, swap };
-        }
-      }
+      const swap = await this.initiateSwap(makerNegotiator, order);
+      return { swap, order };
     }
     return { order };
+  }
+
+  public async initiateSwap(
+    makerNegotiator: MakerClient,
+    order: Order
+  ): Promise<Swap | undefined> {
+    const executionParams = await makerNegotiator.acceptOrder(order);
+    if (executionParams && validateExecutionParams(executionParams)) {
+      const swapRequest = TakerNegotiator.newSwapRequest(
+        order,
+        executionParams
+      );
+      if (swapRequest) {
+        return this.comitClient.sendSwap(swapRequest);
+      }
+    }
+  }
+
+  public async negotiate(
+    makerNegotiator: MakerClient,
+    tradingPair: string
+  ): Promise<Order> {
+    return makerNegotiator.getOrderByTradingPair(tradingPair);
   }
 }
 

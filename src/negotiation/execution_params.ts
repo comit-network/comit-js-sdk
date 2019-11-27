@@ -10,7 +10,11 @@ export interface ExecutionParams {
   };
   alpha_expiry: number;
   beta_expiry: number;
-  ledgers: LedgerParams;
+  ledgers?: LedgerParams;
+}
+
+export function defaultLedgerParams(): LedgerParams {
+  return { bitcoin: { network: "mainnet" }, ethereum: { chain_id: 1 } };
 }
 
 interface LedgerParams {
@@ -26,12 +30,19 @@ export function validateExecutionParams(
   const now = moment().unix();
   const relativeAlphaExpiry = executionParams.alpha_expiry - now;
   const relativeBetaExpiry = executionParams.beta_expiry - now;
+
+  if (!executionParams.ledgers) {
+    executionParams.ledgers = defaultLedgerParams();
+  }
+
   switch (getNetworkType(executionParams.ledgers)) {
     case NetworkType.AllMainnet: {
-      // For mainnet, we expect 24 hours and 48 hours expiry.
-      // Checking 23 hours/47 hours cause we're lazy and it's still good enough
+      // For mainnet, we expect 12 hours and 24 hours expiry.
+      // Checking 11 hours/23 hours cause we're lazy and it's still good enough
       return (
-        relativeAlphaExpiry > 47 * 60 * 60 && relativeBetaExpiry > 23 * 60 * 60
+        relativeAlphaExpiry > 23 * 60 * 60 &&
+        relativeBetaExpiry > 11 * 60 * 60 &&
+        relativeAlphaExpiry > relativeBetaExpiry
       );
     }
     case NetworkType.AllTest: {

@@ -1,10 +1,11 @@
+import { BigNumber } from "ethers/utils";
 import { Asset, Ledger, SwapProperties } from "../cnd";
-import { getToken } from "../tokens/tokens";
+import { getToken, Token } from "../tokens/tokens";
 
 export interface Order {
   tradingPair: string;
   id: string;
-  valid_until: number;
+  validUntil: number;
   bid: OrderAsset;
   ask: OrderAsset;
 }
@@ -12,7 +13,7 @@ export interface Order {
 export interface OrderAsset {
   ledger: string;
   asset: string;
-  amount: string;
+  nominalAmount: string;
 }
 
 export function orderSwapMatchesForMaker(
@@ -50,7 +51,11 @@ export function orderSwapAssetMatchesForMaker(
   if (isNative(orderAsset)) {
     return (
       swapAsset.name === orderAsset.asset &&
-      swapAsset.quantity === orderAsset.amount &&
+      areAmountsEqual(
+        swapAsset.name,
+        swapAsset.quantity,
+        orderAsset.nominalAmount
+      ) &&
       swapLedger.name === orderAsset.ledger
     );
   }
@@ -58,10 +63,14 @@ export function orderSwapAssetMatchesForMaker(
   if (swapLedger.name === "ethereum") {
     const token = getToken(orderAsset.asset);
     if (token) {
-      // TODO: It may make more sense to use eponymous unit in order instead of smallest unit (e.g. Use Ether instead of Wei
       return (
         swapAsset.name.toLowerCase() === token.type.toLowerCase() &&
-        swapAsset.quantity === orderAsset.amount
+        areAmountsEqual(
+          swapAsset.name,
+          swapAsset.quantity,
+          orderAsset.nominalAmount,
+          token
+        )
       );
     }
   }
@@ -71,20 +80,74 @@ export function orderSwapAssetMatchesForMaker(
 
 export function assetOrderToSwap(orderAsset: OrderAsset): Asset | undefined {
   if (isNative(orderAsset)) {
+    const name = orderAsset.asset;
+    const quantity = fromNominal(name, orderAsset.nominalAmount);
+    if (!quantity) {
+      return undefined;
+    }
     return {
-      name: orderAsset.asset,
-      quantity: orderAsset.amount
+      name,
+      quantity: quantity.toString()
     };
   }
 
   const token = getToken(orderAsset.asset);
   if (token) {
+    const name = token.type.toLowerCase();
+    const quantity = fromNominal(name, orderAsset.nominalAmount, token);
+    if (!quantity) {
+      return undefined;
+    }
+
     return {
-      name: token.type.toLowerCase(),
-      quantity: orderAsset.amount,
+      name,
+      quantity: quantity.toString(),
       token_contract: token.address
     };
   }
 
   return undefined;
+}
+
+function areAmountsEqual(
+  asset: string,
+  unitAmount: string,
+  nominalAmount: string,
+  token?: Token
+): boolean {
+  const amount = fromNominal(asset, nominalAmount, token);
+
+  if (!amount) {
+    return false;
+  }
+
+  return amount.eq(new BigNumber(unitAmount));
+}
+
+function fromNominal(
+  asset: string,
+  nominalAmount: string,
+  token?: Token
+): BigNumber | undefined {
+  const nominal = new BigNumber(nominalAmount);
+
+  let decimals = 0;
+  switch (asset) {
+    case "bitcoin": {
+      decimals = 8;
+      break;
+    }
+    case "ether": {
+      decimals = 18;
+      break;
+    }
+    default: {
+      if (token) {
+        decimals = token.decimals;
+      } else {
+        return undefined;
+      }
+    }
+  }
+  return nominal.mul(new BigNumber(10).pow(decimals));
 }

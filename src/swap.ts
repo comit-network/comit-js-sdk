@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers/utils";
 import { BitcoinWallet } from "./bitcoinWallet";
-import { Cnd, LedgerAction, SwapEntity } from "./cnd";
+import { Cnd, LedgerAction, SwapDetails } from "./cnd";
 import { EthereumWallet } from "./ethereumWallet";
 import { Field } from "./siren";
 import { sleep, timeoutPromise, TryParams } from "./timeout_promise";
@@ -41,24 +41,26 @@ export class Swap {
     return await this.doLedgerAction(response.data);
   }
 
-  // TODO: Poor naming
-  public async getEntity(): Promise<SwapEntity> {
-    const response = await this.cnd.fetch<SwapEntity>(this.self);
+  public async fetchDetails(): Promise<SwapDetails> {
+    const response = await this.cnd.fetch<SwapDetails>(this.self);
     return response.data;
   }
 
   private tryExecuteAction(
     actionName: string,
-    { timeout, tryInterval }: TryParams
+    { maxTimeoutSecs, tryIntervalSecs }: TryParams
   ) {
-    return timeoutPromise(timeout, this.executeAction(actionName, tryInterval));
+    return timeoutPromise(
+      maxTimeoutSecs * 1000,
+      this.executeAction(actionName, tryIntervalSecs)
+    );
   }
 
-  private async executeAction(actionName: string, repeatInterval: number) {
+  private async executeAction(actionName: string, tryIntervalSecs: number) {
     while (true) {
-      await sleep(repeatInterval);
+      await sleep(tryIntervalSecs * 1000);
 
-      const swap = await this.getEntity();
+      const swap = await this.fetchDetails();
       const actions = swap.actions;
 
       if (!actions || actions.length === 0) {
