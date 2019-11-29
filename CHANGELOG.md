@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.1] - 2019-11-29
+
 ### Changed
 - Improve negotiation protocol to allow maker to identify a taken order by swap id.
 
@@ -82,7 +84,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.7.0...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.7.1...HEAD
+[0.7.1]: https://github.com/comit-network/comit-js-sdk/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/comit-network/comit-js-sdk/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/comit-network/comit-js-sdk/compare/0.5.6...0.6.0
 [0.5.6]: https://github.com/comit-network/comit-js-sdk/compare/0.4.1...0.5.6
