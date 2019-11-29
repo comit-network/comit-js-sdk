@@ -54,15 +54,20 @@ export class ComitClient {
 
   public async getOngoingSwaps(): Promise<Swap[]> {
     const swaps = await this.cnd.getSwaps();
-
     return swaps
-      .filter((swap: EmbeddedRepresentationSubEntity) => {
-        return (
-          swap.actions &&
-          !!swap.actions.find((action: Action) => {
-            return action.name === "fund" || action.name === "redeem";
-          })
-        );
+      .filter((swap: SwapSubEntity) => {
+        if (swap.properties && swap.properties.status === "IN_PROGRESS") {
+          if (swap.actions && swap.actions.length !== 0) {
+            return !!swap.actions.find((action: Action) => {
+              return action.name === "fund" || action.name === "redeem";
+            });
+          } else if (swap.properties.role === "Bob") {
+            // If there is no action but it is in progress then it is
+            // Accepted and pending for Alice to fund
+            return true;
+          }
+        }
+        return false;
       })
       .map(swap => this.newSwap(swap));
   }

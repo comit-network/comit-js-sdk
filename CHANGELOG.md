@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Improve negotiation protocol to allow maker to identify a taken order by swap id.
 
+### Fixed
+- Auto-accept introduced with negotiation protocol.
+
 ## [0.7.0] - 2019-11-27
 
 ### Changed
