@@ -2,7 +2,7 @@ import express from "express";
 import { ComitClient } from "../comitClient";
 import { sleep, timeoutPromise, TryParams } from "../timeout_promise";
 import { ExecutionParams } from "./execution_params";
-import { Order } from "./order";
+import { Order, orderSwapMatchesForMaker } from "./order";
 
 export class MakerNegotiator {
   private ordersByTradingPair: { [tradingPair: string]: Order } = {};
@@ -21,6 +21,12 @@ export class MakerNegotiator {
     this.tryParams = tryParams;
   }
 
+  public addOrder(order: Order) {
+    this.ordersByTradingPair[order.tradingPair] = order;
+    this.ordersById[order.id] = order;
+  }
+
+  // Below are methods related to the negotiation protocol
   public getOrderByTradingPair(tradingPair: string): Order | undefined {
     return this.ordersByTradingPair[tradingPair];
   }
@@ -29,47 +35,61 @@ export class MakerNegotiator {
     return this.ordersById[orderId];
   }
 
-  public acceptOrder(
-    // @ts-ignore
-    order: Order
-  ): ExecutionParams | undefined {
+  public getExecutionParams(): ExecutionParams {
+    return this.executionParams;
+  }
+
+  public acceptOrder(swapId: string, order: Order) {
     // Fire the auto-accept of the order in the background
     (async () => {
       try {
-        await this.tryAcceptSwap(order, this.tryParams);
+        await this.tryAcceptSwap(swapId, order, this.tryParams);
       } catch (error) {
         console.log("Could not accept the swap");
       }
     })();
-    return this.executionParams;
   }
+  // End of methods related to the negotiation protocol
 
-  public addOrder(order: Order) {
-    this.ordersByTradingPair[order.tradingPair] = order;
-    this.ordersById[order.id] = order;
-  }
-
-  private async tryAcceptSwap(
+  private tryAcceptSwap(
+    swapId: string,
     order: Order,
     { maxTimeoutSecs, tryIntervalSecs }: TryParams
   ) {
     return timeoutPromise(
       maxTimeoutSecs * 1000,
-      this.acceptSwap(order, tryIntervalSecs)
+      this.acceptSwap(swapId, order, tryIntervalSecs)
     );
   }
 
-  private async acceptSwap(order: Order, tryIntervalSecs: number) {
+  private async acceptSwap(
+    swapId: string,
+    order: Order,
+    tryIntervalSecs: number
+  ) {
     while (true) {
       await sleep(tryIntervalSecs * 1000);
 
-      const swap = await this.comitClient.retrieveSwapByOrder(order);
+      const swap = await this.comitClient.retrieveSwapById(swapId);
 
       if (!swap) {
         continue;
       }
 
-      return swap.accept(this.tryParams);
+      const swapDetails = await swap.fetchDetails();
+
+      if (
+        swapDetails.properties &&
+        orderSwapMatchesForMaker(order, swapDetails.properties)
+      ) {
+        return swap.accept(this.tryParams);
+      } else {
+        console.log(
+          "Swap request was malformed, giving up on trying to accept"
+        );
+        // The swap request is not as expected, no need to try again
+        break;
+      }
     }
   }
 }
@@ -84,6 +104,8 @@ export class MakerHttpApi {
   public listen(port: number) {
     const app = express();
 
+    app.use(express.json());
+
     app.get("/", (_, res) =>
       res.send("MakerNegotiator's Negotiation Service is up and running!")
     );
@@ -97,12 +119,20 @@ export class MakerHttpApi {
       }
     });
 
+    app.get("/orders/:tradingPair/:orderId/executionParams", async (_, res) => {
+      res.send(this.maker.getExecutionParams());
+    });
+
     app.post("/orders/:tradingPair/:orderId/accept", async (req, res) => {
       const order = this.maker.getOrderById(req.params.orderId);
+      const body = req.body;
+
       if (!order || req.params.tradingPair !== order.tradingPair) {
         res.status(404).send("Order not found");
+      } else if (!body || !body.swapId) {
+        res.status(400).send("swapId missing from payload");
       } else {
-        res.send(this.maker.acceptOrder(order));
+        res.send(this.maker.acceptOrder(body.swapId, order));
       }
     });
 

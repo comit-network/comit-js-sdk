@@ -24,7 +24,7 @@ interface LedgerParams {
   };
 }
 
-export function validateExecutionParams(
+export function isValidExecutionParams(
   executionParams: ExecutionParams
 ): boolean {
   const now = moment().unix();
