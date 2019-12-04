@@ -4,7 +4,7 @@ import { ComitClient } from "./comitClient";
 import { EthereumWallet } from "./ethereumWallet";
 
 export interface Actor {
-  name: string;
+  name?: string;
   comitClient: ComitClient;
   peerId: string;
   addressHint: string;
@@ -16,7 +16,7 @@ export async function createActor(
   bitcoinWallet: BitcoinWallet,
   ethereumWallet: EthereumWallet,
   cndUrl: string,
-  name: string
+  name?: string
 ): Promise<Actor> {
   const cnd = new Cnd(cndUrl!);
   const peerId = await cnd.getPeerId();
