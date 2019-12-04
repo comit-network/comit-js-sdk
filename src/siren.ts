@@ -81,7 +81,8 @@ export type RelValue =
       | "via"
       | "webmention"
       | "working-copy"
-      | "working-copy-of");
+      | "working-copy-of"
+    );
 /**
  * Defines media type of the linked resource, per Web Linking (RFC5988). For the syntax, see RFC2045 (section 5.1), RFC4288 (section 4.2), RFC6838 (section 4.2)
  */
