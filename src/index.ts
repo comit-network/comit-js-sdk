@@ -12,6 +12,8 @@ export {
   SwapRequest
 } from "./cnd";
 
+export { Actor, createActor } from "./actor";
+
 export { BitcoinWallet } from "./bitcoinWallet";
 export * from "./siren";
 
