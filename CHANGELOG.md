@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- New function `createActor` to setup an actor's `comitClient`, retrieve its `ID` and bundle it with btc/eth wallets
+- New function `createActor` to setup an actor's `comitClient`, retrieve its `ID` and bundle it with btc/eth wallets.
 
 ## [0.7.1] - 2019-11-29
 
