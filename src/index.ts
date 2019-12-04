@@ -23,3 +23,22 @@ export { BigNumber } from "ethers/utils";
 export { ComitClient } from "./comitClient";
 
 export { Swap } from "./swap";
+
+export {
+  Order,
+  OrderAsset,
+  orderSwapMatchesForMaker,
+  isNative,
+  orderSwapAssetMatchesForMaker,
+  assetOrderToSwap
+} from "./negotiation/order";
+export {
+  ExecutionParams,
+  defaultLedgerParams,
+  isValidExecutionParams,
+  NetworkType
+} from "./negotiation/execution_params";
+export { MakerNegotiator, MakerHttpApi } from "./negotiation/maker_negotiator";
+export { TakerNegotiator, MakerClient } from "./negotiation/taker_negotiator";
+
+export { TryParams } from "./timeout_promise";
