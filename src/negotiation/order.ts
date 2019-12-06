@@ -124,30 +124,31 @@ function areAmountsEqual(
   return amount.eq(new BigNumber(unitAmount));
 }
 
-function fromNominal(
+export function fromNominal(
   asset: string,
   nominalAmount: string,
   token?: Token
 ): BigNumber | undefined {
-  const nominal = new BigNumber(nominalAmount);
-
-  let decimals = 0;
-  switch (asset) {
-    case "bitcoin": {
-      decimals = 8;
-      break;
-    }
-    case "ether": {
-      decimals = 18;
-      break;
-    }
-    default: {
-      if (token) {
-        decimals = token.decimals;
-      } else {
-        return undefined;
+  if (asset === "bitcoin") {
+    const nominal = parseFloat(nominalAmount);
+    const actual = nominal * 100000000;
+    return new BigNumber(actual);
+  } else {
+    const nominal = new BigNumber(nominalAmount);
+    let decimals = 0;
+    switch (asset) {
+      case "ether": {
+        decimals = 18;
+        break;
+      }
+      default: {
+        if (token) {
+          decimals = token.decimals;
+        } else {
+          return undefined;
+        }
       }
     }
+    return nominal.mul(new BigNumber(10).pow(decimals));
   }
-  return nominal.mul(new BigNumber(10).pow(decimals));
 }
