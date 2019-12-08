@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Chang in the negotiation protocol. Simplified interfaces and renamed 
+- Refactor negotiation protocol: simplified and renamed interfaces. Make getOrder/takeOrder more explicit for the client
 
 ## [0.7.2] - 2019-12-05
 

@@ -47,37 +47,40 @@ export class TakerNegotiator {
   }
 
   private readonly comitClient: ComitClient;
+  private readonly makerNegotiator: MakerClient;
 
-  constructor(comitClient: ComitClient) {
+  constructor(comitClient: ComitClient, makerNegotiator: MakerClient) {
     this.comitClient = comitClient;
+    this.makerNegotiator = makerNegotiator;
   }
 
-  public async getOrderByTradingPair(
-    makerNegotiator: MakerClient,
-    tradingPair: string
-  ): Promise<Order> {
-    return makerNegotiator.getOrderByTradingPair(tradingPair);
+  public async getOrderByTradingPair(tradingPair: string): Promise<Order> {
+    return this.makerNegotiator.getOrderByTradingPair(tradingPair);
   }
 
-  public async takeOrder(
-    makerNegotiator: MakerClient,
-    order: Order
-  ): Promise<Swap | undefined> {
-    const executionParams = await makerNegotiator.getExecutionParams(order);
-    if (executionParams && isValidExecutionParams(executionParams)) {
-      const swapRequest = TakerNegotiator.newSwapRequest(
-        order,
-        executionParams
-      );
-      if (swapRequest) {
-        const swapHandle = await this.comitClient.sendSwap(swapRequest);
-
-        const swapDetails = await swapHandle.fetchDetails();
-        const swapId = swapDetails.properties!.id;
-        await makerNegotiator.takeOrder(order, swapId);
-        return swapHandle;
-      }
+  public async takeOrder(order: Order): Promise<Swap | undefined> {
+    const executionParams = await this.makerNegotiator.getExecutionParams(
+      order
+    );
+    if (!executionParams) {
+      return;
     }
+
+    if (!isValidExecutionParams(executionParams)) {
+      return;
+    }
+
+    const swapRequest = TakerNegotiator.newSwapRequest(order, executionParams);
+    if (!swapRequest) {
+      return;
+    }
+
+    const swapHandle = await this.comitClient.sendSwap(swapRequest);
+
+    const swapDetails = await swapHandle.fetchDetails();
+    const swapId = swapDetails.properties!.id;
+    await this.makerNegotiator.takeOrder(order, swapId);
+    return swapHandle;
   }
 }
 
