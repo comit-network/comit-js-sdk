@@ -1,5 +1,6 @@
 import { BigNumber } from "ethers/utils";
 import { Asset } from "../cnd";
+import { getToken } from "../tokens/tokens";
 import {
   assetOrderToSwap,
   fromNominal,
@@ -228,15 +229,41 @@ describe("Payload module", () => {
     expect(actualSwapAsset).toStrictEqual(expectedSwapAsset);
   });
 
-  it("should be able to convert fractions of Bitcoin", () => {
+  it("should be able to convert float Bitcoin", () => {
     const converted = fromNominal("bitcoin", "0.1");
     const expected = new BigNumber("10000000");
     expect(converted).toStrictEqual(expected);
   });
 
-  it("should be able to convert Bitcoin", () => {
+  it("should be able to convert integer Bitcoin", () => {
     const converted = fromNominal("bitcoin", "100");
     const expected = new BigNumber("10000000000");
+    expect(converted).toStrictEqual(expected);
+  });
+
+  it("should be able to convert float Ether", () => {
+    const converted = fromNominal("ether", "0.1");
+    const expected = new BigNumber("100000000000000000");
+    expect(converted).toStrictEqual(expected);
+  });
+
+  it("should be able to convert integer Ether", () => {
+    const converted = fromNominal("ether", "100");
+    const expected = new BigNumber("100000000000000000000");
+    expect(converted).toStrictEqual(expected);
+  });
+
+  it("should be able to convert float ERC20 Token", () => {
+    const token = getToken("PAY");
+    const converted = fromNominal("PAY", "0.1", token);
+    const expected = new BigNumber("100000000000000000");
+    expect(converted).toStrictEqual(expected);
+  });
+
+  it("should be able to convert ERC20 Token", () => {
+    const token = getToken("PAY");
+    const converted = fromNominal("PAY", "100", token);
+    const expected = new BigNumber("100000000000000000000");
     expect(converted).toStrictEqual(expected);
   });
 });
