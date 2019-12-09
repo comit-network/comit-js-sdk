@@ -64,7 +64,7 @@ export class ComitClient {
   public async getDoneSwaps(): Promise<Swap[]> {
     const swaps = await this.cnd.getSwaps();
     return swaps
-      .filter((swap: EmbeddedRepresentationSubEntity) => {
+      .filter((swap: SwapSubEntity) => {
         return (
           swap.properties &&
           (swap.properties.status === "SWAPPED" ||
