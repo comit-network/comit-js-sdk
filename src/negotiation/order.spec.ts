@@ -1,4 +1,4 @@
-import { BigNumber } from "ethers/utils";
+import { BigNumber } from "bignumber.js";
 import { Asset } from "../cnd";
 import { getToken } from "../tokens/tokens";
 import {
