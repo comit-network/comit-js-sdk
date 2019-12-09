@@ -56,18 +56,7 @@ export class ComitClient {
     const swaps = await this.cnd.getSwaps();
     return swaps
       .filter((swap: SwapSubEntity) => {
-        if (swap.properties && swap.properties.status === "IN_PROGRESS") {
-          if (swap.actions && swap.actions.length !== 0) {
-            return !!swap.actions.find((action: Action) => {
-              return action.name === "fund" || action.name === "redeem";
-            });
-          } else if (swap.properties.role === "Bob") {
-            // If there is no action but it is in progress then it is
-            // Accepted and pending for Alice to fund
-            return true;
-          }
-        }
-        return false;
+        return isOngoing(swap);
       })
       .map(swap => this.newSwap(swap));
   }
@@ -117,4 +106,23 @@ export class ComitClient {
       swap.links!.find(link => link.rel.includes("self"))!.href
     );
   }
+}
+
+// FIXME: This would be better as SwapSubEntity.prototype.isOngoing but it does not seem feasible in typescript
+export function isOngoing(swap: SwapSubEntity): boolean {
+  if (!swap.properties || swap.properties.status !== "IN_PROGRESS") {
+    return false;
+  }
+
+  if (swap.actions && swap.actions.length !== 0) {
+    return !!swap.actions.find((action: Action) => {
+      return action.name === "fund" || action.name === "redeem";
+    });
+  } else if (swap.properties.role === "Bob") {
+    // If there is no action but it is in progress then it is
+    // Accepted and pending for Alice to fund
+    return true;
+  }
+
+  return false;
 }
