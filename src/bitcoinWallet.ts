@@ -1,12 +1,31 @@
 import { Amount, Network, Pool, SPVNode, TX, WalletDB } from "bcoin";
 import Logger from "blgr";
 
-export class BitcoinWallet {
+export interface BitcoinWallet {
+  getAddress(): Promise<string>;
+
+  getBalance(): Promise<any>;
+
+  sendToAddress(
+    address: string,
+    satoshis: number,
+    network: string
+  ): Promise<string>;
+
+  broadcastTransaction(
+    transactionHex: string,
+    network: string
+  ): Promise<string>;
+
+  getFee(): string;
+}
+
+export class InMemoryBitcoinWallet implements BitcoinWallet {
   public static async newInstance(
     network: string,
-    peerUri: string,
-    hdKey: string
-  ) {
+    hdKey: string,
+    peerUri?: string
+  ): Promise<BitcoinWallet> {
     const parsedNetwork = Network.get(network);
 
     const logger = new Logger({
@@ -22,7 +41,7 @@ export class BitcoinWallet {
       logConsole: true,
       logger,
       db: "leveldb",
-      memory: false,
+      memory: true,
       persistent: true,
       workers: true,
       listen: true,
@@ -33,17 +52,15 @@ export class BitcoinWallet {
     // We do not need the RPC interface
     node.rpc = null;
 
-    const pool = new Pool({
+    node.pool = new Pool({
       chain: node.chain,
       spv: true,
       maxPeers: 8
     });
-    node.pool = pool;
 
     const walletdb = new WalletDB({
-      memory: false,
+      memory: true,
       prefix: network,
-      location: ".bcoin/",
       spv: true,
       witness: true,
       network,
@@ -86,15 +103,17 @@ export class BitcoinWallet {
       }
     });
 
-    const netAddr = await node.pool.hosts.addNode(peerUri);
-    const peer = node.pool.createOutbound(netAddr);
-    node.pool.peers.add(peer);
+    if (peerUri) {
+      const netAddr = await node.pool.hosts.addNode(peerUri);
+      const peer = node.pool.createOutbound(netAddr);
+      node.pool.peers.add(peer);
+    }
 
     node.startSync();
     await walletdb.syncNode();
     await wallet.open();
 
-    return new BitcoinWallet(parsedNetwork, walletdb, node, wallet);
+    return new InMemoryBitcoinWallet(parsedNetwork, walletdb, node, wallet);
   }
 
   private constructor(
