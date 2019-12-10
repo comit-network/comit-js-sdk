@@ -1,4 +1,4 @@
-import { Amount, Chain, Network, Pool, TX, WalletDB } from "bcoin";
+import { Amount, Network, Pool, SPVNode, TX, WalletDB } from "bcoin";
 import Logger from "blgr";
 
 export class BitcoinWallet {
@@ -10,50 +10,74 @@ export class BitcoinWallet {
     const parsedNetwork = Network.get(network);
 
     const logger = new Logger({
-      level: "warning"
+      level: "debug"
     });
-    const walletdb = new WalletDB({
-      memory: true,
-      witness: true,
+
+    const node = new SPVNode({
+      network,
+      file: true,
+      argv: true,
+      env: true,
+      logFile: true,
+      logConsole: true,
       logger,
-      network: parsedNetwork
+      db: "leveldb",
+      memory: false,
+      persistent: true,
+      workers: true,
+      listen: true,
+      loader: require,
+      config: { wallet: { witness: true } }
     });
-    const chain = new Chain({
-      spv: true,
-      logger,
-      network: parsedNetwork
-    });
+
+    // We do not need the RPC interface
+    node.rpc = null;
+
     const pool = new Pool({
-      chain,
+      chain: node.chain,
+      spv: true,
+      maxPeers: 8
+    });
+    node.pool = pool;
+
+    const walletdb = new WalletDB({
+      memory: false,
+      prefix: network,
+      location: ".bcoin/",
+      spv: true,
+      witness: true,
+      network,
       logger
     });
 
-    await logger.open();
-    await pool.open();
+    // Validate the prefix directory (probably ~/.bcoin)
+    await node.ensure();
+    await node.open();
     await walletdb.open();
-    await chain.open();
-    await pool.connect();
+    await node.connect();
 
-    const wallet = await walletdb.create({
-      logger,
-      network: parsedNetwork,
-      master: hdKey
+    const wallet = await walletdb.ensure({
+      debug_logger: logger,
+      network,
+      master: hdKey,
+      witness: true,
+      id: "primary"
     });
 
     const account = await wallet.getAccount(0);
 
     for (let i = 0; i < 100; i++) {
-      pool.watchAddress(await account.deriveReceive(i).getAddress());
-      pool.watchAddress(await account.deriveChange(i).getAddress());
+      node.pool.watchAddress(await account.deriveReceive(i).getAddress());
+      node.pool.watchAddress(await account.deriveChange(i).getAddress());
     }
 
-    pool.startSync();
+    node.pool.startSync();
 
-    pool.on("tx", (tx: any) => {
+    node.pool.on("tx", (tx: any) => {
       walletdb.addTX(tx);
     });
 
-    pool.on("block", (block: any) => {
+    node.pool.on("block", (block: any) => {
       walletdb.addBlock(block);
       if (block.txs.length > 0) {
         block.txs.forEach((tx: any) => {
@@ -62,11 +86,15 @@ export class BitcoinWallet {
       }
     });
 
-    const netAddr = await pool.hosts.addNode(peerUri);
-    const peer = pool.createOutbound(netAddr);
-    pool.peers.add(peer);
+    const netAddr = await node.pool.hosts.addNode(peerUri);
+    const peer = node.pool.createOutbound(netAddr);
+    node.pool.peers.add(peer);
 
-    return new BitcoinWallet(parsedNetwork, walletdb, pool, chain, wallet);
+    node.startSync();
+    await walletdb.syncNode();
+    await wallet.open();
+
+    return new BitcoinWallet(parsedNetwork, walletdb, node, wallet);
   }
 
   private constructor(
@@ -74,10 +102,8 @@ export class BitcoinWallet {
 
     // @ts-ignore
     private readonly walletdb: any,
-    private readonly pool: any,
+    private readonly node: any,
 
-    // @ts-ignore
-    private readonly chain: any,
     private readonly wallet: any
   ) {}
 
@@ -109,7 +135,7 @@ export class BitcoinWallet {
         }
       ]
     });
-    await this.pool.broadcast(transaction);
+    await this.node.pool.broadcast(transaction);
 
     return transaction.txid();
   }
@@ -122,7 +148,7 @@ export class BitcoinWallet {
 
     const transaction = TX.fromRaw(transactionHex, "hex");
 
-    await this.pool.broadcast(transaction);
+    await this.node.pool.broadcast(transaction);
 
     return transaction.txid();
   }
