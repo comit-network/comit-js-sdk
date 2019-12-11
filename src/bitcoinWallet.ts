@@ -24,12 +24,13 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
   public static async newInstance(
     network: string,
     hdKey: string,
-    peerUri?: string
+    httpPort: number = 18332,
+    peerUri?: string,
   ): Promise<BitcoinWallet> {
     const parsedNetwork = Network.get(network);
 
     const logger = new Logger({
-      level: "debug"
+      level: "error"
     });
 
     const node = new SPVNode({
@@ -46,7 +47,7 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
       workers: true,
       listen: true,
       loader: require,
-      config: { wallet: { witness: true } }
+      httpPort
     });
 
     // We do not need the RPC interface

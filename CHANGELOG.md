@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Breaking change** of the Bitcoin wallet. Made the provided wallet to an in-memory wallet only and extracted an interface so that developers can implement their own wallet.
+
 ## [0.7.2] - 2019-12-05
 
 ### Added
