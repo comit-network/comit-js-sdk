@@ -1,6 +1,6 @@
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/comit-network/community)
 
-# Comit Javascript SDK
+# COMIT Javascript SDK
 
 A software development kit for developing Javascript applications on top of the COMIT protocol reference implementation [comit-rs](https://github.com/comit-network/comit-rs).
 

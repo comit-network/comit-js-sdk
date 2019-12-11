@@ -1,7 +1,26 @@
 import { Amount, Chain, Network, Pool, TX, WalletDB } from "bcoin";
 import Logger from "blgr";
 
-export class BitcoinWallet {
+export interface BitcoinWallet {
+  getAddress(): Promise<string>;
+
+  getBalance(): Promise<number>;
+
+  sendToAddress(
+    address: string,
+    satoshis: number,
+    network: string
+  ): Promise<string>;
+
+  broadcastTransaction(
+    transactionHex: string,
+    network: string
+  ): Promise<string>;
+
+  getFee(): string;
+}
+
+export class InMemoryBitcoinWallet implements BitcoinWallet {
   public static async newInstance(
     network: string,
     peerUri: string,
@@ -66,7 +85,13 @@ export class BitcoinWallet {
     const peer = pool.createOutbound(netAddr);
     pool.peers.add(peer);
 
-    return new BitcoinWallet(parsedNetwork, walletdb, pool, chain, wallet);
+    return new InMemoryBitcoinWallet(
+      parsedNetwork,
+      walletdb,
+      pool,
+      chain,
+      wallet
+    );
   }
 
   private constructor(
