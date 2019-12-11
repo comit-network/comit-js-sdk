@@ -4,7 +4,7 @@ import Logger from "blgr";
 export interface BitcoinWallet {
   getAddress(): Promise<string>;
 
-  getBalance(): Promise<any>;
+  getBalance(): Promise<number>;
 
   sendToAddress(
     address: string,
