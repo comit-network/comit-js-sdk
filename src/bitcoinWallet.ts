@@ -1,4 +1,4 @@
-import { Amount, Network, Pool, SPVNode, TX, WalletDB } from "bcoin";
+import { Amount, Network, Pool, Chain, TX, WalletDB } from "bcoin";
 import Logger from "blgr";
 
 export interface BitcoinWallet {
@@ -22,80 +22,57 @@ export interface BitcoinWallet {
 
 export class InMemoryBitcoinWallet implements BitcoinWallet {
   public static async newInstance(
-    network: string,
-    hdKey: string,
-    httpPort: number = 18332,
-    peerUri?: string,
-  ): Promise<BitcoinWallet> {
+      network: string,
+      hdKey: string,
+      peerUri: string,
+  ) {
     const parsedNetwork = Network.get(network);
 
     const logger = new Logger({
-      level: "error"
+      level: "warning"
     });
-
-    const node = new SPVNode({
-      network,
-      file: true,
-      argv: true,
-      env: true,
-      logFile: true,
-      logConsole: true,
-      logger,
-      db: "leveldb",
-      memory: true,
-      persistent: true,
-      workers: true,
-      listen: true,
-      loader: require,
-      httpPort
-    });
-
-    // We do not need the RPC interface
-    node.rpc = null;
-
-    node.pool = new Pool({
-      chain: node.chain,
-      spv: true,
-      maxPeers: 8
-    });
-
     const walletdb = new WalletDB({
       memory: true,
-      prefix: network,
-      spv: true,
       witness: true,
-      network,
+      logger,
+      network: parsedNetwork
+    });
+    const chain = new Chain({
+      spv: true,
+      logger,
+      network: parsedNetwork
+    });
+    const pool = new Pool({
+      chain,
       logger
     });
 
-    // Validate the prefix directory (probably ~/.bcoin)
-    await node.ensure();
-    await node.open();
+    await logger.open();
+    await pool.open();
     await walletdb.open();
-    await node.connect();
+    await chain.open();
+    await pool.connect();
 
-    const wallet = await walletdb.ensure({
-      debug_logger: logger,
-      network,
-      master: hdKey,
-      witness: true,
-      id: "primary"
+    const wallet = await walletdb.create({
+      logger,
+      network: parsedNetwork,
+      master: hdKey
     });
 
     const account = await wallet.getAccount(0);
 
     for (let i = 0; i < 100; i++) {
-      node.pool.watchAddress(await account.deriveReceive(i).getAddress());
-      node.pool.watchAddress(await account.deriveChange(i).getAddress());
+      pool.watchAddress(await account.deriveReceive(i).getAddress());
+      pool.watchAddress(await account.deriveChange(i).getAddress());
     }
 
-    node.pool.startSync();
+    pool.startSync();
 
-    node.pool.on("tx", (tx: any) => {
+    pool.on("tx", (tx: any) => {
       walletdb.addTX(tx);
     });
 
-    node.pool.on("block", (block: any) => {
+    pool.on("block", (block: any) => {
       walletdb.addBlock(block);
       if (block.txs.length > 0) {
         block.txs.forEach((tx: any) => {
@@ -104,27 +81,23 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
       }
     });
 
-    if (peerUri) {
-      const netAddr = await node.pool.hosts.addNode(peerUri);
-      const peer = node.pool.createOutbound(netAddr);
-      node.pool.peers.add(peer);
-    }
+    const netAddr = await pool.hosts.addNode(peerUri);
+    const peer = pool.createOutbound(netAddr);
+    pool.peers.add(peer);
 
-    node.startSync();
-    await walletdb.syncNode();
-    await wallet.open();
-
-    return new InMemoryBitcoinWallet(parsedNetwork, walletdb, node, wallet);
+    return new InMemoryBitcoinWallet(parsedNetwork, walletdb, pool, chain, wallet);
   }
 
   private constructor(
-    public readonly network: any,
+      public readonly network: any,
 
-    // @ts-ignore
-    private readonly walletdb: any,
-    private readonly node: any,
+      // @ts-ignore
+      private readonly walletdb: any,
+      private readonly pool: any,
 
-    private readonly wallet: any
+      // @ts-ignore
+      private readonly chain: any,
+      private readonly wallet: any
   ) {}
 
   public async getBalance() {
@@ -140,9 +113,9 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
   }
 
   public async sendToAddress(
-    address: string,
-    satoshis: number,
-    network: string
+      address: string,
+      satoshis: number,
+      network: string
   ): Promise<string> {
     this.assertNetwork(network);
 
@@ -155,20 +128,20 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
         }
       ]
     });
-    await this.node.pool.broadcast(transaction);
+    await this.pool.broadcast(transaction);
 
     return transaction.txid();
   }
 
   public async broadcastTransaction(
-    transactionHex: string,
-    network: string
+      transactionHex: string,
+      network: string
   ): Promise<string> {
     this.assertNetwork(network);
 
     const transaction = TX.fromRaw(transactionHex, "hex");
 
-    await this.node.pool.broadcast(transaction);
+    await this.pool.broadcast(transaction);
 
     return transaction.txid();
   }
@@ -181,7 +154,7 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
   private assertNetwork(network: string) {
     if (network !== this.network.type) {
       throw new Error(
-        `This wallet is only connected to the ${this.network.type} network and cannot perform actions on the ${network} network`
+          `This wallet is only connected to the ${this.network.type} network and cannot perform actions on the ${network} network`
       );
     }
   }
