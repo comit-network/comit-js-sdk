@@ -14,7 +14,7 @@ export {
 
 export { Actor, createActor } from "./actor";
 
-export { BitcoinWallet } from "./bitcoinWallet";
+export { BitcoinWallet, InMemoryBitcoinWallet } from "./bitcoinWallet";
 export * from "./siren";
 
 export { EthereumWallet } from "./ethereumWallet";
