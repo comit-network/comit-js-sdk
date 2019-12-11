@@ -1,4 +1,4 @@
-import { BigNumber } from "ethers/utils";
+import { BigNumber } from "bignumber.js";
 import { Asset, Ledger, SwapProperties } from "../cnd";
 import { getToken, Token } from "../tokens/tokens";
 
@@ -124,31 +124,31 @@ function areAmountsEqual(
   return amount.eq(new BigNumber(unitAmount));
 }
 
+const BITCOIN_DECIMALS = 8;
+const ETHER_DECIMALS = 18;
+
 export function fromNominal(
   asset: string,
   nominalAmount: string,
   token?: Token
 ): BigNumber | undefined {
-  if (asset === "bitcoin") {
-    const nominal = parseFloat(nominalAmount);
-    const actual = nominal * 100000000;
-    return new BigNumber(actual);
-  } else {
-    const nominal = new BigNumber(nominalAmount);
-    let decimals = 0;
-    switch (asset) {
-      case "ether": {
-        decimals = 18;
-        break;
-      }
-      default: {
-        if (token) {
-          decimals = token.decimals;
-        } else {
-          return undefined;
-        }
+  let decimals = 0;
+  switch (asset) {
+    case "bitcoin": {
+      decimals = BITCOIN_DECIMALS;
+      break;
+    }
+    case "ether": {
+      decimals = ETHER_DECIMALS;
+      break;
+    }
+    default: {
+      if (token) {
+        decimals = token.decimals;
+      } else {
+        return undefined;
       }
     }
-    return nominal.mul(new BigNumber(10).pow(decimals));
   }
+  return new BigNumber(10).pow(decimals).times(nominalAmount);
 }

@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `Breaking API`: Use `BigNumber` from bignumber.js instead of ethers to support floats
+
+### Fixed
+- Support float amount for Ether and ERC20 tokens.
+
 ## [0.7.2] - 2019-12-05
 
 ### Added

@@ -1,4 +1,4 @@
-import { BigNumber } from "ethers/utils";
+import { BigNumber } from "bignumber.js";
 import { BitcoinWallet } from "./bitcoinWallet";
 import { Cnd, LedgerAction, SwapDetails } from "./cnd";
 import { EthereumWallet } from "./ethereumWallet";
