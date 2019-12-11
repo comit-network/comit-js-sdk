@@ -1,4 +1,4 @@
-import { Amount, Network, Pool, Chain, TX, WalletDB } from "bcoin";
+import { Amount, Chain, Network, Pool, TX, WalletDB } from "bcoin";
 import Logger from "blgr";
 
 export interface BitcoinWallet {
@@ -22,9 +22,9 @@ export interface BitcoinWallet {
 
 export class InMemoryBitcoinWallet implements BitcoinWallet {
   public static async newInstance(
-      network: string,
-      hdKey: string,
-      peerUri: string,
+    network: string,
+    peerUri: string,
+    hdKey: string
   ) {
     const parsedNetwork = Network.get(network);
 
@@ -85,19 +85,25 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
     const peer = pool.createOutbound(netAddr);
     pool.peers.add(peer);
 
-    return new InMemoryBitcoinWallet(parsedNetwork, walletdb, pool, chain, wallet);
+    return new InMemoryBitcoinWallet(
+      parsedNetwork,
+      walletdb,
+      pool,
+      chain,
+      wallet
+    );
   }
 
   private constructor(
-      public readonly network: any,
+    public readonly network: any,
 
-      // @ts-ignore
-      private readonly walletdb: any,
-      private readonly pool: any,
+    // @ts-ignore
+    private readonly walletdb: any,
+    private readonly pool: any,
 
-      // @ts-ignore
-      private readonly chain: any,
-      private readonly wallet: any
+    // @ts-ignore
+    private readonly chain: any,
+    private readonly wallet: any
   ) {}
 
   public async getBalance() {
@@ -113,9 +119,9 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
   }
 
   public async sendToAddress(
-      address: string,
-      satoshis: number,
-      network: string
+    address: string,
+    satoshis: number,
+    network: string
   ): Promise<string> {
     this.assertNetwork(network);
 
@@ -134,8 +140,8 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
   }
 
   public async broadcastTransaction(
-      transactionHex: string,
-      network: string
+    transactionHex: string,
+    network: string
   ): Promise<string> {
     this.assertNetwork(network);
 
@@ -154,7 +160,7 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
   private assertNetwork(network: string) {
     if (network !== this.network.type) {
       throw new Error(
-          `This wallet is only connected to the ${this.network.type} network and cannot perform actions on the ${network} network`
+        `This wallet is only connected to the ${this.network.type} network and cannot perform actions on the ${network} network`
       );
     }
   }
