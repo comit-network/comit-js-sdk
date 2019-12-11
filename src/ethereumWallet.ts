@@ -1,6 +1,12 @@
+import { BigNumber } from "bignumber.js";
 import { Contract, ethers, Wallet } from "ethers";
 import { TransactionRequest } from "ethers/providers";
-import { Arrayish, BigNumber, ParamType, SigningKey } from "ethers/utils";
+import {
+  Arrayish,
+  BigNumber as BigNumberEthers,
+  ParamType,
+  SigningKey
+} from "ethers/utils";
 import { HDNode } from "ethers/utils/hdnode";
 import erc20 from "../ethereum_abi/erc20.json";
 
@@ -22,7 +28,10 @@ export class EthereumWallet {
     return this.wallet.getBalance();
   }
 
-  public async getErc20Balance(contractAddress: string, decimals?: number) {
+  public async getErc20Balance(
+    contractAddress: string,
+    decimals?: number
+  ): Promise<BigNumber> {
     const abi = erc20 as ParamType[];
     const contract = new Contract(contractAddress, abi, this.wallet.provider);
 
@@ -45,9 +54,10 @@ export class EthereumWallet {
 
   public async deployContract(
     data: string,
-    value: BigNumber,
+    amount: BigNumber,
     gasLimit: string
   ) {
+    const value = new BigNumberEthers(amount.toString());
     const transaction: TransactionRequest = {
       data,
       value,

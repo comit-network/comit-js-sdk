@@ -18,7 +18,7 @@ export { BitcoinWallet, InMemoryBitcoinWallet } from "./bitcoinWallet";
 export * from "./siren";
 
 export { EthereumWallet } from "./ethereumWallet";
-export { BigNumber } from "ethers/utils";
+export { BigNumber } from "bignumber.js";
 
 export { ComitClient } from "./comitClient";
 
