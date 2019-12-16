@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2019-12-17
+
 ### Changed
 - `Breaking API` of the negotiation protocol: simplified and renamed interfaces. Make getOrder/takeOrder more explicit for the client
 - `Breaking API` of the Bitcoin wallet. Made the provided wallet to an in-memory wallet only and extracted an interface so that developers can implement their own wallet.
@@ -101,7 +103,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.8.0...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.9.0...HEAD
+[0.9.0]: https://github.com/comit-network/comit-js-sdk/compare/0.8.0...0.9.0
 [0.8.0]: https://github.com/comit-network/comit-js-sdk/compare/0.7.2...0.8.0
 [0.7.2]: https://github.com/comit-network/comit-js-sdk/compare/0.7.1...0.7.2
 [0.7.1]: https://github.com/comit-network/comit-js-sdk/compare/0.7.0...0.7.1
