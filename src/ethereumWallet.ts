@@ -4,9 +4,9 @@ import { TransactionRequest } from "ethers/providers";
 import {
   Arrayish,
   BigNumber as BigNumberEthers,
-  ParamType,
   SigningKey
 } from "ethers/utils";
+import { EventFragment, FunctionFragment } from "ethers/utils/abi-coder";
 import { HDNode } from "ethers/utils/hdnode";
 import erc20 from "../ethereum_abi/erc20.json";
 
@@ -32,7 +32,7 @@ export class EthereumWallet {
     contractAddress: string,
     decimals?: number
   ): Promise<BigNumber> {
-    const abi = erc20 as ParamType[];
+    const abi = erc20 as Array<FunctionFragment | EventFragment>;
     const contract = new Contract(contractAddress, abi, this.wallet.provider);
 
     let dec;
