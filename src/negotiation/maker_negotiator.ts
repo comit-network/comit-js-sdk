@@ -39,7 +39,7 @@ export class MakerNegotiator {
     return this.executionParams;
   }
 
-  public acceptOrder(swapId: string, order: Order) {
+  public takeOrder(swapId: string, order: Order) {
     // Fire the auto-accept of the order in the background
     (async () => {
       try {
@@ -123,7 +123,7 @@ export class MakerHttpApi {
       res.send(this.maker.getExecutionParams());
     });
 
-    app.post("/orders/:tradingPair/:orderId/accept", async (req, res) => {
+    app.post("/orders/:tradingPair/:orderId/take", async (req, res) => {
       const order = this.maker.getOrderById(req.params.orderId);
       const body = req.body;
 
@@ -132,7 +132,7 @@ export class MakerHttpApi {
       } else if (!body || !body.swapId) {
         res.status(400).send("swapId missing from payload");
       } else {
-        res.send(this.maker.acceptOrder(body.swapId, order));
+        res.send(this.maker.takeOrder(body.swapId, order));
       }
     });
 
