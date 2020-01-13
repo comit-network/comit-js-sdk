@@ -110,7 +110,7 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
     const balance = await this.wallet.getBalance();
     // TODO: Balances stay unconfirmed, try to use bcoin.SPVNode (and set node.http to undefined) see if it catches the confirmations
     const amount = new Amount(balance.toJSON().unconfirmed, "sat");
-    return amount.toBTC();
+    return amount.toBTC(true);
   }
 
   public async getAddress() {
