@@ -63,8 +63,8 @@ export class MakerNegotiator {
     return this.makerhttpApi.getUrl();
   }
 
-  public listen(port: number) {
-    return this.makerhttpApi.listen(port);
+  public listen(port: number, hostname?: string) {
+    return this.makerhttpApi.listen(port, hostname);
   }
 
   private tryAcceptSwap(
@@ -132,7 +132,7 @@ class MakerHttpApi {
     this.server = undefined;
   }
 
-  public listen(port: number) {
+  public async listen(port: number, hostname?: string) {
     const app = express();
 
     app.use(express.json());
@@ -167,9 +167,29 @@ class MakerHttpApi {
       }
     });
 
-    this.server = app.listen(port, () =>
-      console.log(`Maker's Negotiation Service is listening on port ${port}.`)
-    );
+    if (hostname) {
+      this.server = app.listen(port, hostname, () =>
+        console.log(
+          `Maker's Negotiation Service is listening on ${hostname}:${port}.`
+        )
+      );
+    } else {
+      this.server = app.listen(port, () =>
+        console.log(`Maker's Negotiation Service is listening on port ${port}.`)
+      );
+    }
+
+    // Waiting for the server to start
+    let i = 0;
+    while (!this.server.listening && i < 10) {
+      await sleep(100);
+      i++;
+    }
+    if (!this.server.listening) {
+      throw new Error(
+        `There was an error starting the http server, is ${port} already in used?`
+      );
+    }
   }
 
   public getUrl(): undefined | string {
