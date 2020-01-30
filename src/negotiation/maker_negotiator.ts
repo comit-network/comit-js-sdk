@@ -187,7 +187,7 @@ class MakerHttpApi {
     }
     if (!this.server.listening) {
       throw new Error(
-        `There was an error starting the http server, is ${port} already in used?`
+        `There was an error starting the http server, is ${port} already in use?`
       );
     }
   }
