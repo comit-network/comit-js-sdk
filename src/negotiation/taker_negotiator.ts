@@ -49,9 +49,9 @@ export class TakerNegotiator {
   private readonly comitClient: ComitClient;
   private readonly makerNegotiator: MakerClient;
 
-  constructor(comitClient: ComitClient, makerNegotiator: MakerClient) {
+  constructor(comitClient: ComitClient, makerUrl: string) {
     this.comitClient = comitClient;
-    this.makerNegotiator = makerNegotiator;
+    this.makerNegotiator = new MakerClient(makerUrl);
   }
 
   public async getOrderByTradingPair(tradingPair: string): Promise<Order> {
@@ -84,7 +84,7 @@ export class TakerNegotiator {
   }
 }
 
-export class MakerClient {
+class MakerClient {
   private readonly makerUrl: string;
 
   constructor(makerUrl: string) {
