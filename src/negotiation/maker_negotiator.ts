@@ -1,4 +1,5 @@
 import express from "express";
+import * as http from "http";
 import { ComitClient } from "../comitClient";
 import { sleep, timeoutPromise, TryParams } from "../timeout_promise";
 import { ExecutionParams } from "./execution_params";
@@ -10,6 +11,7 @@ export class MakerNegotiator {
   private readonly executionParams: ExecutionParams;
   private readonly comitClient: ComitClient;
   private readonly tryParams: TryParams;
+  private readonly makerhttpApi: MakerHttpApi;
 
   constructor(
     comitClient: ComitClient,
@@ -19,6 +21,12 @@ export class MakerNegotiator {
     this.executionParams = executionParams;
     this.comitClient = comitClient;
     this.tryParams = tryParams;
+    this.makerhttpApi = new MakerHttpApi(
+      this.getOrderById.bind(this),
+      this.getExecutionParams.bind(this),
+      this.takeOrder.bind(this),
+      this.getOrderByTradingPair.bind(this)
+    );
   }
 
   public addOrder(order: Order) {
@@ -50,6 +58,14 @@ export class MakerNegotiator {
     })();
   }
   // End of methods related to the negotiation protocol
+
+  public getUrl(): string | undefined {
+    return this.makerhttpApi.getUrl();
+  }
+
+  public listen(port: number) {
+    return this.makerhttpApi.listen(port);
+  }
 
   private tryAcceptSwap(
     swapId: string,
@@ -94,11 +110,26 @@ export class MakerNegotiator {
   }
 }
 
-export class MakerHttpApi {
-  private readonly maker: MakerNegotiator;
+class MakerHttpApi {
+  private readonly getOrderById: (orderId: string) => Order | undefined;
+  private readonly getExecutionParams: () => ExecutionParams;
+  private readonly takeOrder: (swapId: string, order: Order) => void;
+  private readonly getOrderByTradingPair: (
+    tradingPair: string
+  ) => Order | undefined;
+  private server: http.Server | undefined;
 
-  constructor(maker: MakerNegotiator) {
-    this.maker = maker;
+  constructor(
+    getOrderById: (orderId: string) => Order | undefined,
+    getExecutionParams: () => ExecutionParams,
+    takeOrder: (swapId: string, order: Order) => void,
+    getOrderByTradingPair: (tradingPair: string) => Order | undefined
+  ) {
+    this.getOrderByTradingPair = getOrderByTradingPair;
+    this.getOrderById = getOrderById;
+    this.getExecutionParams = getExecutionParams;
+    this.takeOrder = takeOrder;
+    this.server = undefined;
   }
 
   public listen(port: number) {
@@ -111,7 +142,7 @@ export class MakerHttpApi {
     );
 
     app.get("/orders/:tradingPair", async (req, res) => {
-      const order = this.maker.getOrderByTradingPair(req.params.tradingPair);
+      const order = this.getOrderByTradingPair(req.params.tradingPair);
       if (!order) {
         res.status(404).send("Trading pair not found");
       } else {
@@ -120,11 +151,11 @@ export class MakerHttpApi {
     });
 
     app.get("/orders/:tradingPair/:orderId/executionParams", async (_, res) => {
-      res.send(this.maker.getExecutionParams());
+      res.send(this.getExecutionParams());
     });
 
     app.post("/orders/:tradingPair/:orderId/take", async (req, res) => {
-      const order = this.maker.getOrderById(req.params.orderId);
+      const order = this.getOrderById(req.params.orderId);
       const body = req.body;
 
       if (!order || req.params.tradingPair !== order.tradingPair) {
@@ -132,16 +163,28 @@ export class MakerHttpApi {
       } else if (!body || !body.swapId) {
         res.status(400).send("swapId missing from payload");
       } else {
-        res.send(this.maker.takeOrder(body.swapId, order));
+        res.send(this.takeOrder(body.swapId, order));
       }
     });
 
-    app.listen(port, () =>
+    this.server = app.listen(port, () =>
       console.log(`Maker's Negotiation Service is listening on port ${port}.`)
     );
   }
 
-  public addOrder(order: Order) {
-    this.maker.addOrder(order);
+  public getUrl(): undefined | string {
+    if (this.server) {
+      const addr = this.server.address();
+      if (typeof addr === "string") {
+        return addr;
+      }
+      if (typeof addr === "object") {
+        if (addr!.family === "IPv6") {
+          return `http://[${addr!.address}]:${addr!.port}`;
+        } else {
+          return `http://${addr!.address}:${addr!.port}`;
+        }
+      }
+    }
   }
 }

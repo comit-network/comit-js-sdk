@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- `Breaking API Change`: No need to initialise a `MakerHttpApi`, it will be done as part of `MakerNegotiator` and the `listen()` method is moved to `MakerNegotiator` too.
 - `Breaking API Change`: No need to initialise a `MakerClient` anymore, `TakerNegotiator`'s constructor directly accept URL to Maker.
+
+## Added
+- `MakerNegotiator.getUrl()` returns a string to the maker negotiator external API.
 
 ## [0.9.1] - 2020-01-21
 
