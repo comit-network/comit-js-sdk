@@ -38,7 +38,7 @@ export {
   isValidExecutionParams,
   NetworkType
 } from "./negotiation/execution_params";
-export { MakerNegotiator, MakerHttpApi } from "./negotiation/maker_negotiator";
+export { MakerNegotiator } from "./negotiation/maker_negotiator";
 export { TakerNegotiator } from "./negotiation/taker_negotiator";
 
 export { TryParams } from "./timeout_promise";
