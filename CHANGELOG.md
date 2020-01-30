@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `Breaking API Change`: No need to initialise a `MakerClient` anymore, `TakerNegotiator`'s constructor directly accept URL to Maker.
+
 ## [0.9.1] - 2020-01-21
 
 ### Fixed
