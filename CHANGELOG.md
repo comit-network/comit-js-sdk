@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0] - 2020-01-31
+
 ### Changed
 - `Breaking API Change`: No need to initialise a `MakerClient` anymore, `TakerNegotiator`'s constructor directly accept URL to Maker.
 - `Breaking API Change`: No need to initialise a `MakerHttpApi`, it will be done as part of `MakerNegotiator` and the `listen()` method is moved to `MakerNegotiator` too.
@@ -117,7 +119,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.9.1...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.10.0...HEAD
+[0.10.0]: https://github.com/comit-network/comit-js-sdk/compare/0.9.1...0.10.0
 [0.9.1]: https://github.com/comit-network/comit-js-sdk/compare/0.8.0...0.9.1
 [0.9.0]: https://github.com/comit-network/comit-js-sdk/compare/0.8.0...0.9.0
 [0.8.0]: https://github.com/comit-network/comit-js-sdk/compare/0.7.2...0.8.0
