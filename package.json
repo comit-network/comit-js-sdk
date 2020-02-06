@@ -11,7 +11,7 @@
     "prepare": "tsc",
     "fix": "tslint -p . --fix && prettier --write '**/*.{ts,js,json,yml}'",
     "test": "tsc --noEmit && tslint -p . && prettier --check '**/*.{ts,js,json,yml}' && jest",
-    "doc": "typedoc --out docs src/tokens --exclude '**/*+(index|.spec|.e2e).ts'"
+    "docs": "typedoc --out docs src --exclude '**/*+(index|.spec|.e2e).ts' && open docs/index.html"
   },
   "dependencies": {
     "axios": "^0.19.0",
