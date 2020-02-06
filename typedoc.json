@@ -7,7 +7,7 @@
   "includeDeclarations": true,
   "excludeExternals": true,
   "excludeNotExported": false,
-  "excludePrivate": false,
+  "excludePrivate": true,
   "excludeProtected": false,
   "ignoreCompilerErrors": false,
   "media": "TODO",
