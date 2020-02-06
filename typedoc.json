@@ -2,8 +2,20 @@
   "inputFiles": ["./src"],
   "mode": "modules",
   "out": "docs",
-  "exclude": "**/*+(index|.spec|.e2e).ts",
+  "exclude": "**/*+(index|.spec|.e2e|.d).ts",
   "tsconfig": "./tsconfig.json",
   "includeDeclarations": true,
-  "excludeExternals": true
+  "excludeExternals": true,
+  "excludeNotExported": false,
+  "excludePrivate": false,
+  "excludeProtected": false,
+  "ignoreCompilerErrors": false,
+  "media": "TODO",
+  "includes": "TODO, for literate style documentation",
+  "theme": "minimal",
+  "includeVersion": true,
+  "readme": "README.md",
+  "categorizeByGroup": false,
+  "defaultCategory": "Other",
+  "hideGenerator": true
 }
