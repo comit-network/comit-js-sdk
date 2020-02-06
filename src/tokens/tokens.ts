@@ -8,6 +8,11 @@ export interface Token {
   address: string;
   decimals: number;
 }
+/**
+   * @description Test description
+   * @returns {Token} - Returns here
+   * @param {string} symbol - Input here
+   */
 export function getToken(symbol: string): Token | undefined {
   const defs = definitions as Token[];
   return defs.find((token: Token) => {

@@ -2,8 +2,8 @@ node_modules/
 
 .idea/
 
-docs/
-dist/
+docs/**
+dist/**
 
 # This is a library
 yarn.lock

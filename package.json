@@ -10,7 +10,8 @@
   "scripts": {
     "prepare": "tsc",
     "fix": "tslint -p . --fix && prettier --write '**/*.{ts,js,json,yml}'",
-    "test": "tsc --noEmit && tslint -p . && prettier --check '**/*.{ts,js,json,yml}' && jest"
+    "test": "tsc --noEmit && tslint -p . && prettier --check '**/*.{ts,js,json,yml}' && jest",
+    "doc": "typedoc --out docs src/tokens --exclude '**/*+(index|.spec|.e2e).ts'"
   },
   "dependencies": {
     "axios": "^0.19.0",
@@ -37,6 +38,7 @@
     "ts-jest": "^24.1.0",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
+    "typedoc": "^0.16.9",
     "typescript": "^3.6.3"
   }
 }
