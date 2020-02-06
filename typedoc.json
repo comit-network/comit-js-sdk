@@ -12,7 +12,7 @@
   "ignoreCompilerErrors": false,
   "media": "TODO",
   "includes": "TODO, for literate style documentation",
-  "theme": "minimal",
+  "theme": "default",
   "includeVersion": true,
   "readme": "README.md",
   "categorizeByGroup": false,
