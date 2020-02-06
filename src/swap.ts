@@ -46,7 +46,7 @@ export class Swap {
     return response.data;
   }
 
-  private tryExecuteAction(
+  public tryExecuteAction(
     actionName: string,
     { maxTimeoutSecs, tryIntervalSecs }: TryParams
   ) {
@@ -54,6 +54,37 @@ export class Swap {
       maxTimeoutSecs * 1000,
       this.executeAction(actionName, tryIntervalSecs)
     );
+  }
+
+  public async doLedgerAction(action: LedgerAction) {
+    switch (action.type) {
+      case "bitcoin-broadcast-signed-transaction": {
+        const { hex, network } = action.payload;
+
+        return await this.bitcoinWallet.broadcastTransaction(hex, network);
+      }
+      case "bitcoin-send-amount-to-address": {
+        const { to, amount, network } = action.payload;
+        const sats = parseInt(amount, 10);
+
+        return await this.bitcoinWallet.sendToAddress(to, sats, network);
+      }
+      case "ethereum-call-contract": {
+        const { data, contract_address, gas_limit } = action.payload;
+
+        return await this.ethereumWallet.callContract(
+          data,
+          contract_address,
+          gas_limit
+        );
+      }
+      case "ethereum-deploy-contract": {
+        const { amount, data, gas_limit } = action.payload;
+        const value = new BigNumber(amount);
+
+        return await this.ethereumWallet.deployContract(data, value, gas_limit);
+      }
+    }
   }
 
   private async executeAction(actionName: string, tryIntervalSecs: number) {
@@ -92,37 +123,6 @@ export class Swap {
 
     if (classes.includes("ethereum") && classes.includes("address")) {
       return Promise.resolve(this.ethereumWallet.getAccount());
-    }
-  }
-
-  private async doLedgerAction(action: LedgerAction) {
-    switch (action.type) {
-      case "bitcoin-broadcast-signed-transaction": {
-        const { hex, network } = action.payload;
-
-        return await this.bitcoinWallet.broadcastTransaction(hex, network);
-      }
-      case "bitcoin-send-amount-to-address": {
-        const { to, amount, network } = action.payload;
-        const sats = parseInt(amount, 10);
-
-        return await this.bitcoinWallet.sendToAddress(to, sats, network);
-      }
-      case "ethereum-call-contract": {
-        const { data, contract_address, gas_limit } = action.payload;
-
-        return await this.ethereumWallet.callContract(
-          data,
-          contract_address,
-          gas_limit
-        );
-      }
-      case "ethereum-deploy-contract": {
-        const { amount, data, gas_limit } = action.payload;
-        const value = new BigNumber(amount);
-
-        return await this.ethereumWallet.deployContract(data, value, gas_limit);
-      }
     }
   }
 }
