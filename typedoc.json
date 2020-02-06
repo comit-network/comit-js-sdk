@@ -1,0 +1,9 @@
+{
+  "inputFiles": ["./src"],
+  "mode": "modules",
+  "out": "docs",
+  "exclude": "**/*+(index|.spec|.e2e).ts",
+  "tsconfig": "./tsconfig.json",
+  "includeDeclarations": true,
+  "excludeExternals": true
+}
