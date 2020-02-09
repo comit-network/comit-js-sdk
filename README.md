@@ -10,7 +10,7 @@ For example, with [COMIT](https://comit.network) you can exchange Bitcoin for Et
 This repository contains the Javascript software development kit (SDK) that wraps the communication with the [comit-network daemon](https://github.com/comit-network/comit-rs).
 
 If you wish to do an atomic swap on your machine or to integrate COMIT into an application (e.g. a DEX) please take a look at the [Getting Started section](https://comit.network/docs/getting-started/create-comit-app/) of the COMIT documentation.
-If you have any question please [reach out to the team in our Gitter chat](https://gitter.im/comit-network/community)!
+If you have any questions, feel free to [reach out to the team in our Gitter chat](https://gitter.im/comit-network/community)!
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/comit-network/community)
