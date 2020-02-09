@@ -5,9 +5,9 @@
 ---
 
 [COMIT](https://comit.network) is an open protocol facilitating cross-blockchain applications.
-With [COMIT](https://comit.network) you can for examples exchange Bitcoin for any Erc20 token directly with another person.
+For example, with [COMIT](https://comit.network) you can exchange Bitcoin for Ether or any ERC20 token directly with another person.
 
-This repository contains the Javascript software development kit (SDK) that wraps the communication with the [comit-network daemon](https://github.com/comit-network/comit-rs) for Javascript developers.
+This repository contains the Javascript software development kit (SDK) that wraps the communication with the [comit-network daemon](https://github.com/comit-network/comit-rs).
 
 If you wish to do an atomic swap on your machine or to integrate COMIT into an application (e.g. a DEX) please take a look at the [Getting Started section](https://comit.network/docs/getting-started/create-comit-app/) of the COMIT documentation.
 If you have any question please [reach out to the team in our Gitter chat](https://gitter.im/comit-network/community)!
@@ -20,7 +20,7 @@ If you have any question please [reach out to the team in our Gitter chat](https
 The COMIT Javascript SDK enables the integration of the [comit-network daemon](https://github.com/comit-network/comit-rs) into Javascript applications.
 You'll find the [latest comit-sdk version on npmjs](https://www.npmjs.com/package/comit-sdk).
 
-Below you find a short introduction into the SDK. For more detailed information please refer to the [API-documentation](TODO-add-link) in our documentation.
+Below you find a short introduction into the SDK. For more detailed information please refer to the API-documentation in our documentation.
 
 ## Getting started
 
@@ -67,5 +67,4 @@ The SDK includes two Javascript wallets:
 These wallets are used to actually send the transactions necessary for the atomic swap to the respective ledger.
 COMIT is designed in a non-custodial way, thus `cnd` never holds your private key at any time.
 The wallets integrated in the SDK show how the transaction information received from `cnd` can be sent to the respective ledger.
-Note that you can, of course, use different wallets then the above default wallets in your application.
-
+Note that you can, of course, use different wallets than the above default wallets in your application.
