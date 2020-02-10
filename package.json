@@ -11,7 +11,9 @@
     "prepare": "tsc",
     "fix": "tslint -p . --fix && prettier --write '**/*.{ts,js,json,yml}'",
     "test": "tsc --noEmit && tslint -p . && prettier --check '**/*.{ts,js,json,yml}' && jest",
-    "docs": "typedoc && open docs/index.html"
+    "docs:clean": "rm -rf docs/",
+    "docs": "npm run docs:clean && typedoc && open docs/index.html",
+    "docs:md": "npm run docs:clean && typedoc --plugin typedoc-plugin-markdown"
   },
   "dependencies": {
     "axios": "^0.19.0",
@@ -39,6 +41,7 @@
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
     "typedoc": "^0.16.9",
+    "typedoc-plugin-markdown": "^2.2.16",
     "typescript": "^3.6.3"
   }
 }
