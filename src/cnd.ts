@@ -3,6 +3,7 @@ import URI from "urijs";
 import actionToHttpRequest, {
   FieldValueResolverFn
 } from "./actionToHttpRequest";
+import { Result } from "./result";
 import { Action, EmbeddedRepresentationSubEntity, Entity } from "./siren";
 
 interface GetInfo {
@@ -251,13 +252,19 @@ export class Cnd {
   public async executeAction(
     action: Action,
     resolver?: FieldValueResolverFn
-  ): Promise<AxiosResponse> {
+  ): Promise<Result<AxiosResponse>> {
     const request = await actionToHttpRequest(action, resolver);
 
-    return axios.request({
-      baseURL: this.cndUrl,
-      ...request
-    });
+    try {
+      return Result.ok(
+        await axios.request({
+          baseURL: this.cndUrl,
+          ...request
+        })
+      );
+    } catch (error) {
+      return Result.err(error);
+    }
   }
 
   private rootUrl() {

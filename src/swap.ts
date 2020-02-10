@@ -22,23 +22,47 @@ export class Swap {
   }
 
   public async deploy(params: TryParams) {
-    const response = await this.tryExecuteAction("deploy", params);
-    return await this.doLedgerAction(response.data);
+    const result = await this.tryExecuteAction("deploy", params);
+    return result
+      .mapErr(err => {
+        return new Error(`Could not retrieve deploy action: ${err}`);
+      })
+      .andThen(async res => {
+        return await this.doLedgerAction(res.data);
+      });
   }
 
   public async fund(params: TryParams) {
-    const response = await this.tryExecuteAction("fund", params);
-    return await this.doLedgerAction(response.data);
+    const result = await this.tryExecuteAction("fund", params);
+    return result
+      .mapErr(err => {
+        return new Error(`Could not retrieve fund action: ${err}`);
+      })
+      .andThen(async res => {
+        return await this.doLedgerAction(res.data);
+      });
   }
 
   public async redeem(params: TryParams) {
-    const response = await this.tryExecuteAction("redeem", params);
-    return await this.doLedgerAction(response.data);
+    const result = await this.tryExecuteAction("redeem", params);
+    return result
+      .mapErr(err => {
+        return new Error(`Could not retrieve redeem action: ${err}`);
+      })
+      .andThen(async res => {
+        return await this.doLedgerAction(res.data);
+      });
   }
 
   public async refund(params: TryParams) {
-    const response = await this.tryExecuteAction("refund", params);
-    return await this.doLedgerAction(response.data);
+    const result = await this.tryExecuteAction("refund", params);
+    return result
+      .mapErr(err => {
+        return new Error(`Could not retrieve refund action: ${err}`);
+      })
+      .andThen(async res => {
+        return await this.doLedgerAction(res.data);
+      });
   }
 
   public async fetchDetails(): Promise<SwapDetails> {

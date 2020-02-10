@@ -1,6 +1,7 @@
 import express from "express";
 import * as http from "http";
 import { ComitClient } from "../comitClient";
+import { Result } from "../result";
 import { sleep, timeoutPromise, TryParams } from "../timeout_promise";
 import { ExecutionParams } from "./execution_params";
 import { Order, orderSwapMatchesForMaker } from "./order";
@@ -67,15 +68,18 @@ export class MakerNegotiator {
     return this.makerhttpApi.listen(port, hostname);
   }
 
-  private tryAcceptSwap(
+  private async tryAcceptSwap(
     swapId: string,
     order: Order,
     { maxTimeoutSecs, tryIntervalSecs }: TryParams
   ) {
-    return timeoutPromise(
+    const res = await timeoutPromise(
       maxTimeoutSecs * 1000,
       this.acceptSwap(swapId, order, tryIntervalSecs)
     );
+    return res.mapErr((err: Error) => {
+      return new Error(`Could not accept swap: ${err}`);
+    });
   }
 
   private async acceptSwap(
@@ -100,11 +104,11 @@ export class MakerNegotiator {
       ) {
         return swap.accept(this.tryParams);
       } else {
-        console.log(
-          "Swap request was malformed, giving up on trying to accept"
+        return Result.err(
+          new Error(
+            "Swap response was malformed, giving up on trying to accept"
+          )
         );
-        // The swap request is not as expected, no need to try again
-        break;
       }
     }
   }

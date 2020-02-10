@@ -1,13 +1,18 @@
+import { Result } from "./result";
+
 export interface TryParams {
   maxTimeoutSecs: number;
   tryIntervalSecs: number;
 }
 
-export function timeoutPromise<T>(ms: number, promise: Promise<T>): Promise<T> {
-  const timeout = new Promise<T>((_, reject) => {
+export function timeoutPromise<T>(
+  ms: number,
+  promise: Promise<Result<T>>
+): Promise<Result<T>> {
+  const timeout = new Promise<Result<T>>(() => {
     const id = setTimeout(() => {
       clearTimeout(id);
-      reject("Timed out in " + ms + "ms.");
+      return Result.err(new Error(`Timed out in ${ms}ms.`));
     }, ms);
   });
 
