@@ -11,7 +11,7 @@
   "excludeProtected": false,
   "ignoreCompilerErrors": false,
   "media": "TODO",
-  "includes": "TODO, for literate style documentation",
+  "includes": "TODO, include for literate style documentation",
   "theme": "default",
   "includeVersion": true,
   "readme": "README.md",
