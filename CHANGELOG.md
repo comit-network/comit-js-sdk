@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.1] - 2020-02-06
+
+### Changed
+- Expose `tryExecuteAction` and `doLedgerAction` of the `Swap` class.
+
 ## [0.10.0] - 2020-01-31
 
 ### Changed
@@ -119,7 +124,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.10.0...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.10.1...HEAD
+[0.10.1]: https://github.com/comit-network/comit-js-sdk/compare/0.10.0...0.10.1
 [0.10.0]: https://github.com/comit-network/comit-js-sdk/compare/0.9.1...0.10.0
 [0.9.1]: https://github.com/comit-network/comit-js-sdk/compare/0.8.0...0.9.1
 [0.9.0]: https://github.com/comit-network/comit-js-sdk/compare/0.8.0...0.9.0
