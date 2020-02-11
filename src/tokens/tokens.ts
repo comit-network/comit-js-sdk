@@ -8,6 +8,12 @@ export interface Token {
   address: string;
   decimals: number;
 }
+
+/**
+ * @description Returns information about an ERC20 token.
+ * @returns ERC20 token object.
+ * @param symbol - ERC20 ticker symbol.
+ */
 export function getToken(symbol: string): Token | undefined {
   const defs = definitions as Token[];
   return defs.find((token: Token) => {
