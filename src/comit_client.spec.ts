@@ -1,5 +1,5 @@
 import { SwapSubEntity } from "./cnd";
-import { isOngoing } from "./comitClient";
+import { isOngoing } from "./comit_client";
 
 function defaultSwap(): SwapSubEntity {
   return {

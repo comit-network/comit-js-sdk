@@ -1,6 +1,6 @@
 import express from "express";
 import * as http from "http";
-import { ComitClient } from "../comitClient";
+import { ComitClient } from "../comit_client";
 import { sleep, timeoutPromise, TryParams } from "../timeout_promise";
 import { ExecutionParams } from "./execution_params";
 import { Order, orderSwapMatchesForMaker } from "./order";

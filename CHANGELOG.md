@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Set all files names to snake_case.
+
 ## [0.10.1] - 2020-02-06
 
 ### Changed
