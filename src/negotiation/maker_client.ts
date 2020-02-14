@@ -17,14 +17,14 @@ export class MakerClient {
 
   public async getExecutionParams(order: OrderParams) {
     const response = await axios.get(
-      `${this.makerUrl}orders/${order.tradingPair}/${order.id}/executionParams`
+      `${this.makerUrl}orders/${order.id}/executionParams`
     );
     return response.data;
   }
 
   public async takeOrder(order: OrderParams, swapId: string) {
     const response = await axios.post(
-      `${this.makerUrl}orders/${order.tradingPair}/${order.id}/take`,
+      `${this.makerUrl}orders/${order.id}/take`,
       { swapId }
     );
     return response.data;

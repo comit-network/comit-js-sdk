@@ -7,7 +7,12 @@ import {
   isValidExecutionParams
 } from "./execution_params";
 import { MakerClient } from "./maker_client";
-import { assetOrderToSwap, OrderParams, TakerCriteria } from "./order";
+import {
+  assetOrderToSwap,
+  OrderParams,
+  TakerCriteria,
+  takerCriteriaToTradingPair
+} from "./order";
 
 export class TakerNegotiator {
   private static newSwapRequest(
@@ -54,14 +59,8 @@ export class TakerNegotiator {
     this.makerClient = new MakerClient(makerUrl);
   }
 
-  public async getOrderByTradingPair(
-    tradingPair: string
-  ): Promise<OrderParams> {
-    return this.makerClient.getOrderByTradingPair(tradingPair);
-  }
-
   public async getOrder(criteria: TakerCriteria): Promise<OrderParams> {
-    const tradingPair = criteria.sell + "-" + criteria.buy;
+    const tradingPair = takerCriteriaToTradingPair(criteria);
     return this.makerClient.getOrderByTradingPair(tradingPair);
   }
 

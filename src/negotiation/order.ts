@@ -3,7 +3,6 @@ import { Asset, Ledger, SwapProperties } from "../cnd";
 import { getToken, Token } from "../tokens/tokens";
 
 export interface OrderParams {
-  tradingPair: string;
   id: string;
   validUntil: number;
   bid: OrderAsset;
@@ -205,4 +204,30 @@ export function fromNominal(
     }
   }
   return new BigNumber(10).pow(decimals).times(nominalAmount);
+}
+
+export function orderParamsToTradingPair(orderParams: OrderParams): string {
+  return (
+    orderParams.ask.ledger +
+    "-" +
+    orderParams.ask.asset +
+    "-" +
+    orderParams.bid.ledger +
+    "-" +
+    orderParams.bid.asset
+  );
+}
+
+export function takerCriteriaToTradingPair(
+  takerCriteria: TakerCriteria
+): string {
+  return (
+    takerCriteria.sell.ledger +
+    "-" +
+    takerCriteria.sell.asset +
+    "-" +
+    takerCriteria.buy.ledger +
+    "-" +
+    takerCriteria.buy.asset
+  );
 }

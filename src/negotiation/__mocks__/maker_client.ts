@@ -24,7 +24,6 @@ export class MakerClient {
     const askTicker = tradingPair.substr(4, 3);
 
     return {
-      tradingPair,
       id: "123",
       validUntil: 1234567890,
       bid: tickerToAsset(bidTicker),
