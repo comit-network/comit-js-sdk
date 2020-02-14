@@ -1,6 +1,6 @@
 import axios from "axios";
 import { SwapRequest } from "../cnd";
-import { ComitClient } from "../comitClient";
+import { ComitClient } from "../comit_client";
 import { Swap } from "../swap";
 import {
   defaultLedgerParams,

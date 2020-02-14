@@ -2,7 +2,7 @@ import axios, { AxiosPromise, AxiosResponse } from "axios";
 import URI from "urijs";
 import actionToHttpRequest, {
   FieldValueResolverFn
-} from "./actionToHttpRequest";
+} from "./action_to_http_request";
 import { Action, EmbeddedRepresentationSubEntity, Entity } from "./siren";
 
 interface GetInfo {

@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
-import { BitcoinWallet } from "./bitcoinWallet";
+import { BitcoinWallet } from "./bitcoin_wallet";
 import { Cnd, LedgerAction, SwapDetails } from "./cnd";
-import { EthereumWallet } from "./ethereumWallet";
+import { EthereumWallet } from "./ethereum_wallet";
 import { Field } from "./siren";
 import { sleep, timeoutPromise, TryParams } from "./timeout_promise";
 

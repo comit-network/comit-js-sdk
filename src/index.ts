@@ -14,13 +14,13 @@ export {
 
 export { Actor, createActor } from "./actor";
 
-export { BitcoinWallet, InMemoryBitcoinWallet } from "./bitcoinWallet";
+export { BitcoinWallet, InMemoryBitcoinWallet } from "./bitcoin_wallet";
 export * from "./siren";
 
-export { EthereumWallet } from "./ethereumWallet";
+export { EthereumWallet } from "./ethereum_wallet";
 export { BigNumber } from "bignumber.js";
 
-export { ComitClient } from "./comitClient";
+export { ComitClient } from "./comit_client";
 
 export { Swap } from "./swap";
 

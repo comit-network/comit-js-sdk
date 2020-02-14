@@ -9,7 +9,8 @@
     "no-console": false,
     "no-shadowed-variable": false,
     "object-literal-sort-keys": false,
-    "no-reference": false
+    "no-reference": false,
+    "file-name-casing": [true, "snake-case"]
   },
   "rulesDirectory": []
 }

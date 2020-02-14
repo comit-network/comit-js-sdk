@@ -1,7 +1,7 @@
-import { BitcoinWallet } from "./bitcoinWallet";
+import { BitcoinWallet } from "./bitcoin_wallet";
 import { Cnd } from "./cnd";
-import { ComitClient } from "./comitClient";
-import { EthereumWallet } from "./ethereumWallet";
+import { ComitClient } from "./comit_client";
+import { EthereumWallet } from "./ethereum_wallet";
 
 export interface Actor {
   name?: string;

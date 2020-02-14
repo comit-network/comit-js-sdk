@@ -1,6 +1,6 @@
-import { BitcoinWallet } from "./bitcoinWallet";
+import { BitcoinWallet } from "./bitcoin_wallet";
 import { Cnd, SwapRequest, SwapSubEntity } from "./cnd";
-import { EthereumWallet } from "./ethereumWallet";
+import { EthereumWallet } from "./ethereum_wallet";
 import { Action, EmbeddedRepresentationSubEntity, Entity } from "./siren";
 import { Swap } from "./swap";
 
