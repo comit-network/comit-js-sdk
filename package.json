@@ -13,7 +13,7 @@
     "test": "tsc --noEmit && tslint -p . && prettier --check '**/*.{ts,js,json,yml}' && jest",
     "docs:clean": "rm -rf docs/",
     "docs": "npm run docs:clean && typedoc --plugin none && open docs/index.html",
-    "docs:md": "npm run docs:clean && typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs --theme docusaurus2"
+    "docs:md": "npm run docs:clean && typedoc --plugin typedoc-plugin-markdown --theme docusaurus2"
   },
   "dependencies": {
     "axios": "^0.19.0",
