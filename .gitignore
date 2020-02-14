@@ -4,6 +4,7 @@ node_modules/
 
 docs/
 dist/
+website/
 
 # This is a library
 yarn.lock
