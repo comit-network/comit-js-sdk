@@ -5,24 +5,31 @@ import { Action, EmbeddedRepresentationSubEntity, Entity } from "./siren";
 import { Swap } from "./swap";
 
 export class ComitClient {
-  constructor(
-    private readonly bitcoinWallet: BitcoinWallet,
-    private readonly ethereumWallet: EthereumWallet,
-    private readonly cnd: Cnd
-  ) {}
+  public bitcoinWallet?: BitcoinWallet;
+  public ethereumWallet?: EthereumWallet;
+
+  constructor(private readonly cnd: Cnd) {}
 
   public async sendSwap(swapRequest: SwapRequest): Promise<Swap> {
     if (
       swapRequest.alpha_ledger.name === "ethereum" &&
       !swapRequest.alpha_ledger_refund_identity
     ) {
-      swapRequest.alpha_ledger_refund_identity = this.ethereumWallet.getAccount();
+      if (this.ethereumWallet) {
+        swapRequest.alpha_ledger_refund_identity = this.ethereumWallet.getAccount();
+      } else {
+        throw new Error("Ethereum Wallet is not set.");
+      }
     }
     if (
       swapRequest.beta_ledger.name === "ethereum" &&
       !swapRequest.beta_ledger_redeem_identity
     ) {
-      swapRequest.beta_ledger_redeem_identity = this.ethereumWallet.getAccount();
+      if (this.ethereumWallet) {
+        swapRequest.beta_ledger_redeem_identity = this.ethereumWallet.getAccount();
+      } else {
+        throw new Error("Ethereum Wallet is not set.");
+      }
     }
 
     const swapLocation = await this.cnd.postSwap(swapRequest);
@@ -99,6 +106,14 @@ export class ComitClient {
   }
 
   private newSwap(swap: EmbeddedRepresentationSubEntity | Entity): Swap {
+    if (!this.bitcoinWallet) {
+      throw new Error("BitcoinWallet is not set.");
+    }
+
+    if (!this.ethereumWallet) {
+      throw new Error("EthereumWallet is not set.");
+    }
+
     return new Swap(
       this.bitcoinWallet,
       this.ethereumWallet,
