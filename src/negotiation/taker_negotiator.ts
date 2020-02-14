@@ -1,4 +1,3 @@
-import axios from "axios";
 import { SwapRequest } from "../cnd";
 import { ComitClient } from "../comit_client";
 import { Swap } from "../swap";
@@ -7,7 +6,13 @@ import {
   ExecutionParams,
   isValidExecutionParams
 } from "./execution_params";
+import { MakerClient } from "./maker_client";
 import { assetOrderToSwap, Order } from "./order";
+
+export interface OrderCriteria {
+  buy: string;
+  sell: string;
+}
 
 export class TakerNegotiator {
   private static newSwapRequest(
@@ -47,21 +52,24 @@ export class TakerNegotiator {
   }
 
   private readonly comitClient: ComitClient;
-  private readonly makerNegotiator: MakerClient;
+  private readonly makerClient: MakerClient;
 
   constructor(comitClient: ComitClient, makerUrl: string) {
     this.comitClient = comitClient;
-    this.makerNegotiator = new MakerClient(makerUrl);
+    this.makerClient = new MakerClient(makerUrl);
   }
 
   public async getOrderByTradingPair(tradingPair: string): Promise<Order> {
-    return this.makerNegotiator.getOrderByTradingPair(tradingPair);
+    return this.makerClient.getOrderByTradingPair(tradingPair);
+  }
+
+  public async getOrder(criteria: OrderCriteria): Promise<Order> {
+    const tradingPair = criteria.sell + "-" + criteria.buy;
+    return this.makerClient.getOrderByTradingPair(tradingPair);
   }
 
   public async takeOrder(order: Order): Promise<Swap | undefined> {
-    const executionParams = await this.makerNegotiator.getExecutionParams(
-      order
-    );
+    const executionParams = await this.makerClient.getExecutionParams(order);
     if (!executionParams) {
       return;
     }
@@ -79,35 +87,7 @@ export class TakerNegotiator {
 
     const swapDetails = await swapHandle.fetchDetails();
     const swapId = swapDetails.properties!.id;
-    await this.makerNegotiator.takeOrder(order, swapId);
+    await this.makerClient.takeOrder(order, swapId);
     return swapHandle;
-  }
-}
-
-class MakerClient {
-  private readonly makerUrl: string;
-
-  constructor(makerUrl: string) {
-    this.makerUrl = makerUrl;
-  }
-
-  public async getOrderByTradingPair(tradingPair: string) {
-    const response = await axios.get(`${this.makerUrl}orders/${tradingPair}`);
-    return response.data;
-  }
-
-  public async getExecutionParams(order: Order) {
-    const response = await axios.get(
-      `${this.makerUrl}orders/${order.tradingPair}/${order.id}/executionParams`
-    );
-    return response.data;
-  }
-
-  public async takeOrder(order: Order, swapId: string) {
-    const response = await axios.post(
-      `${this.makerUrl}orders/${order.tradingPair}/${order.id}/take`,
-      { swapId }
-    );
-    return response.data;
   }
 }
