@@ -16,7 +16,7 @@ const defaultExecutionParams = () => {
   };
 };
 
-describe("Taker Negotiator", () => {
+describe("Execution Params", () => {
   it("Validates mainnet execution parameters", () => {
     const executionParams: ExecutionParams = { ...defaultExecutionParams() };
 
