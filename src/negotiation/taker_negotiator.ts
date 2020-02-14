@@ -9,6 +9,7 @@ import {
 import { MakerClient } from "./maker_client";
 import {
   assetOrderToSwap,
+  Order,
   OrderParams,
   TakerCriteria,
   takerCriteriaToTradingPair
@@ -59,9 +60,13 @@ export class TakerNegotiator {
     this.makerClient = new MakerClient(makerUrl);
   }
 
-  public async getOrder(criteria: TakerCriteria): Promise<OrderParams> {
+  public async getOrder(criteria: TakerCriteria): Promise<Order> {
     const tradingPair = takerCriteriaToTradingPair(criteria);
-    return this.makerClient.getOrderByTradingPair(tradingPair);
+    const orderParams = await this.makerClient.getOrderByTradingPair(
+      tradingPair
+    );
+
+    return new Order(orderParams, criteria);
   }
 
   public async takeOrder(order: OrderParams): Promise<Swap | undefined> {

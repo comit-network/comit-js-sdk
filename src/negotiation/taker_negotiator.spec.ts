@@ -15,18 +15,21 @@ describe("Taker Negotiator", () => {
 
     const takerCriteria: TakerCriteria = {
       buy: {
-        asset: "bitcoin",
         ledger: "bitcoin",
+        asset: "bitcoin",
         minNominalAmount: "2"
       },
       sell: {
-        asset: "ether",
-        ledger: "ethereum"
+        ledger: "ethereum",
+        asset: "ether"
       }
     };
 
     const order = await takerNegotiator.getOrder(takerCriteria);
 
-    expect(order).toHaveProperty("tradingPair", "ETH-BTC");
+    expect(order.orderParams).toHaveProperty("bid.ledger", "bitcoin");
+    expect(order.orderParams).toHaveProperty("bid.asset", "bitcoin");
+    expect(order.orderParams).toHaveProperty("ask.ledger", "ethereum");
+    expect(order.orderParams).toHaveProperty("ask.asset", "ether");
   });
 });

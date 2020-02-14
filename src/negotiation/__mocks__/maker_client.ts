@@ -1,15 +1,4 @@
-import { OrderAsset, OrderParams } from "../order";
-
-function tickerToAsset(ticker: string): OrderAsset {
-  switch (ticker) {
-    case "ETH":
-      return { ledger: "ethereum", asset: "ether", nominalAmount: "99" };
-    case "BTC":
-      return { ledger: "bitcoin", asset: "bitcoin", nominalAmount: "11" };
-    default:
-      throw new Error("Unknown ticker");
-  }
-}
+import { OrderParams } from "../order";
 
 export class MakerClient {
   // @ts-ignore
@@ -20,14 +9,21 @@ export class MakerClient {
   public async getOrderByTradingPair(
     tradingPair: string
   ): Promise<OrderParams> {
-    const bidTicker = tradingPair.substr(0, 3);
-    const askTicker = tradingPair.substr(4, 3);
+    const words = tradingPair.split("-");
 
     return {
       id: "123",
       validUntil: 1234567890,
-      bid: tickerToAsset(bidTicker),
-      ask: tickerToAsset(askTicker)
+      ask: {
+        ledger: words[0],
+        asset: words[1],
+        nominalAmount: "123"
+      },
+      bid: {
+        ledger: words[2],
+        asset: words[3],
+        nominalAmount: "4567890"
+      }
     };
   }
 
