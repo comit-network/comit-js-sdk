@@ -347,4 +347,48 @@ describe("Order", () => {
 
     expect(order.matches()).toBeFalsy();
   });
+
+  it("is valid", () => {
+    const order = new Order(defaultOrderParams, defaultTakerCriteria, () =>
+      Promise.resolve(undefined)
+    );
+
+    expect(order.isValid()).toBeTruthy();
+  });
+
+  it("is not valid if amounts do not represent a number", () => {
+    const orderParams = {
+      tradingPair: "ETH-BTC",
+      id: "1234",
+      validUntil: 1234567890,
+      bid: {
+        ledger: "bitcoin",
+        asset: "bitcoin",
+        nominalAmount: "this is not a number"
+      },
+      ask: {
+        ledger: "ethereum",
+        asset: "ether",
+        nominalAmount: "99"
+      }
+    };
+
+    const order = new Order(orderParams, defaultTakerCriteria, () =>
+      Promise.resolve(undefined)
+    );
+
+    expect(order.isValid()).toBeFalsy();
+  });
+
+  it("doesnt take order if it is not valid", async () => {
+    const order = new Order(defaultOrderParams, defaultTakerCriteria, () => {
+      throw new Error("Test fail, order should not be taken");
+    });
+
+    order.isValid = () => {
+      return false;
+    };
+
+    await order.take();
+  });
 });

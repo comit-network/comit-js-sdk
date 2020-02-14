@@ -1,5 +1,6 @@
 import { BigNumber } from "bignumber.js";
 import { Asset, Ledger, SwapProperties } from "../cnd";
+import { Swap } from "../swap";
 import { getToken, Token } from "../tokens/tokens";
 
 export interface OrderParams {
@@ -30,18 +31,48 @@ export interface TakerCriteriaAsset {
 export class Order {
   constructor(
     public readonly orderParams: OrderParams,
-    public readonly criteria: TakerCriteria
+    public readonly criteria: TakerCriteria,
+    public readonly takeOrder: (
+      orderParams: OrderParams
+    ) => Promise<Swap | undefined>
   ) {}
 
   public matches(): boolean {
-    return this.assetsMatch();
-  }
-
-  private assetsMatch(): boolean {
     return (
       assetMatches(this.criteria.buy, this.orderParams.bid) &&
       assetMatches(this.criteria.sell, this.orderParams.ask)
     );
+  }
+
+  public isValid(): boolean {
+    if (
+      !(
+        this.orderParams.ask.ledger &&
+        this.orderParams.ask.asset &&
+        this.orderParams.ask.nominalAmount &&
+        this.orderParams.bid.ledger &&
+        this.orderParams.bid.asset &&
+        this.orderParams.bid.nominalAmount &&
+        this.orderParams.validUntil &&
+        this.orderParams.id
+      )
+    ) {
+      return false;
+    }
+
+    const askAmount = new BigNumber(this.orderParams.ask.nominalAmount, 10);
+    const bidAmount = new BigNumber(this.orderParams.bid.nominalAmount, 10);
+
+    return !askAmount.isNaN() && !bidAmount.isNaN();
+  }
+
+  /**
+   * @description Tells the maker that we are taking this order.
+   */
+  public async take(): Promise<Swap | undefined> {
+    if (this.isValid() && this.matches()) {
+      return this.takeOrder(this.orderParams);
+    }
   }
 }
 

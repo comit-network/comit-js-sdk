@@ -1,14 +1,6 @@
-import { OrderParams } from "../order";
-
-export class MakerClient {
-  // @ts-ignore
-  constructor(makerUrl: string) {
-    // @ts-ignore
-  }
-
-  public async getOrderByTradingPair(
-    tradingPair: string
-  ): Promise<OrderParams> {
+export const mockGetOrderByTradingPair = jest
+  .fn()
+  .mockImplementation((tradingPair: string) => {
     const words = tradingPair.split("-");
 
     return {
@@ -25,15 +17,28 @@ export class MakerClient {
         nominalAmount: "4567890"
       }
     };
-  }
+  });
 
-  // @ts-ignore
-  public async getExecutionParams(order: OrderParams) {
-    throw new Error("getExecutionParams");
-  }
+export const mockGetExecutionParams = jest.fn().mockImplementation(() => {
+  return {
+    peer: {
+      peer_id: "12345",
+      address_hint: "/ip4/0.0.0.0"
+    },
+    alpha_expiry: 123456780,
+    beta_expiry: 123456700,
+    ledgers: { bitcoin: { network: "regtest" }, ethereum: { chain_id: 17 } }
+  };
+});
 
-  // @ts-ignore
-  public async takeOrder(order: OrderParams, swapId: string) {
-    throw new Error("takeOrder");
-  }
-}
+export const mockTakeOrder = jest.fn().mockImplementation(() => {
+  // The mocked function returns Promise<void>
+});
+
+export const MakerClient = jest.fn().mockImplementation(() => {
+  return {
+    getOrderByTradingPair: mockGetOrderByTradingPair,
+    getExecutionParams: mockGetExecutionParams,
+    takeOrder: mockTakeOrder
+  };
+});

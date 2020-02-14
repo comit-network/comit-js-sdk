@@ -25,8 +25,11 @@ interface LedgerParams {
 }
 
 export function isValidExecutionParams(
-  executionParams: ExecutionParams
+  executionParams?: ExecutionParams
 ): boolean {
+  if (!executionParams) {
+    return false;
+  }
   const now = moment().unix();
   const relativeAlphaExpiry = executionParams.alpha_expiry - now;
   const relativeBetaExpiry = executionParams.beta_expiry - now;
