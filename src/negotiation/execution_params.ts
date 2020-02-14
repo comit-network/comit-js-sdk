@@ -1,6 +1,6 @@
 import moment = require("moment");
 
-// Information that cannot be deduced from the Order
+// Information that cannot be deduced from the OrderParams
 // and is not up for negotiation
 // Matches exactly cnd http api
 export interface ExecutionParams {

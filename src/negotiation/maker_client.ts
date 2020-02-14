@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Order } from "./order";
+import { OrderParams } from "./order";
 
 export class MakerClient {
   private readonly makerUrl: string;
@@ -8,19 +8,21 @@ export class MakerClient {
     this.makerUrl = makerUrl;
   }
 
-  public async getOrderByTradingPair(tradingPair: string): Promise<Order> {
+  public async getOrderByTradingPair(
+    tradingPair: string
+  ): Promise<OrderParams> {
     const response = await axios.get(`${this.makerUrl}orders/${tradingPair}`);
     return response.data;
   }
 
-  public async getExecutionParams(order: Order) {
+  public async getExecutionParams(order: OrderParams) {
     const response = await axios.get(
       `${this.makerUrl}orders/${order.tradingPair}/${order.id}/executionParams`
     );
     return response.data;
   }
 
-  public async takeOrder(order: Order, swapId: string) {
+  public async takeOrder(order: OrderParams, swapId: string) {
     const response = await axios.post(
       `${this.makerUrl}orders/${order.tradingPair}/${order.id}/take`,
       { swapId }

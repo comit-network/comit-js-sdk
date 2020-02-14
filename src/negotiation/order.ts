@@ -2,7 +2,7 @@ import { BigNumber } from "bignumber.js";
 import { Asset, Ledger, SwapProperties } from "../cnd";
 import { getToken, Token } from "../tokens/tokens";
 
-export interface Order {
+export interface OrderParams {
   tradingPair: string;
   id: string;
   validUntil: number;
@@ -16,8 +16,62 @@ export interface OrderAsset {
   nominalAmount: string;
 }
 
+export interface TakerCriteria {
+  buy: TakerCriteriaAsset;
+  sell: TakerCriteriaAsset;
+}
+
+export interface TakerCriteriaAsset {
+  ledger: string;
+  asset: string;
+  minNominalAmount?: string;
+  maxNominalAmount?: string;
+}
+
+export class Order {
+  constructor(
+    public readonly orderParams: OrderParams,
+    public readonly criteria: TakerCriteria
+  ) {}
+
+  public matches(): boolean {
+    return this.assetsMatch();
+  }
+
+  private assetsMatch(): boolean {
+    return (
+      assetMatches(this.criteria.buy, this.orderParams.bid) &&
+      assetMatches(this.criteria.sell, this.orderParams.ask)
+    );
+  }
+}
+
+function assetMatches(
+  criteriaAsset: TakerCriteriaAsset,
+  orderAsset: OrderAsset
+) {
+  if (criteriaAsset.minNominalAmount) {
+    const minAmount = new BigNumber(criteriaAsset.minNominalAmount);
+    if (!minAmount.isLessThanOrEqualTo(orderAsset.nominalAmount)) {
+      return false;
+    }
+  }
+
+  if (criteriaAsset.maxNominalAmount) {
+    const maxAmount = new BigNumber(criteriaAsset.maxNominalAmount);
+    if (!maxAmount.isGreaterThanOrEqualTo(orderAsset.nominalAmount)) {
+      return false;
+    }
+  }
+
+  return (
+    criteriaAsset.asset === orderAsset.asset &&
+    criteriaAsset.ledger === orderAsset.ledger
+  );
+}
+
 export function orderSwapMatchesForMaker(
-  order: Order,
+  order: OrderParams,
   props: SwapProperties
 ): boolean {
   const params = props.parameters;

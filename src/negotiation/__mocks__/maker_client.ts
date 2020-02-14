@@ -1,4 +1,4 @@
-import { Order, OrderAsset } from "../order";
+import { OrderAsset, OrderParams } from "../order";
 
 function tickerToAsset(ticker: string): OrderAsset {
   switch (ticker) {
@@ -17,7 +17,9 @@ export class MakerClient {
     // @ts-ignore
   }
 
-  public async getOrderByTradingPair(tradingPair: string): Promise<Order> {
+  public async getOrderByTradingPair(
+    tradingPair: string
+  ): Promise<OrderParams> {
     const bidTicker = tradingPair.substr(0, 3);
     const askTicker = tradingPair.substr(4, 3);
 
@@ -31,12 +33,12 @@ export class MakerClient {
   }
 
   // @ts-ignore
-  public async getExecutionParams(order: Order) {
+  public async getExecutionParams(order: OrderParams) {
     throw new Error("getExecutionParams");
   }
 
   // @ts-ignore
-  public async takeOrder(order: Order, swapId: string) {
+  public async takeOrder(order: OrderParams, swapId: string) {
     throw new Error("takeOrder");
   }
 }
