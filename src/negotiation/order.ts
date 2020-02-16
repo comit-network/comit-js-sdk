@@ -67,25 +67,7 @@ export class Order {
    * are relatively safe. It does not check whether the ledgers/assets are correct, this is done with `Order.matches()`.
    */
   public isValid(): boolean {
-    if (
-      !(
-        this.orderParams.ask.ledger &&
-        this.orderParams.ask.asset &&
-        this.orderParams.ask.nominalAmount &&
-        this.orderParams.bid.ledger &&
-        this.orderParams.bid.asset &&
-        this.orderParams.bid.nominalAmount &&
-        this.orderParams.validUntil &&
-        this.orderParams.id
-      )
-    ) {
-      return false;
-    }
-
-    const askAmount = new BigNumber(this.orderParams.ask.nominalAmount, 10);
-    const bidAmount = new BigNumber(this.orderParams.bid.nominalAmount, 10);
-
-    return !askAmount.isNaN() && !bidAmount.isNaN();
+    return areOrderParamsValid(this.orderParams);
   }
 
   /**
@@ -284,4 +266,26 @@ export function takerCriteriaToTradingPair(
     "-" +
     takerCriteria.buy.asset
   );
+}
+
+export function areOrderParamsValid(orderParams: OrderParams): boolean {
+  if (
+    !(
+      orderParams.ask.ledger &&
+      orderParams.ask.asset &&
+      orderParams.ask.nominalAmount &&
+      orderParams.bid.ledger &&
+      orderParams.bid.asset &&
+      orderParams.bid.nominalAmount &&
+      orderParams.validUntil &&
+      orderParams.id
+    )
+  ) {
+    return false;
+  }
+
+  const askAmount = new BigNumber(orderParams.ask.nominalAmount, 10);
+  const bidAmount = new BigNumber(orderParams.bid.nominalAmount, 10);
+
+  return !askAmount.isNaN() && !bidAmount.isNaN();
 }

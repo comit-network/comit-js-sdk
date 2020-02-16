@@ -4,6 +4,7 @@ import { ComitClient } from "../comit_client";
 import { sleep, timeoutPromise, TryParams } from "../timeout_promise";
 import { ExecutionParams } from "./execution_params";
 import {
+  areOrderParamsValid,
   OrderParams,
   orderParamsToTradingPair,
   orderSwapMatchesForMaker
@@ -33,9 +34,18 @@ export class MakerNegotiator {
     );
   }
 
-  public addOrder(order: OrderParams) {
+  /**
+   * @description add an Order to the order book.
+   * @returns true if the order is valid and added, false otherwise.
+   * @param order - the order to add.
+   */
+  public addOrder(order: OrderParams): boolean {
+    if (!areOrderParamsValid(order)) {
+      return false;
+    }
     this.ordersByTradingPair[orderParamsToTradingPair(order)] = order;
     this.ordersById[order.id] = order;
+    return true;
   }
 
   // Below are methods related to the negotiation protocol

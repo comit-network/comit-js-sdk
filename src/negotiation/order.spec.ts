@@ -2,6 +2,7 @@ import { BigNumber } from "bignumber.js";
 import { Asset } from "../cnd";
 import { getToken } from "../tokens/tokens";
 import {
+  areOrderParamsValid,
   assetOrderToSwap,
   fromNominal,
   isNative,
@@ -373,11 +374,7 @@ describe("Order", () => {
       }
     };
 
-    const order = new Order(orderParams, defaultTakerCriteria, () =>
-      Promise.resolve(undefined)
-    );
-
-    expect(order.isValid()).toBeFalsy();
+    expect(areOrderParamsValid(orderParams)).toBeFalsy();
   });
 
   it("doesnt take order if it is not valid", async () => {
