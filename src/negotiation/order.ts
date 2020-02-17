@@ -128,6 +128,11 @@ function assetMatches(
   );
 }
 
+/**
+ * @description Check that a given swap matches the agreed conditions of an accepted order.
+ * @param order - The parameters of the agreed order.
+ * @param props - The properties of the the swap to check.
+ */
 export function orderSwapMatchesForMaker(
   order: OrderParams,
   props: SwapProperties
