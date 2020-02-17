@@ -47,13 +47,13 @@ describe("Taker Negotiator", () => {
     const order = await takerNegotiator.getOrder(takerCriteria);
 
     // We expect the returned order to be valid, if not
-    // This maker may be broken or malicious
+    // this maker may be broken or malicious
     expect(order.isValid()).toBeTruthy();
 
     // The returned order may or may not match the criteria,
-    // While it is expected that the maker returns correct
-    // Assets/Ledgers, it may not be the case. Or the proposed
-    // Order may not have amounts matching the criteria
+    // while it is expected that the maker returns correct
+    // assets/Ledgers, it may not be the case. Or the proposed
+    // order may not have amounts matching the criteria
     expect(order.matches()).toBeTruthy();
 
     // Takes the order by starting the swap execution and

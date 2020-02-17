@@ -65,7 +65,7 @@ export class TakerNegotiator {
    * returned here, even if it does not match the criteria or is invalid. Not all criteria are passed to the maker.
    * If it is indeed invalid or mismatching it will not be possible to execute the order, however it gives the
    * opportunity to the lib consumer to know that this maker returns invalid orders and the details of such order.
-   * @param criteria - The criteria of the order that we are looking for.
+   * @param criteria - The criteria of the order to be requested from the maker.
    */
   public async getOrder(criteria: TakerCriteria): Promise<Order> {
     const tradingPair = takerCriteriaToTradingPair(criteria);

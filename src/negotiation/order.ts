@@ -30,8 +30,8 @@ export interface TakerCriteriaAsset {
 }
 
 /**
- * An order handler for the taker. It has helper functions to facilitate the handler of an
- * order by a taker. This should only be created via `TakerNegotiatior.getOrder()` and should not be constructed from
+ * Handles an order for the taker. It has helper functions to facilitate the handler of an
+ * order by a taker. This should only be instantiated via `TakerNegotiatior.getOrder()` and should not be constructed from
  * scratch.
  * @param orderParams - The raw parameters of the order.
  * @param criteria - The criteria used to get this order.
@@ -66,14 +66,14 @@ export class Order {
 
   /**
    * Check that the order is valid and safe. Ensure that all properties are set and that the expiries
-   * are relatively safe. It does not check whether the ledgers/assets are correct, this is done with `Order.matches()`.
+   * are safe. It does not check whether the ledgers/assets are correct, this is done with `Order.matches()`.
    */
   public isValid(): boolean {
     return areOrderParamsValid(this.orderParams);
   }
 
   /**
-   * Initiate the swap execution and tells the maker that we are taking this order.
+   * Initiates the swap execution and tells the maker that we are taking this order.
    * Does nothing if the order is invalid or does not match the passed criteria.
    */
   public async take(): Promise<Swap | undefined> {

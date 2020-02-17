@@ -36,15 +36,17 @@ export class MakerNegotiator {
 
   /**
    * add an Order to the order book.
-   * @returns true if the order is valid and added, false otherwise.
-   * @param order - the order to add.
+   * @returns true if the order parameters are valid and were successfully added to the order book, false otherwise.
+   * @param orderParams - the order to add.
    */
-  public addOrder(order: OrderParams): boolean {
-    if (!areOrderParamsValid(order)) {
+  public addOrder(orderParams: OrderParams): boolean {
+    if (!areOrderParamsValid(orderParams)) {
       return false;
     }
-    this.ordersByTradingPair[orderParamsToTradingPair(order)] = order;
-    this.ordersById[order.id] = order;
+    this.ordersByTradingPair[
+      orderParamsToTradingPair(orderParams)
+    ] = orderParams;
+    this.ordersById[orderParams.id] = orderParams;
     return true;
   }
 
