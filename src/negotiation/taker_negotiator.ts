@@ -60,16 +60,29 @@ export class TakerNegotiator {
     this.makerClient = new MakerClient(makerUrl);
   }
 
+  /**
+   * @description Get an order from the maker based on specified criteria. Whatever is returned from the maker is
+   * returned here, even if it does not match the criteria or is invalid. Not all criteria are passed to the maker.
+   * If it is indeed invalid or mismatching it will not be possible to execute the order, however it gives the
+   * opportunity to the lib consumer to know that this maker returns invalid orders and the details of such order.
+   * @param criteria - The criteria of the order that we are looking for.
+   */
   public async getOrder(criteria: TakerCriteria): Promise<Order> {
     const tradingPair = takerCriteriaToTradingPair(criteria);
     const orderParams = await this.makerClient.getOrderByTradingPair(
       tradingPair
     );
 
-    return new Order(orderParams, criteria, this.takeOrder.bind(this));
+    return new Order(orderParams, criteria, this.execAndTakeOrder.bind(this));
   }
 
-  public async takeOrder(order: OrderParams): Promise<Swap | undefined> {
+  /**
+   * @description **Note: This should not be used, `Order.take()` should be preferred.**
+   * Executes the order by retrieving the execution parameters from the maker, initiating the swap with local cnd
+   * and informing the maker that we are taking the order.
+   * @param order - The order to take.
+   */
+  public async execAndTakeOrder(order: OrderParams): Promise<Swap | undefined> {
     const executionParams = await this.makerClient.getExecutionParams(order);
     if (!isValidExecutionParams(executionParams)) {
       return;

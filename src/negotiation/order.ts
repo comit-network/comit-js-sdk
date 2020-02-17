@@ -28,7 +28,22 @@ export interface TakerCriteriaAsset {
   maxNominalAmount?: string;
 }
 
+/**
+ * @description An order handler for the taker. It has helper functions to facilitate the handler of an
+ * order by a taker. This should only be created via `TakerNegotiatior.getOrder()` and should not be constructed from
+ * scratch.
+ * @param orderParams - The raw parameters of the order.
+ * @param criteria - The criteria used to get this order.
+ * @param takeOrder - Function passed from the `TakerNegotiator` to coordinate calls to `cnd` and the maker to effectively
+ * take the order and start the atomic swap execution.
+ */
 export class Order {
+  /**
+   * @description **Note: This should not be used, `Order` should be created by using `TakerNegotiatior.getOrder()`
+   * @param orderParams - The parameters of the order, as received from the maker.
+   * @param criteria - The criteria used to filter/retrieve this order.
+   * @param takeOrder - `TakerNegotiator.execAndTakeOrder()`
+   */
   constructor(
     public readonly orderParams: OrderParams,
     public readonly criteria: TakerCriteria,
@@ -37,6 +52,9 @@ export class Order {
     ) => Promise<Swap | undefined>
   ) {}
 
+  /**
+   * @description: Return whether an order matches the passed criteria.
+   */
   public matches(): boolean {
     return (
       assetMatches(this.criteria.buy, this.orderParams.bid) &&
@@ -44,6 +62,10 @@ export class Order {
     );
   }
 
+  /**
+   * @description Check that the order is valid and safe. Ensure that all properties are set and that the expiries
+   * are relatively safe. It does not check whether the ledgers/assets are correct, this is done with `Order.matches()`.
+   */
   public isValid(): boolean {
     if (
       !(
@@ -67,7 +89,8 @@ export class Order {
   }
 
   /**
-   * @description Tells the maker that we are taking this order.
+   * @description Initiate the swap execution and tells the maker that we are taking this order.
+   * Does nothing if the order is invalid or does not match the passed criteria.
    */
   public async take(): Promise<Swap | undefined> {
     if (this.isValid() && this.matches()) {
