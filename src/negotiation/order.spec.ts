@@ -9,7 +9,9 @@ import {
   Order,
   OrderAsset,
   orderSwapAssetMatchesForMaker,
-  orderSwapMatchesForMaker
+  orderSwapMatchesForMaker,
+  rateMatches,
+  TakerCriteria
 } from "./order";
 
 const ethBtcOrder = {
@@ -387,5 +389,31 @@ describe("Order", () => {
     };
 
     await order.take();
+  });
+});
+
+describe("Rate matching", () => {
+  it("Does match if min rate is not set", () => {
+    const criteria: TakerCriteria = JSON.parse(
+      JSON.stringify(defaultTakerCriteria)
+    );
+
+    expect(rateMatches(criteria, defaultOrderParams)).toBeTruthy();
+  });
+
+  it("Does match if rate is more than min rate", () => {
+    const criteria: TakerCriteria = JSON.parse(
+      JSON.stringify(defaultTakerCriteria)
+    );
+    criteria.minRate = 0.01;
+    expect(rateMatches(criteria, defaultOrderParams)).toBeTruthy();
+  });
+
+  it("Does not match if rate is less than min rate", () => {
+    const criteria: TakerCriteria = JSON.parse(
+      JSON.stringify(defaultTakerCriteria)
+    );
+    criteria.minRate = 0.02;
+    expect(rateMatches(criteria, defaultOrderParams)).toBeFalsy();
   });
 });

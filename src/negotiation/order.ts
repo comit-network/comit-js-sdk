@@ -19,6 +19,7 @@ export interface OrderAsset {
 export interface TakerCriteria {
   buy: TakerCriteriaAsset;
   sell: TakerCriteriaAsset;
+  minRate?: number;
 }
 
 export interface TakerCriteriaAsset {
@@ -58,7 +59,8 @@ export class Order {
   public matches(): boolean {
     return (
       assetMatches(this.criteria.buy, this.orderParams.bid) &&
-      assetMatches(this.criteria.sell, this.orderParams.ask)
+      assetMatches(this.criteria.sell, this.orderParams.ask) &&
+      rateMatches(this.criteria, this.orderParams)
     );
   }
 
@@ -81,10 +83,31 @@ export class Order {
   }
 }
 
+/**
+ * @description This is only exported for test purposes
+ * @param criteria
+ * @param orderParams
+ */
+export function rateMatches(
+  criteria: TakerCriteria,
+  orderParams: OrderParams
+): boolean {
+  if (criteria.minRate) {
+    const buy = new BigNumber(orderParams.bid.nominalAmount);
+    const sell = new BigNumber(orderParams.ask.nominalAmount);
+
+    const orderRate = buy.div(sell);
+
+    return orderRate.isGreaterThanOrEqualTo(criteria.minRate);
+  }
+
+  return true;
+}
+
 function assetMatches(
   criteriaAsset: TakerCriteriaAsset,
   orderAsset: OrderAsset
-) {
+): boolean {
   if (criteriaAsset.minNominalAmount) {
     const minAmount = new BigNumber(criteriaAsset.minNominalAmount);
     if (!minAmount.isLessThanOrEqualTo(orderAsset.nominalAmount)) {
