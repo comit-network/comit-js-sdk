@@ -140,23 +140,23 @@ function assetMatches(
 
 /**
  * Check that a given swap matches the agreed conditions of an accepted order.
- * @param order - The parameters of the agreed order.
+ * @param orderParams - The parameters of the agreed order.
  * @param props - The properties of the the swap to check.
  */
 export function orderSwapMatchesForMaker(
-  order: OrderParams,
+  orderParams: OrderParams,
   props: SwapProperties
 ): boolean {
   const params = props.parameters;
 
   return (
     orderSwapAssetMatchesForMaker(
-      order.ask,
+      orderParams.ask,
       params.alpha_asset,
       params.alpha_ledger
     ) &&
     orderSwapAssetMatchesForMaker(
-      order.bid,
+      orderParams.bid,
       params.beta_asset,
       params.beta_ledger
     )

@@ -63,11 +63,11 @@ export class MakerNegotiator {
     return this.executionParams;
   }
 
-  public takeOrder(swapId: string, order: OrderParams) {
+  public takeOrder(swapId: string, orderParams: OrderParams) {
     // Fire the auto-accept of the order in the background
     (async () => {
       try {
-        await this.tryAcceptSwap(swapId, order, this.tryParams);
+        await this.tryAcceptSwap(swapId, orderParams, this.tryParams);
       } catch (error) {
         console.log("Could not accept the swap");
       }
@@ -85,18 +85,18 @@ export class MakerNegotiator {
 
   private tryAcceptSwap(
     swapId: string,
-    order: OrderParams,
+    orderParams: OrderParams,
     { maxTimeoutSecs, tryIntervalSecs }: TryParams
   ) {
     return timeoutPromise(
       maxTimeoutSecs * 1000,
-      this.acceptSwap(swapId, order, tryIntervalSecs)
+      this.acceptSwap(swapId, orderParams, tryIntervalSecs)
     );
   }
 
   private async acceptSwap(
     swapId: string,
-    order: OrderParams,
+    orderParams: OrderParams,
     tryIntervalSecs: number
   ) {
     while (true) {
@@ -112,7 +112,7 @@ export class MakerNegotiator {
 
       if (
         swapDetails.properties &&
-        orderSwapMatchesForMaker(order, swapDetails.properties)
+        orderSwapMatchesForMaker(orderParams, swapDetails.properties)
       ) {
         return swap.accept(this.tryParams);
       } else {
@@ -129,7 +129,10 @@ export class MakerNegotiator {
 class MakerHttpApi {
   private readonly getOrderById: (orderId: string) => OrderParams | undefined;
   private readonly getExecutionParams: () => ExecutionParams;
-  private readonly takeOrder: (swapId: string, order: OrderParams) => void;
+  private readonly takeOrder: (
+    swapId: string,
+    orderParams: OrderParams
+  ) => void;
   private readonly getOrderByTradingPair: (
     tradingPair: string
   ) => OrderParams | undefined;
@@ -138,7 +141,7 @@ class MakerHttpApi {
   constructor(
     getOrderById: (orderId: string) => OrderParams | undefined,
     getExecutionParams: () => ExecutionParams,
-    takeOrder: (swapId: string, order: OrderParams) => void,
+    takeOrder: (swapId: string, orderParams: OrderParams) => void,
     getOrderByTradingPair: (tradingPair: string) => OrderParams | undefined
   ) {
     this.getOrderByTradingPair = getOrderByTradingPair;

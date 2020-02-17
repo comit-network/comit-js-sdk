@@ -17,18 +17,18 @@ import {
 
 export class TakerNegotiator {
   private static newSwapRequest(
-    order: OrderParams,
+    orderParams: OrderParams,
     executionParams: ExecutionParams
   ): undefined | SwapRequest {
     if (!executionParams.ledgers) {
       executionParams.ledgers = defaultLedgerParams();
     }
 
-    const alphaAsset = assetOrderToSwap(order.ask);
-    const alphaLedgerName = order.ask.ledger;
+    const alphaAsset = assetOrderToSwap(orderParams.ask);
+    const alphaLedgerName = orderParams.ask.ledger;
 
-    const betaAsset = assetOrderToSwap(order.bid);
-    const betaLedgerName = order.bid.ledger;
+    const betaAsset = assetOrderToSwap(orderParams.bid);
+    const betaLedgerName = orderParams.bid.ledger;
 
     if (alphaAsset && betaAsset) {
       return {
@@ -80,15 +80,22 @@ export class TakerNegotiator {
    * **Note: This should not be used, `Order.take()` should be preferred.**
    * Executes the order by retrieving the execution parameters from the maker, initiating the swap with local cnd
    * and informing the maker that we are taking the order.
-   * @param order - The order to take.
+   * @param orderParams - The order to take.
    */
-  public async execAndTakeOrder(order: OrderParams): Promise<Swap | undefined> {
-    const executionParams = await this.makerClient.getExecutionParams(order);
+  public async execAndTakeOrder(
+    orderParams: OrderParams
+  ): Promise<Swap | undefined> {
+    const executionParams = await this.makerClient.getExecutionParams(
+      orderParams
+    );
     if (!isValidExecutionParams(executionParams)) {
       return;
     }
 
-    const swapRequest = TakerNegotiator.newSwapRequest(order, executionParams);
+    const swapRequest = TakerNegotiator.newSwapRequest(
+      orderParams,
+      executionParams
+    );
     if (!swapRequest) {
       return;
     }
@@ -97,7 +104,7 @@ export class TakerNegotiator {
 
     const swapDetails = await swapHandle.fetchDetails();
     const swapId = swapDetails.properties!.id;
-    await this.makerClient.takeOrder(order.id, swapId);
+    await this.makerClient.takeOrder(orderParams.id, swapId);
     return swapHandle;
   }
 }

@@ -13,10 +13,10 @@ export class MakerClient {
   }
 
   public async getExecutionParams(
-    order: OrderParams
+    orderParams: OrderParams
   ): Promise<ExecutionParams> {
     const response = await axios.get(
-      `${this.makerUrl}orders/${order.id}/executionParams`
+      `${this.makerUrl}orders/${orderParams.id}/executionParams`
     );
     return response.data;
   }
