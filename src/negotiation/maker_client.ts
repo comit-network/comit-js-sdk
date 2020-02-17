@@ -22,7 +22,7 @@ export class MakerClient {
   }
 
   /**
-   * @description **Note: `Order.take()` should be preferred.**
+   * **Note: `Order.take()` should be preferred.**
    * Tells the maker that we are taking this order and what is the swap id of the swap request sent for
    * this order from taker cnd to maker cnd.
    * @param orderId - The id of the order that is taken.

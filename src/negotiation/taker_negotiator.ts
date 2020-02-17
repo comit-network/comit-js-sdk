@@ -61,7 +61,7 @@ export class TakerNegotiator {
   }
 
   /**
-   * @description Get an order from the maker based on specified criteria. Whatever is returned from the maker is
+   * Get an order from the maker based on specified criteria. Whatever is returned from the maker is
    * returned here, even if it does not match the criteria or is invalid. Not all criteria are passed to the maker.
    * If it is indeed invalid or mismatching it will not be possible to execute the order, however it gives the
    * opportunity to the lib consumer to know that this maker returns invalid orders and the details of such order.
@@ -77,7 +77,7 @@ export class TakerNegotiator {
   }
 
   /**
-   * @description **Note: This should not be used, `Order.take()` should be preferred.**
+   * **Note: This should not be used, `Order.take()` should be preferred.**
    * Executes the order by retrieving the execution parameters from the maker, initiating the swap with local cnd
    * and informing the maker that we are taking the order.
    * @param order - The order to take.

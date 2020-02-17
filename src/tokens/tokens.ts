@@ -10,7 +10,7 @@ export interface Token {
 }
 
 /**
- * @description Returns information about an ERC20 token.
+ * Returns information about an ERC20 token.
  * @returns ERC20 token object.
  * @param symbol - ERC20 ticker symbol.
  */

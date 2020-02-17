@@ -35,7 +35,7 @@ export class MakerNegotiator {
   }
 
   /**
-   * @description add an Order to the order book.
+   * add an Order to the order book.
    * @returns true if the order is valid and added, false otherwise.
    * @param order - the order to add.
    */

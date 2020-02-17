@@ -30,7 +30,7 @@ export interface TakerCriteriaAsset {
 }
 
 /**
- * @description An order handler for the taker. It has helper functions to facilitate the handler of an
+ * An order handler for the taker. It has helper functions to facilitate the handler of an
  * order by a taker. This should only be created via `TakerNegotiatior.getOrder()` and should not be constructed from
  * scratch.
  * @param orderParams - The raw parameters of the order.
@@ -40,7 +40,7 @@ export interface TakerCriteriaAsset {
  */
 export class Order {
   /**
-   * @description **Note: This should not be used, `Order` should be created by using `TakerNegotiatior.getOrder()`
+   * **Note: This should not be used, `Order` should be created by using `TakerNegotiatior.getOrder()`
    * @param orderParams - The parameters of the order, as received from the maker.
    * @param criteria - The criteria used to filter/retrieve this order.
    * @param takeOrder - `TakerNegotiator.execAndTakeOrder()`
@@ -65,7 +65,7 @@ export class Order {
   }
 
   /**
-   * @description Check that the order is valid and safe. Ensure that all properties are set and that the expiries
+   * Check that the order is valid and safe. Ensure that all properties are set and that the expiries
    * are relatively safe. It does not check whether the ledgers/assets are correct, this is done with `Order.matches()`.
    */
   public isValid(): boolean {
@@ -73,7 +73,7 @@ export class Order {
   }
 
   /**
-   * @description Initiate the swap execution and tells the maker that we are taking this order.
+   * Initiate the swap execution and tells the maker that we are taking this order.
    * Does nothing if the order is invalid or does not match the passed criteria.
    */
   public async take(): Promise<Swap | undefined> {
@@ -81,10 +81,17 @@ export class Order {
       return this.takeOrder(this.orderParams);
     }
   }
+
+  /**
+   * Returned the rate of the order offered by the maker.
+   */
+  public getOfferedRate(): BigNumber {
+    return orderRate(this.orderParams);
+  }
 }
 
 /**
- * @description This is only exported for test purposes
+ * This is only exported for test purposes
  * @param criteria
  * @param orderParams
  */
@@ -93,15 +100,18 @@ export function rateMatches(
   orderParams: OrderParams
 ): boolean {
   if (criteria.minRate) {
-    const buy = new BigNumber(orderParams.bid.nominalAmount);
-    const sell = new BigNumber(orderParams.ask.nominalAmount);
-
-    const orderRate = buy.div(sell);
-
-    return orderRate.isGreaterThanOrEqualTo(criteria.minRate);
+    const rate = orderRate(orderParams);
+    return rate.isGreaterThanOrEqualTo(criteria.minRate);
   }
 
   return true;
+}
+
+function orderRate(orderParams: OrderParams) {
+  const buy = new BigNumber(orderParams.bid.nominalAmount);
+  const sell = new BigNumber(orderParams.ask.nominalAmount);
+
+  return buy.div(sell);
 }
 
 function assetMatches(
@@ -129,7 +139,7 @@ function assetMatches(
 }
 
 /**
- * @description Check that a given swap matches the agreed conditions of an accepted order.
+ * Check that a given swap matches the agreed conditions of an accepted order.
  * @param order - The parameters of the agreed order.
  * @param props - The properties of the the swap to check.
  */
