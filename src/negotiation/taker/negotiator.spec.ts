@@ -9,7 +9,7 @@ import {
   mockGetOrderByTradingPair
 } from "./maker_client";
 import { Negotiator } from "./negotiator";
-import { TakerCriteria } from "./order";
+import { MatchingCriteria } from "./order";
 
 jest.mock("./maker_client");
 jest.mock("../../ethereum_wallet");
@@ -31,7 +31,7 @@ describe("Taker Negotiator", () => {
 
     // Define criteria for the order such as the assets and ledgers
     // But also min/max amounts we are looking to trade
-    const takerCriteria: TakerCriteria = {
+    const matchingCriteria: MatchingCriteria = {
       buy: {
         ledger: "bitcoin",
         asset: "bitcoin",
@@ -44,7 +44,7 @@ describe("Taker Negotiator", () => {
     };
 
     // Ask the maker if there are any orders that matches the criteria
-    const order = await takerNegotiator.getOrder(takerCriteria);
+    const order = await takerNegotiator.getOrder(matchingCriteria);
 
     // We expect the returned order to be valid, if not
     // this maker may be broken or malicious
@@ -64,7 +64,7 @@ describe("Taker Negotiator", () => {
   it("Returns an order with the correct trading pair, given buy/sell input", async () => {
     const takerNegotiator = new Negotiator(defaultComitClient, "");
 
-    const takerCriteria: TakerCriteria = {
+    const matchingCriteria: MatchingCriteria = {
       buy: {
         ledger: "bitcoin",
         asset: "bitcoin",
@@ -76,7 +76,7 @@ describe("Taker Negotiator", () => {
       }
     };
 
-    const order = await takerNegotiator.getOrder(takerCriteria);
+    const order = await takerNegotiator.getOrder(matchingCriteria);
 
     expect(order.rawOrder).toHaveProperty("bid.ledger", "bitcoin");
     expect(order.rawOrder).toHaveProperty("bid.asset", "bitcoin");

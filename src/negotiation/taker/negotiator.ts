@@ -10,9 +10,9 @@ import { Order as RawOrder } from "../order";
 import { MakerClient } from "./maker_client";
 import {
   assetOrderToSwap,
-  Order,
-  TakerCriteria,
-  takerCriteriaToTradingPair
+  MatchingCriteria,
+  matchingCriteriaToTradingPair,
+  Order
 } from "./order";
 
 export class Negotiator {
@@ -67,8 +67,8 @@ export class Negotiator {
    * opportunity to the lib consumer to know that this maker returns invalid orders and the details of such order.
    * @param criteria - The criteria of the order to be requested from the maker.
    */
-  public async getOrder(criteria: TakerCriteria): Promise<Order> {
-    const tradingPair = takerCriteriaToTradingPair(criteria);
+  public async getOrder(criteria: MatchingCriteria): Promise<Order> {
+    const tradingPair = matchingCriteriaToTradingPair(criteria);
     const orderParams = await this.makerClient.getOrderByTradingPair(
       tradingPair
     );

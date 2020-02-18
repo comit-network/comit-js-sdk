@@ -10,13 +10,13 @@ import {
   OrderAsset
 } from "../order";
 
-export interface TakerCriteria {
-  buy: TakerCriteriaAsset;
-  sell: TakerCriteriaAsset;
+export interface MatchingCriteria {
+  buy: MatchingCriteriaAsset;
+  sell: MatchingCriteriaAsset;
   minRate?: number;
 }
 
-export interface TakerCriteriaAsset {
+export interface MatchingCriteriaAsset {
   ledger: string;
   asset: string;
   minNominalAmount?: string;
@@ -41,7 +41,7 @@ export class Order {
    */
   constructor(
     public readonly rawOrder: RawOrder,
-    public readonly criteria: TakerCriteria,
+    public readonly criteria: MatchingCriteria,
     public readonly takeOrder: (rawOrder: RawOrder) => Promise<Swap | undefined>
   ) {}
 
@@ -88,7 +88,7 @@ export class Order {
  * @param rawOrder
  */
 export function rateMatches(
-  criteria: TakerCriteria,
+  criteria: MatchingCriteria,
   rawOrder: RawOrder
 ): boolean {
   if (criteria.minRate) {
@@ -107,7 +107,7 @@ function orderRate(rawOrder: RawOrder) {
 }
 
 function assetMatches(
-  criteriaAsset: TakerCriteriaAsset,
+  criteriaAsset: MatchingCriteriaAsset,
   orderAsset: OrderAsset
 ): boolean {
   if (criteriaAsset.minNominalAmount) {
@@ -161,16 +161,16 @@ export function assetOrderToSwap(orderAsset: OrderAsset): Asset | undefined {
   return undefined;
 }
 
-export function takerCriteriaToTradingPair(
-  takerCriteria: TakerCriteria
+export function matchingCriteriaToTradingPair(
+  matchingCriteria: MatchingCriteria
 ): string {
   return (
-    takerCriteria.sell.ledger +
+    matchingCriteria.sell.ledger +
     "-" +
-    takerCriteria.sell.asset +
+    matchingCriteria.sell.asset +
     "-" +
-    takerCriteria.buy.ledger +
+    matchingCriteria.buy.ledger +
     "-" +
-    takerCriteria.buy.asset
+    matchingCriteria.buy.asset
   );
 }

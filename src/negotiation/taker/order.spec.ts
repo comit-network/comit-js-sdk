@@ -1,6 +1,11 @@
 import { Asset } from "../../cnd";
 import { OrderAsset } from "../order";
-import { assetOrderToSwap, Order, rateMatches, TakerCriteria } from "./order";
+import {
+  assetOrderToSwap,
+  MatchingCriteria,
+  Order,
+  rateMatches
+} from "./order";
 
 const defaultOrderParams = {
   tradingPair: "ETH-BTC",
@@ -18,7 +23,7 @@ const defaultOrderParams = {
   }
 };
 
-const defaultTakerCriteria = {
+const defaultMatchingCriteria = {
   buy: {
     asset: "bitcoin",
     ledger: "bitcoin"
@@ -74,7 +79,7 @@ describe("negotation.taker.Order", () => {
   });
 
   it("matches taker criteria", () => {
-    const order = new Order(defaultOrderParams, defaultTakerCriteria, () =>
+    const order = new Order(defaultOrderParams, defaultMatchingCriteria, () =>
       Promise.resolve(undefined)
     );
 
@@ -98,7 +103,7 @@ describe("negotation.taker.Order", () => {
       }
     };
 
-    const order = new Order(orderParams, defaultTakerCriteria, () =>
+    const order = new Order(orderParams, defaultMatchingCriteria, () =>
       Promise.resolve(undefined)
     );
 
@@ -106,7 +111,7 @@ describe("negotation.taker.Order", () => {
   });
 
   it("doesnt match taker criteria if buy order amount is too low", () => {
-    const takerCriteria = {
+    const matchingCriteria = {
       buy: {
         asset: "bitcoin",
         ledger: "bitcoin",
@@ -117,7 +122,7 @@ describe("negotation.taker.Order", () => {
         ledger: "ethereum"
       }
     };
-    const order = new Order(defaultOrderParams, takerCriteria, () =>
+    const order = new Order(defaultOrderParams, matchingCriteria, () =>
       Promise.resolve(undefined)
     );
 
@@ -125,7 +130,7 @@ describe("negotation.taker.Order", () => {
   });
 
   it("is valid", () => {
-    const order = new Order(defaultOrderParams, defaultTakerCriteria, () =>
+    const order = new Order(defaultOrderParams, defaultMatchingCriteria, () =>
       Promise.resolve(undefined)
     );
 
@@ -133,7 +138,7 @@ describe("negotation.taker.Order", () => {
   });
 
   it("doesnt take order if it is not valid", async () => {
-    const order = new Order(defaultOrderParams, defaultTakerCriteria, () => {
+    const order = new Order(defaultOrderParams, defaultMatchingCriteria, () => {
       throw new Error("Test fail, order should not be taken");
     });
 
@@ -147,24 +152,24 @@ describe("negotation.taker.Order", () => {
 
 describe("Rate matching", () => {
   it("Does match if min rate is not set", () => {
-    const criteria: TakerCriteria = JSON.parse(
-      JSON.stringify(defaultTakerCriteria)
+    const criteria: MatchingCriteria = JSON.parse(
+      JSON.stringify(defaultMatchingCriteria)
     );
 
     expect(rateMatches(criteria, defaultOrderParams)).toBeTruthy();
   });
 
   it("Does match if rate is more than min rate", () => {
-    const criteria: TakerCriteria = JSON.parse(
-      JSON.stringify(defaultTakerCriteria)
+    const criteria: MatchingCriteria = JSON.parse(
+      JSON.stringify(defaultMatchingCriteria)
     );
     criteria.minRate = 0.01;
     expect(rateMatches(criteria, defaultOrderParams)).toBeTruthy();
   });
 
   it("Does not match if rate is less than min rate", () => {
-    const criteria: TakerCriteria = JSON.parse(
-      JSON.stringify(defaultTakerCriteria)
+    const criteria: MatchingCriteria = JSON.parse(
+      JSON.stringify(defaultMatchingCriteria)
     );
     criteria.minRate = 0.02;
     expect(rateMatches(criteria, defaultOrderParams)).toBeFalsy();
