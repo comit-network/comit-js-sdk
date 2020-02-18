@@ -7,11 +7,11 @@ import {
   mockGetExecutionParams,
   // @ts-ignore: tslint does not know that this is actually ./__mocks__/maker_client
   mockGetOrderByTradingPair
-} from "./maker_client";
+} from "./taker/maker_client";
 import { TakerCriteria } from "./taker/order";
 import { TakerNegotiator } from "./taker_negotiator";
 
-jest.mock("./maker_client");
+jest.mock("./taker/maker_client");
 jest.mock("../ethereum_wallet");
 jest.mock("../cnd");
 

@@ -6,8 +6,8 @@ import {
   ExecutionParams,
   isValidExecutionParams
 } from "./execution_params";
-import { MakerClient } from "./maker_client";
 import { OrderParams } from "./order";
+import { MakerClient } from "./taker/maker_client";
 import {
   assetOrderToSwap,
   Order,

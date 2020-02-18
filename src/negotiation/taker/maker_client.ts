@@ -1,6 +1,6 @@
 import axios from "axios";
-import { ExecutionParams } from "./execution_params";
-import { OrderParams } from "./order";
+import { ExecutionParams } from "../execution_params";
+import { OrderParams } from "../order";
 
 export class MakerClient {
   constructor(private readonly makerUrl: string) {}
