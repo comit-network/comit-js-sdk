@@ -34,7 +34,7 @@ const defaultMatchingCriteria = {
   }
 };
 
-describe("negotation.taker.Order", () => {
+describe("negotiation.taker.Order", () => {
   it("Builds Bitcoin swap asset from order asset", () => {
     const orderAsset: OrderAsset = {
       ledger: "bitcoin",
