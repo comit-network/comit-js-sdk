@@ -4,7 +4,7 @@ import { ComitClient } from "../../comit_client";
 import { sleep, timeoutPromise, TryParams } from "../../timeout_promise";
 import { ExecutionParams } from "../execution_params";
 import { isOrderValid, Order, toTradingPair } from "../order";
-import { orderSwapMatchesForMaker } from "./order";
+import orderSwapMatches from "./swap_order_matching";
 
 export class Negotiator {
   private ordersByTradingPair: { [tradingPair: string]: Order } = {};
@@ -106,7 +106,7 @@ export class Negotiator {
 
       if (
         swapDetails.properties &&
-        orderSwapMatchesForMaker(order, swapDetails.properties)
+        orderSwapMatches(order, swapDetails.properties)
       ) {
         return swap.accept(this.tryParams);
       } else {

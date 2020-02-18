@@ -1,7 +1,4 @@
-import {
-  orderSwapAssetMatchesForMaker,
-  orderSwapMatchesForMaker
-} from "./order";
+import orderSwapMatch from "./swap_order_matching";
 
 const ethBtcOrder = {
   tradingPair: "ETH-BTC",
@@ -36,49 +33,6 @@ const erc20BtcOrder = {
 };
 
 describe("negotiation.maker.Order", () => {
-  it("Matches Bitcoin order and swap asset for Maker", () => {
-    const swapAsset = {
-      name: "bitcoin",
-      quantity: "1000000000"
-    };
-    const swapLedger = {
-      name: "bitcoin",
-      network: "testnet"
-    };
-    expect(
-      orderSwapAssetMatchesForMaker(ethBtcOrder.bid, swapAsset, swapLedger)
-    ).toBeTruthy();
-  });
-
-  it("Matches Ether order and swap asset for Maker", () => {
-    const swapAsset = {
-      name: "ether",
-      quantity: "5000000000000000000"
-    };
-    const swapLedger = {
-      name: "ethereum",
-      chain_id: 3
-    };
-    expect(
-      orderSwapAssetMatchesForMaker(ethBtcOrder.ask, swapAsset, swapLedger)
-    ).toBeTruthy();
-  });
-
-  it("Matches erc20 order and swap asset for Maker", () => {
-    const swapAsset = {
-      name: "erc20",
-      token_contract: "0xB97048628DB6B661D4C2aA833e95Dbe1A905B280",
-      quantity: "70000000000000000000"
-    };
-    const swapLedger = {
-      name: "ethereum",
-      chain_id: 3
-    };
-    expect(
-      orderSwapAssetMatchesForMaker(erc20BtcOrder.ask, swapAsset, swapLedger)
-    ).toBeTruthy();
-  });
-
   it("Matches an order and a swap for native currencies", () => {
     const swapProps = {
       id: "abc",
@@ -106,7 +60,7 @@ describe("negotiation.maker.Order", () => {
       }
     };
 
-    expect(orderSwapMatchesForMaker(ethBtcOrder, swapProps)).toBeTruthy();
+    expect(orderSwapMatch(ethBtcOrder, swapProps)).toBeTruthy();
   });
 
   it("Matches an order and a swap for token currencies", () => {
@@ -137,7 +91,7 @@ describe("negotiation.maker.Order", () => {
       }
     };
 
-    expect(orderSwapMatchesForMaker(erc20BtcOrder, swapProps)).toBeTruthy();
+    expect(orderSwapMatch(erc20BtcOrder, swapProps)).toBeTruthy();
   });
 
   it("Mismatches an order and a swap due to quantity discrepancy", () => {
@@ -167,6 +121,6 @@ describe("negotiation.maker.Order", () => {
       }
     };
 
-    expect(orderSwapMatchesForMaker(ethBtcOrder, swapProps)).toBeFalsy();
+    expect(orderSwapMatch(ethBtcOrder, swapProps)).toBeFalsy();
   });
 });
