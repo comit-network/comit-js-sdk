@@ -76,13 +76,7 @@ export class TakerNegotiator {
     return new Order(orderParams, criteria, this.execAndTakeOrder.bind(this));
   }
 
-  /**
-   * **Note: This should not be used, `Order.take()` should be preferred.**
-   * Executes the order by retrieving the execution parameters from the maker, initiating the swap with local cnd
-   * and informing the maker that we are taking the order.
-   * @param orderParams - The order to take.
-   */
-  public async execAndTakeOrder(
+  private async execAndTakeOrder(
     orderParams: OrderParams
   ): Promise<Swap | undefined> {
     const executionParams = await this.makerClient.getExecutionParams(
