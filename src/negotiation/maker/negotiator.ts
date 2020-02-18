@@ -10,7 +10,7 @@ import {
 } from "../order";
 import { orderSwapMatchesForMaker } from "./order";
 
-export class MakerNegotiator {
+export class Negotiator {
   private ordersByTradingPair: { [tradingPair: string]: OrderParams } = {};
   private ordersById: { [orderId: string]: OrderParams } = {};
   private readonly executionParams: ExecutionParams;
