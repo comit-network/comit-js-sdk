@@ -6,8 +6,8 @@ import {
   areOrderParamsValid,
   fromNominal,
   isNative,
-  OrderAsset,
-  OrderParams
+  Order as RawOrder,
+  OrderAsset
 } from "../order";
 
 export interface TakerCriteria {
@@ -35,16 +35,14 @@ export interface TakerCriteriaAsset {
 export class Order {
   /**
    * **Note: This should not be used, `Order` should be created by using `TakerNegotiatior.getOrder()`
-   * @param orderParams - The parameters of the order, as received from the maker.
+   * @param rawOrder - The parameters of the order, as received from the maker.
    * @param criteria - The criteria used to filter/retrieve this order.
    * @param takeOrder - `Negotiator.execAndTakeOrder()`
    */
   constructor(
-    public readonly orderParams: OrderParams,
+    public readonly rawOrder: RawOrder,
     public readonly criteria: TakerCriteria,
-    public readonly takeOrder: (
-      orderParams: OrderParams
-    ) => Promise<Swap | undefined>
+    public readonly takeOrder: (rawOrder: RawOrder) => Promise<Swap | undefined>
   ) {}
 
   /**
@@ -52,9 +50,9 @@ export class Order {
    */
   public matches(): boolean {
     return (
-      assetMatches(this.criteria.buy, this.orderParams.bid) &&
-      assetMatches(this.criteria.sell, this.orderParams.ask) &&
-      rateMatches(this.criteria, this.orderParams)
+      assetMatches(this.criteria.buy, this.rawOrder.bid) &&
+      assetMatches(this.criteria.sell, this.rawOrder.ask) &&
+      rateMatches(this.criteria, this.rawOrder)
     );
   }
 
@@ -63,7 +61,7 @@ export class Order {
    * are safe. It does not check whether the ledgers/assets are correct, this is done with `Order.matches()`.
    */
   public isValid(): boolean {
-    return areOrderParamsValid(this.orderParams);
+    return areOrderParamsValid(this.rawOrder);
   }
 
   /**
@@ -72,7 +70,7 @@ export class Order {
    */
   public async take(): Promise<Swap | undefined> {
     if (this.isValid() && this.matches()) {
-      return this.takeOrder(this.orderParams);
+      return this.takeOrder(this.rawOrder);
     }
   }
 
@@ -80,30 +78,30 @@ export class Order {
    * Returned the rate of the order offered by the maker.
    */
   public getOfferedRate(): BigNumber {
-    return orderRate(this.orderParams);
+    return orderRate(this.rawOrder);
   }
 }
 
 /**
  * This is only exported for test purposes
  * @param criteria
- * @param orderParams
+ * @param rawOrder
  */
 export function rateMatches(
   criteria: TakerCriteria,
-  orderParams: OrderParams
+  rawOrder: RawOrder
 ): boolean {
   if (criteria.minRate) {
-    const rate = orderRate(orderParams);
+    const rate = orderRate(rawOrder);
     return rate.isGreaterThanOrEqualTo(criteria.minRate);
   }
 
   return true;
 }
 
-function orderRate(orderParams: OrderParams) {
-  const buy = new BigNumber(orderParams.bid.nominalAmount);
-  const sell = new BigNumber(orderParams.ask.nominalAmount);
+function orderRate(rawOrder: RawOrder) {
+  const buy = new BigNumber(rawOrder.bid.nominalAmount);
+  const sell = new BigNumber(rawOrder.ask.nominalAmount);
 
   return buy.div(sell);
 }

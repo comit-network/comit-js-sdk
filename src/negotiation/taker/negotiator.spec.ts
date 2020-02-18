@@ -78,10 +78,10 @@ describe("Taker Negotiator", () => {
 
     const order = await takerNegotiator.getOrder(takerCriteria);
 
-    expect(order.orderParams).toHaveProperty("bid.ledger", "bitcoin");
-    expect(order.orderParams).toHaveProperty("bid.asset", "bitcoin");
-    expect(order.orderParams).toHaveProperty("ask.ledger", "ethereum");
-    expect(order.orderParams).toHaveProperty("ask.asset", "ether");
+    expect(order.rawOrder).toHaveProperty("bid.ledger", "bitcoin");
+    expect(order.rawOrder).toHaveProperty("bid.asset", "bitcoin");
+    expect(order.rawOrder).toHaveProperty("ask.ledger", "ethereum");
+    expect(order.rawOrder).toHaveProperty("ask.asset", "ether");
 
     expect(mockGetOrderByTradingPair).toHaveBeenCalledTimes(1);
     expect(mockGetExecutionParams).toHaveBeenCalledTimes(0);

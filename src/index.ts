@@ -24,7 +24,7 @@ export { ComitClient } from "./comit_client";
 
 export { Swap } from "./swap";
 
-export { OrderParams, OrderAsset } from "./negotiation/order";
+export { Order, OrderAsset } from "./negotiation/order";
 export {
   ExecutionParams,
   defaultLedgerParams,

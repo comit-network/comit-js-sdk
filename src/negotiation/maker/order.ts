@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { Asset, Ledger, SwapProperties } from "../../cnd";
 import { getToken, Token } from "../../tokens/tokens";
-import { fromNominal, isNative, OrderAsset, OrderParams } from "../order";
+import { fromNominal, isNative, Order, OrderAsset } from "../order";
 
 /**
  * Check that a given swap matches the agreed conditions of an accepted order.
@@ -9,7 +9,7 @@ import { fromNominal, isNative, OrderAsset, OrderParams } from "../order";
  * @param props - The properties of the the swap to check.
  */
 export function orderSwapMatchesForMaker(
-  orderParams: OrderParams,
+  orderParams: Order,
   props: SwapProperties
 ): boolean {
   const params = props.parameters;

@@ -1,19 +1,17 @@
 import axios from "axios";
 import { ExecutionParams } from "../execution_params";
-import { OrderParams } from "../order";
+import { Order } from "../order";
 
 export class MakerClient {
   constructor(private readonly makerUrl: string) {}
 
-  public async getOrderByTradingPair(
-    tradingPair: string
-  ): Promise<OrderParams> {
+  public async getOrderByTradingPair(tradingPair: string): Promise<Order> {
     const response = await axios.get(`${this.makerUrl}orders/${tradingPair}`);
     return response.data;
   }
 
   public async getExecutionParams(
-    orderParams: OrderParams
+    orderParams: Order
   ): Promise<ExecutionParams> {
     const response = await axios.get(
       `${this.makerUrl}orders/${orderParams.id}/executionParams`

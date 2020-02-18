@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { Token } from "../tokens/tokens";
 
-export interface OrderParams {
+export interface Order {
   id: string;
   validUntil: number;
   bid: OrderAsset;
@@ -14,7 +14,7 @@ export interface OrderAsset {
   nominalAmount: string;
 }
 
-export function areOrderParamsValid(orderParams: OrderParams): boolean {
+export function areOrderParamsValid(orderParams: Order): boolean {
   if (
     !(
       orderParams.ask.ledger &&
@@ -36,7 +36,7 @@ export function areOrderParamsValid(orderParams: OrderParams): boolean {
   return !askAmount.isNaN() && !bidAmount.isNaN();
 }
 
-export function orderParamsToTradingPair(orderParams: OrderParams): string {
+export function orderParamsToTradingPair(orderParams: Order): string {
   return (
     orderParams.ask.ledger +
     "-" +

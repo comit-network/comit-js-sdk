@@ -6,7 +6,7 @@ import {
   ExecutionParams,
   isValidExecutionParams
 } from "../execution_params";
-import { OrderParams } from "../order";
+import { Order as RawOrder } from "../order";
 import { MakerClient } from "./maker_client";
 import {
   assetOrderToSwap,
@@ -17,18 +17,18 @@ import {
 
 export class Negotiator {
   private static newSwapRequest(
-    orderParams: OrderParams,
+    rawOrder: RawOrder,
     executionParams: ExecutionParams
   ): undefined | SwapRequest {
     if (!executionParams.ledgers) {
       executionParams.ledgers = defaultLedgerParams();
     }
 
-    const alphaAsset = assetOrderToSwap(orderParams.ask);
-    const alphaLedgerName = orderParams.ask.ledger;
+    const alphaAsset = assetOrderToSwap(rawOrder.ask);
+    const alphaLedgerName = rawOrder.ask.ledger;
 
-    const betaAsset = assetOrderToSwap(orderParams.bid);
-    const betaLedgerName = orderParams.bid.ledger;
+    const betaAsset = assetOrderToSwap(rawOrder.bid);
+    const betaLedgerName = rawOrder.bid.ledger;
 
     if (alphaAsset && betaAsset) {
       return {
@@ -77,16 +77,14 @@ export class Negotiator {
   }
 
   private async execAndTakeOrder(
-    orderParams: OrderParams
+    rawOrder: RawOrder
   ): Promise<Swap | undefined> {
-    const executionParams = await this.makerClient.getExecutionParams(
-      orderParams
-    );
+    const executionParams = await this.makerClient.getExecutionParams(rawOrder);
     if (!isValidExecutionParams(executionParams)) {
       return;
     }
 
-    const swapRequest = Negotiator.newSwapRequest(orderParams, executionParams);
+    const swapRequest = Negotiator.newSwapRequest(rawOrder, executionParams);
     if (!swapRequest) {
       return;
     }
@@ -95,7 +93,7 @@ export class Negotiator {
 
     const swapDetails = await swapHandle.fetchDetails();
     const swapId = swapDetails.properties!.id;
-    await this.makerClient.takeOrder(orderParams.id, swapId);
+    await this.makerClient.takeOrder(rawOrder.id, swapId);
     return swapHandle;
   }
 }
