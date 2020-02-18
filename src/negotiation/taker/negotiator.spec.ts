@@ -20,7 +20,7 @@ const defaultComitClient = new ComitClient(defaultCnd);
 defaultComitClient.bitcoinWallet = new MockBitcoinWallet();
 defaultComitClient.ethereumWallet = new EthereumWallet("");
 
-describe("Taker Negotiator", () => {
+describe("taker.Negotiator", () => {
   beforeEach(() => {
     mockGetOrderByTradingPair.mockClear();
     mockGetExecutionParams.mockClear();
