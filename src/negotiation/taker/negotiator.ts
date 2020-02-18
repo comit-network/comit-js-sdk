@@ -1,34 +1,34 @@
-import { SwapRequest } from "../cnd";
-import { ComitClient } from "../comit_client";
-import { Swap } from "../swap";
+import { SwapRequest } from "../../cnd";
+import { ComitClient } from "../../comit_client";
+import { Swap } from "../../swap";
 import {
   defaultLedgerParams,
   ExecutionParams,
   isValidExecutionParams
-} from "./execution_params";
+} from "../execution_params";
+import { Order as RawOrder } from "../order";
 import { MakerClient } from "./maker_client";
 import {
   assetOrderToSwap,
-  Order,
-  OrderParams,
-  TakerCriteria,
-  takerCriteriaToTradingPair
+  MatchingCriteria,
+  matchingCriteriaToTradingPair,
+  Order
 } from "./order";
 
-export class TakerNegotiator {
+export class Negotiator {
   private static newSwapRequest(
-    orderParams: OrderParams,
+    rawOrder: RawOrder,
     executionParams: ExecutionParams
   ): undefined | SwapRequest {
     if (!executionParams.ledgers) {
       executionParams.ledgers = defaultLedgerParams();
     }
 
-    const alphaAsset = assetOrderToSwap(orderParams.ask);
-    const alphaLedgerName = orderParams.ask.ledger;
+    const alphaAsset = assetOrderToSwap(rawOrder.ask);
+    const alphaLedgerName = rawOrder.ask.ledger;
 
-    const betaAsset = assetOrderToSwap(orderParams.bid);
-    const betaLedgerName = orderParams.bid.ledger;
+    const betaAsset = assetOrderToSwap(rawOrder.bid);
+    const betaLedgerName = rawOrder.bid.ledger;
 
     if (alphaAsset && betaAsset) {
       return {
@@ -67,29 +67,22 @@ export class TakerNegotiator {
    * opportunity to the lib consumer to know that this maker returns invalid orders and the details of such order.
    * @param criteria - The criteria of the order to be requested from the maker.
    */
-  public async getOrder(criteria: TakerCriteria): Promise<Order> {
-    const tradingPair = takerCriteriaToTradingPair(criteria);
-    const orderParams = await this.makerClient.getOrderByTradingPair(
-      tradingPair
-    );
+  public async getOrder(criteria: MatchingCriteria): Promise<Order> {
+    const tradingPair = matchingCriteriaToTradingPair(criteria);
+    const rawOrder = await this.makerClient.getOrderByTradingPair(tradingPair);
 
-    return new Order(orderParams, criteria, this.execAndTakeOrder.bind(this));
+    return new Order(rawOrder, criteria, this.execAndTakeOrder.bind(this));
   }
 
   private async execAndTakeOrder(
-    orderParams: OrderParams
+    rawOrder: RawOrder
   ): Promise<Swap | undefined> {
-    const executionParams = await this.makerClient.getExecutionParams(
-      orderParams
-    );
+    const executionParams = await this.makerClient.getExecutionParams(rawOrder);
     if (!isValidExecutionParams(executionParams)) {
       return;
     }
 
-    const swapRequest = TakerNegotiator.newSwapRequest(
-      orderParams,
-      executionParams
-    );
+    const swapRequest = Negotiator.newSwapRequest(rawOrder, executionParams);
     if (!swapRequest) {
       return;
     }
@@ -98,7 +91,7 @@ export class TakerNegotiator {
 
     const swapDetails = await swapHandle.fetchDetails();
     const swapId = swapDetails.properties!.id;
-    await this.makerClient.takeOrder(orderParams.id, swapId);
+    await this.makerClient.takeOrder(rawOrder.id, swapId);
     return swapHandle;
   }
 }

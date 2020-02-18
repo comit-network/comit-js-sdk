@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Set all files names to snake_case.
 - `Order` interface renamed to `OrderParams`, `Order` is now a class that allows the taker to check it against criteria.
-- Replaced `TakerNegotiator.getOrderByTradingPair()` with `TakerNegotiator.getOrder()`
+- Replaced `TakerNegotiator.getOrderByTradingPair()` with `TakerNegotiator.getOrder()`.
+- Internal split of `negotiation` module in `taker` and `maker`.
 
 ## [0.10.1] - 2020-02-06
 
