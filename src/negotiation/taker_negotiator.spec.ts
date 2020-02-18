@@ -8,7 +8,7 @@ import {
   // @ts-ignore: tslint does not know that this is actually ./__mocks__/maker_client
   mockGetOrderByTradingPair
 } from "./maker_client";
-import { TakerCriteria } from "./order";
+import { TakerCriteria } from "./taker/order";
 import { TakerNegotiator } from "./taker_negotiator";
 
 jest.mock("./maker_client");

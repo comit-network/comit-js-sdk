@@ -3,11 +3,11 @@ import * as http from "http";
 import { ComitClient } from "../comit_client";
 import { sleep, timeoutPromise, TryParams } from "../timeout_promise";
 import { ExecutionParams } from "./execution_params";
+import { orderSwapMatchesForMaker } from "./maker/order";
 import {
   areOrderParamsValid,
   OrderParams,
-  orderParamsToTradingPair,
-  orderSwapMatchesForMaker
+  orderParamsToTradingPair
 } from "./order";
 
 export class MakerNegotiator {

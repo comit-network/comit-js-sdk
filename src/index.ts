@@ -24,14 +24,7 @@ export { ComitClient } from "./comit_client";
 
 export { Swap } from "./swap";
 
-export {
-  OrderParams,
-  OrderAsset,
-  orderSwapMatchesForMaker,
-  isNative,
-  orderSwapAssetMatchesForMaker,
-  assetOrderToSwap
-} from "./negotiation/order";
+export { OrderParams, OrderAsset } from "./negotiation/order";
 export {
   ExecutionParams,
   defaultLedgerParams,

@@ -7,13 +7,13 @@ import {
   isValidExecutionParams
 } from "./execution_params";
 import { MakerClient } from "./maker_client";
+import { OrderParams } from "./order";
 import {
   assetOrderToSwap,
   Order,
-  OrderParams,
   TakerCriteria,
   takerCriteriaToTradingPair
-} from "./order";
+} from "./taker/order";
 
 export class TakerNegotiator {
   private static newSwapRequest(
