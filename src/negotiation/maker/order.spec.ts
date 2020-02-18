@@ -1,5 +1,7 @@
-import { orderSwapAssetMatchesForMaker } from "../../../dist/src/negotiation/order_handler";
-import { orderSwapMatchesForMaker } from "./order";
+import {
+  orderSwapAssetMatchesForMaker,
+  orderSwapMatchesForMaker
+} from "./order";
 
 const ethBtcOrder = {
   tradingPair: "ETH-BTC",

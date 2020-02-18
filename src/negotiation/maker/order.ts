@@ -28,7 +28,7 @@ export function orderSwapMatchesForMaker(
   );
 }
 
-function orderSwapAssetMatchesForMaker(
+export function orderSwapAssetMatchesForMaker(
   orderAsset: OrderAsset,
   swapAsset: Asset,
   swapLedger: Ledger
