@@ -7,3 +7,6 @@ dist/
 
 # This is a library
 yarn.lock
+
+# no need to commit coverage reports for now
+coverage/
