@@ -1,19 +1,19 @@
-import { MockBitcoinWallet } from "../__mocks__/bitcoin_wallet";
-import { Cnd } from "../cnd";
-import { ComitClient } from "../comit_client";
-import { EthereumWallet } from "../ethereum_wallet";
+import { MockBitcoinWallet } from "../../__mocks__/bitcoin_wallet";
+import { Cnd } from "../../cnd";
+import { ComitClient } from "../../comit_client";
+import { EthereumWallet } from "../../ethereum_wallet";
 import {
   // @ts-ignore: tslint does not know that this is actually ./__mocks__/maker_client
   mockGetExecutionParams,
   // @ts-ignore: tslint does not know that this is actually ./__mocks__/maker_client
   mockGetOrderByTradingPair
-} from "./taker/maker_client";
-import { TakerCriteria } from "./taker/order";
+} from "./maker_client";
+import { TakerCriteria } from "./order";
 import { TakerNegotiator } from "./taker_negotiator";
 
-jest.mock("./taker/maker_client");
-jest.mock("../ethereum_wallet");
-jest.mock("../cnd");
+jest.mock("./maker_client");
+jest.mock("../../ethereum_wallet");
+jest.mock("../../cnd");
 
 const defaultCnd = new Cnd("");
 const defaultComitClient = new ComitClient(defaultCnd);

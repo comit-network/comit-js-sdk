@@ -1,19 +1,19 @@
-import { SwapRequest } from "../cnd";
-import { ComitClient } from "../comit_client";
-import { Swap } from "../swap";
+import { SwapRequest } from "../../cnd";
+import { ComitClient } from "../../comit_client";
+import { Swap } from "../../swap";
 import {
   defaultLedgerParams,
   ExecutionParams,
   isValidExecutionParams
-} from "./execution_params";
-import { OrderParams } from "./order";
-import { MakerClient } from "./taker/maker_client";
+} from "../execution_params";
+import { OrderParams } from "../order";
+import { MakerClient } from "./maker_client";
 import {
   assetOrderToSwap,
   Order,
   TakerCriteria,
   takerCriteriaToTradingPair
-} from "./taker/order";
+} from "./order";
 
 export class TakerNegotiator {
   private static newSwapRequest(
