@@ -14,37 +14,37 @@ export interface OrderAsset {
   nominalAmount: string;
 }
 
-export function areOrderParamsValid(orderParams: Order): boolean {
+export function isOrderValid(order: Order): boolean {
   if (
     !(
-      orderParams.ask.ledger &&
-      orderParams.ask.asset &&
-      orderParams.ask.nominalAmount &&
-      orderParams.bid.ledger &&
-      orderParams.bid.asset &&
-      orderParams.bid.nominalAmount &&
-      orderParams.validUntil &&
-      orderParams.id
+      order.ask.ledger &&
+      order.ask.asset &&
+      order.ask.nominalAmount &&
+      order.bid.ledger &&
+      order.bid.asset &&
+      order.bid.nominalAmount &&
+      order.validUntil &&
+      order.id
     )
   ) {
     return false;
   }
 
-  const askAmount = new BigNumber(orderParams.ask.nominalAmount, 10);
-  const bidAmount = new BigNumber(orderParams.bid.nominalAmount, 10);
+  const askAmount = new BigNumber(order.ask.nominalAmount, 10);
+  const bidAmount = new BigNumber(order.bid.nominalAmount, 10);
 
   return !askAmount.isNaN() && !bidAmount.isNaN();
 }
 
-export function orderParamsToTradingPair(orderParams: Order): string {
+export function toTradingPair(order: Order): string {
   return (
-    orderParams.ask.ledger +
+    order.ask.ledger +
     "-" +
-    orderParams.ask.asset +
+    order.ask.asset +
     "-" +
-    orderParams.bid.ledger +
+    order.bid.ledger +
     "-" +
-    orderParams.bid.asset
+    order.bid.asset
   );
 }
 

@@ -1,6 +1,6 @@
 import { BigNumber } from "bignumber.js";
 import { getToken } from "../tokens/tokens";
-import { areOrderParamsValid, fromNominal, isNative } from "./order";
+import { fromNominal, isNative, isOrderValid } from "./order";
 
 const ethBtcOrder = {
   tradingPair: "ETH-BTC",
@@ -83,7 +83,7 @@ describe("negotiation.Order", () => {
   });
 
   it("is not valid if amounts do not represent a number", () => {
-    const orderParams = {
+    const rawOrder = {
       tradingPair: "ETH-BTC",
       id: "1234",
       validUntil: 1234567890,
@@ -99,6 +99,6 @@ describe("negotiation.Order", () => {
       }
     };
 
-    expect(areOrderParamsValid(orderParams)).toBeFalsy();
+    expect(isOrderValid(rawOrder)).toBeFalsy();
   });
 });

@@ -87,7 +87,7 @@ describe("negotation.taker.Order", () => {
   });
 
   it("doesnt match taker criteria due to incorrect asset", () => {
-    const orderParams = {
+    const rawOrder = {
       tradingPair: "ETH-BTC",
       id: "1234",
       validUntil: 1234567890,
@@ -103,7 +103,7 @@ describe("negotation.taker.Order", () => {
       }
     };
 
-    const order = new Order(orderParams, defaultMatchingCriteria, () =>
+    const order = new Order(rawOrder, defaultMatchingCriteria, () =>
       Promise.resolve(undefined)
     );
 

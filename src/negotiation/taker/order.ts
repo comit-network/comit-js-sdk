@@ -3,9 +3,9 @@ import { Asset } from "../../cnd";
 import { Swap } from "../../swap";
 import { getToken } from "../../tokens/tokens";
 import {
-  areOrderParamsValid,
   fromNominal,
   isNative,
+  isOrderValid,
   Order as RawOrder,
   OrderAsset
 } from "../order";
@@ -27,7 +27,7 @@ export interface MatchingCriteriaAsset {
  * Handles an order for the taker. It has helper functions to facilitate the handler of an
  * order by a taker. This should only be instantiated via `TakerNegotiatior.getOrder()` and should not be constructed from
  * scratch.
- * @param orderParams - The raw parameters of the order.
+ * @param rawParams - The raw parameters of the order.
  * @param criteria - The criteria used to get this order.
  * @param takeOrder - Function passed from the `Negotiator` to coordinate calls to `cnd` and the maker to effectively
  * take the order and start the atomic swap execution.
@@ -61,7 +61,7 @@ export class Order {
    * are safe. It does not check whether the ledgers/assets are correct, this is done with `Order.matches()`.
    */
   public isValid(): boolean {
-    return areOrderParamsValid(this.rawOrder);
+    return isOrderValid(this.rawOrder);
   }
 
   /**

@@ -69,11 +69,9 @@ export class Negotiator {
    */
   public async getOrder(criteria: MatchingCriteria): Promise<Order> {
     const tradingPair = matchingCriteriaToTradingPair(criteria);
-    const orderParams = await this.makerClient.getOrderByTradingPair(
-      tradingPair
-    );
+    const rawOrder = await this.makerClient.getOrderByTradingPair(tradingPair);
 
-    return new Order(orderParams, criteria, this.execAndTakeOrder.bind(this));
+    return new Order(rawOrder, criteria, this.execAndTakeOrder.bind(this));
   }
 
   private async execAndTakeOrder(

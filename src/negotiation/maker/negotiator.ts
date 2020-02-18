@@ -3,7 +3,7 @@ import * as http from "http";
 import { ComitClient } from "../../comit_client";
 import { sleep, timeoutPromise, TryParams } from "../../timeout_promise";
 import { ExecutionParams } from "../execution_params";
-import { areOrderParamsValid, Order, orderParamsToTradingPair } from "../order";
+import { isOrderValid, Order, toTradingPair } from "../order";
 import { orderSwapMatchesForMaker } from "./order";
 
 export class Negotiator {
@@ -33,16 +33,14 @@ export class Negotiator {
   /**
    * add an Order to the order book.
    * @returns true if the order parameters are valid and were successfully added to the order book, false otherwise.
-   * @param orderParams - the order to add.
+   * @param order - the order to add.
    */
-  public addOrder(orderParams: Order): boolean {
-    if (!areOrderParamsValid(orderParams)) {
+  public addOrder(order: Order): boolean {
+    if (!isOrderValid(order)) {
       return false;
     }
-    this.ordersByTradingPair[
-      orderParamsToTradingPair(orderParams)
-    ] = orderParams;
-    this.ordersById[orderParams.id] = orderParams;
+    this.ordersByTradingPair[toTradingPair(order)] = order;
+    this.ordersById[order.id] = order;
     return true;
   }
 
@@ -59,11 +57,11 @@ export class Negotiator {
     return this.executionParams;
   }
 
-  public takeOrder(swapId: string, orderParams: Order) {
+  public takeOrder(swapId: string, order: Order) {
     // Fire the auto-accept of the order in the background
     (async () => {
       try {
-        await this.tryAcceptSwap(swapId, orderParams, this.tryParams);
+        await this.tryAcceptSwap(swapId, order, this.tryParams);
       } catch (error) {
         console.log("Could not accept the swap");
       }
@@ -81,18 +79,18 @@ export class Negotiator {
 
   private tryAcceptSwap(
     swapId: string,
-    orderParams: Order,
+    order: Order,
     { maxTimeoutSecs, tryIntervalSecs }: TryParams
   ) {
     return timeoutPromise(
       maxTimeoutSecs * 1000,
-      this.acceptSwap(swapId, orderParams, tryIntervalSecs)
+      this.acceptSwap(swapId, order, tryIntervalSecs)
     );
   }
 
   private async acceptSwap(
     swapId: string,
-    orderParams: Order,
+    order: Order,
     tryIntervalSecs: number
   ) {
     while (true) {
@@ -108,7 +106,7 @@ export class Negotiator {
 
       if (
         swapDetails.properties &&
-        orderSwapMatchesForMaker(orderParams, swapDetails.properties)
+        orderSwapMatchesForMaker(order, swapDetails.properties)
       ) {
         return swap.accept(this.tryParams);
       } else {
@@ -125,7 +123,7 @@ export class Negotiator {
 class MakerHttpApi {
   private readonly getOrderById: (orderId: string) => Order | undefined;
   private readonly getExecutionParams: () => ExecutionParams;
-  private readonly takeOrder: (swapId: string, orderParams: Order) => void;
+  private readonly takeOrder: (swapId: string, order: Order) => void;
   private readonly getOrderByTradingPair: (
     tradingPair: string
   ) => Order | undefined;
@@ -134,7 +132,7 @@ class MakerHttpApi {
   constructor(
     getOrderById: (orderId: string) => Order | undefined,
     getExecutionParams: () => ExecutionParams,
-    takeOrder: (swapId: string, orderParams: Order) => void,
+    takeOrder: (swapId: string, order: Order) => void,
     getOrderByTradingPair: (tradingPair: string) => Order | undefined
   ) {
     this.getOrderByTradingPair = getOrderByTradingPair;
