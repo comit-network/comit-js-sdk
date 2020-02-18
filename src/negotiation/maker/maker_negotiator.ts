@@ -1,14 +1,14 @@
 import express from "express";
 import * as http from "http";
-import { ComitClient } from "../comit_client";
-import { sleep, timeoutPromise, TryParams } from "../timeout_promise";
-import { ExecutionParams } from "./execution_params";
-import { orderSwapMatchesForMaker } from "./maker/order";
+import { ComitClient } from "../../comit_client";
+import { sleep, timeoutPromise, TryParams } from "../../timeout_promise";
+import { ExecutionParams } from "../execution_params";
 import {
   areOrderParamsValid,
   OrderParams,
   orderParamsToTradingPair
-} from "./order";
+} from "../order";
+import { orderSwapMatchesForMaker } from "./order";
 
 export class MakerNegotiator {
   private ordersByTradingPair: { [tradingPair: string]: OrderParams } = {};
