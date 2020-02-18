@@ -1,6 +1,6 @@
 import moment = require("moment");
 
-// Information that cannot be deduced from the Order
+// Information that cannot be deduced from the OrderParams
 // and is not up for negotiation
 // Matches exactly cnd http api
 export interface ExecutionParams {
@@ -25,8 +25,11 @@ interface LedgerParams {
 }
 
 export function isValidExecutionParams(
-  executionParams: ExecutionParams
+  executionParams?: ExecutionParams
 ): boolean {
+  if (!executionParams) {
+    return false;
+  }
   const now = moment().unix();
   const relativeAlphaExpiry = executionParams.alpha_expiry - now;
   const relativeBetaExpiry = executionParams.beta_expiry - now;

@@ -25,7 +25,7 @@ export { ComitClient } from "./comit_client";
 export { Swap } from "./swap";
 
 export {
-  Order,
+  OrderParams,
   OrderAsset,
   orderSwapMatchesForMaker,
   isNative,

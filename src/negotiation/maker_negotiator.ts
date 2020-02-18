@@ -3,11 +3,16 @@ import * as http from "http";
 import { ComitClient } from "../comit_client";
 import { sleep, timeoutPromise, TryParams } from "../timeout_promise";
 import { ExecutionParams } from "./execution_params";
-import { Order, orderSwapMatchesForMaker } from "./order";
+import {
+  areOrderParamsValid,
+  OrderParams,
+  orderParamsToTradingPair,
+  orderSwapMatchesForMaker
+} from "./order";
 
 export class MakerNegotiator {
-  private ordersByTradingPair: { [tradingPair: string]: Order } = {};
-  private ordersById: { [orderId: string]: Order } = {};
+  private ordersByTradingPair: { [tradingPair: string]: OrderParams } = {};
+  private ordersById: { [orderId: string]: OrderParams } = {};
   private readonly executionParams: ExecutionParams;
   private readonly comitClient: ComitClient;
   private readonly tryParams: TryParams;
@@ -29,17 +34,28 @@ export class MakerNegotiator {
     );
   }
 
-  public addOrder(order: Order) {
-    this.ordersByTradingPair[order.tradingPair] = order;
-    this.ordersById[order.id] = order;
+  /**
+   * add an Order to the order book.
+   * @returns true if the order parameters are valid and were successfully added to the order book, false otherwise.
+   * @param orderParams - the order to add.
+   */
+  public addOrder(orderParams: OrderParams): boolean {
+    if (!areOrderParamsValid(orderParams)) {
+      return false;
+    }
+    this.ordersByTradingPair[
+      orderParamsToTradingPair(orderParams)
+    ] = orderParams;
+    this.ordersById[orderParams.id] = orderParams;
+    return true;
   }
 
   // Below are methods related to the negotiation protocol
-  public getOrderByTradingPair(tradingPair: string): Order | undefined {
+  public getOrderByTradingPair(tradingPair: string): OrderParams | undefined {
     return this.ordersByTradingPair[tradingPair];
   }
 
-  public getOrderById(orderId: string): Order | undefined {
+  public getOrderById(orderId: string): OrderParams | undefined {
     return this.ordersById[orderId];
   }
 
@@ -47,11 +63,11 @@ export class MakerNegotiator {
     return this.executionParams;
   }
 
-  public takeOrder(swapId: string, order: Order) {
+  public takeOrder(swapId: string, orderParams: OrderParams) {
     // Fire the auto-accept of the order in the background
     (async () => {
       try {
-        await this.tryAcceptSwap(swapId, order, this.tryParams);
+        await this.tryAcceptSwap(swapId, orderParams, this.tryParams);
       } catch (error) {
         console.log("Could not accept the swap");
       }
@@ -69,18 +85,18 @@ export class MakerNegotiator {
 
   private tryAcceptSwap(
     swapId: string,
-    order: Order,
+    orderParams: OrderParams,
     { maxTimeoutSecs, tryIntervalSecs }: TryParams
   ) {
     return timeoutPromise(
       maxTimeoutSecs * 1000,
-      this.acceptSwap(swapId, order, tryIntervalSecs)
+      this.acceptSwap(swapId, orderParams, tryIntervalSecs)
     );
   }
 
   private async acceptSwap(
     swapId: string,
-    order: Order,
+    orderParams: OrderParams,
     tryIntervalSecs: number
   ) {
     while (true) {
@@ -96,7 +112,7 @@ export class MakerNegotiator {
 
       if (
         swapDetails.properties &&
-        orderSwapMatchesForMaker(order, swapDetails.properties)
+        orderSwapMatchesForMaker(orderParams, swapDetails.properties)
       ) {
         return swap.accept(this.tryParams);
       } else {
@@ -111,19 +127,22 @@ export class MakerNegotiator {
 }
 
 class MakerHttpApi {
-  private readonly getOrderById: (orderId: string) => Order | undefined;
+  private readonly getOrderById: (orderId: string) => OrderParams | undefined;
   private readonly getExecutionParams: () => ExecutionParams;
-  private readonly takeOrder: (swapId: string, order: Order) => void;
+  private readonly takeOrder: (
+    swapId: string,
+    orderParams: OrderParams
+  ) => void;
   private readonly getOrderByTradingPair: (
     tradingPair: string
-  ) => Order | undefined;
+  ) => OrderParams | undefined;
   private server: http.Server | undefined;
 
   constructor(
-    getOrderById: (orderId: string) => Order | undefined,
+    getOrderById: (orderId: string) => OrderParams | undefined,
     getExecutionParams: () => ExecutionParams,
-    takeOrder: (swapId: string, order: Order) => void,
-    getOrderByTradingPair: (tradingPair: string) => Order | undefined
+    takeOrder: (swapId: string, orderParams: OrderParams) => void,
+    getOrderByTradingPair: (tradingPair: string) => OrderParams | undefined
   ) {
     this.getOrderByTradingPair = getOrderByTradingPair;
     this.getOrderById = getOrderById;
@@ -150,16 +169,16 @@ class MakerHttpApi {
       }
     });
 
-    app.get("/orders/:tradingPair/:orderId/executionParams", async (_, res) => {
+    app.get("/orders/:orderId/executionParams", async (_, res) => {
       res.send(this.getExecutionParams());
     });
 
-    app.post("/orders/:tradingPair/:orderId/take", async (req, res) => {
+    app.post("/orders/:orderId/take", async (req, res) => {
       const order = this.getOrderById(req.params.orderId);
       const body = req.body;
 
-      if (!order || req.params.tradingPair !== order.tradingPair) {
-        res.status(404).send("Order not found");
+      if (!order) {
+        res.status(404).send("OrderParams not found");
       } else if (!body || !body.swapId) {
         res.status(400).send("swapId missing from payload");
       } else {
