@@ -8,8 +8,8 @@ import {
   // @ts-ignore: tslint does not know that this is actually ./__mocks__/maker_client
   mockGetOrderByTradingPair
 } from "./maker_client";
+import { Negotiator } from "./negotiator";
 import { TakerCriteria } from "./order";
-import { TakerNegotiator } from "./taker_negotiator";
 
 jest.mock("./maker_client");
 jest.mock("../../ethereum_wallet");
@@ -27,7 +27,7 @@ describe("Taker Negotiator", () => {
   });
 
   it("Search an order and takes it", async () => {
-    const takerNegotiator = new TakerNegotiator(defaultComitClient, "");
+    const takerNegotiator = new Negotiator(defaultComitClient, "");
 
     // Define criteria for the order such as the assets and ledgers
     // But also min/max amounts we are looking to trade
@@ -62,7 +62,7 @@ describe("Taker Negotiator", () => {
   });
 
   it("Returns an order with the correct trading pair, given buy/sell input", async () => {
-    const takerNegotiator = new TakerNegotiator(defaultComitClient, "");
+    const takerNegotiator = new Negotiator(defaultComitClient, "");
 
     const takerCriteria: TakerCriteria = {
       buy: {

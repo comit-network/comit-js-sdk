@@ -32,6 +32,6 @@ export {
   NetworkType
 } from "./negotiation/execution_params";
 export { Negotiator as MakerNegotiator } from "./negotiation/maker/negotiator";
-export { TakerNegotiator } from "./negotiation/taker/taker_negotiator";
+export { Negotiator as TakerNegotiator } from "./negotiation/taker/negotiator";
 
 export { TryParams } from "./timeout_promise";

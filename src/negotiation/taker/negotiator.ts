@@ -15,7 +15,7 @@ import {
   takerCriteriaToTradingPair
 } from "./order";
 
-export class TakerNegotiator {
+export class Negotiator {
   private static newSwapRequest(
     orderParams: OrderParams,
     executionParams: ExecutionParams
@@ -86,10 +86,7 @@ export class TakerNegotiator {
       return;
     }
 
-    const swapRequest = TakerNegotiator.newSwapRequest(
-      orderParams,
-      executionParams
-    );
+    const swapRequest = Negotiator.newSwapRequest(orderParams, executionParams);
     if (!swapRequest) {
       return;
     }

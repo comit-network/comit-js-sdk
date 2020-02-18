@@ -29,7 +29,7 @@ export interface TakerCriteriaAsset {
  * scratch.
  * @param orderParams - The raw parameters of the order.
  * @param criteria - The criteria used to get this order.
- * @param takeOrder - Function passed from the `TakerNegotiator` to coordinate calls to `cnd` and the maker to effectively
+ * @param takeOrder - Function passed from the `Negotiator` to coordinate calls to `cnd` and the maker to effectively
  * take the order and start the atomic swap execution.
  */
 export class Order {
@@ -37,7 +37,7 @@ export class Order {
    * **Note: This should not be used, `Order` should be created by using `TakerNegotiatior.getOrder()`
    * @param orderParams - The parameters of the order, as received from the maker.
    * @param criteria - The criteria used to filter/retrieve this order.
-   * @param takeOrder - `TakerNegotiator.execAndTakeOrder()`
+   * @param takeOrder - `Negotiator.execAndTakeOrder()`
    */
   constructor(
     public readonly orderParams: OrderParams,
