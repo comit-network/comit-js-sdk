@@ -12,7 +12,7 @@ export class Negotiator {
   private readonly executionParams: ExecutionParams;
   private readonly comitClient: ComitClient;
   private readonly tryParams: TryParams;
-  private readonly makerhttpApi: MakerHttpApi;
+  private readonly httpService: HttpService;
 
   constructor(
     comitClient: ComitClient,
@@ -22,7 +22,7 @@ export class Negotiator {
     this.executionParams = executionParams;
     this.comitClient = comitClient;
     this.tryParams = tryParams;
-    this.makerhttpApi = new MakerHttpApi(
+    this.httpService = new HttpService(
       this.getOrderById.bind(this),
       this.getExecutionParams.bind(this),
       this.takeOrder.bind(this),
@@ -70,11 +70,11 @@ export class Negotiator {
   // End of methods related to the negotiation protocol
 
   public getUrl(): string | undefined {
-    return this.makerhttpApi.getUrl();
+    return this.httpService.getUrl();
   }
 
   public listen(port: number, hostname?: string) {
-    return this.makerhttpApi.listen(port, hostname);
+    return this.httpService.listen(port, hostname);
   }
 
   private tryAcceptSwap(
@@ -120,7 +120,7 @@ export class Negotiator {
   }
 }
 
-class MakerHttpApi {
+class HttpService {
   private readonly getOrderById: (orderId: string) => Order | undefined;
   private readonly getExecutionParams: () => ExecutionParams;
   private readonly takeOrder: (swapId: string, order: Order) => void;
