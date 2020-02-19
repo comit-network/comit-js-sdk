@@ -24,9 +24,9 @@ export async function createActor(
     .getPeerListenAddresses()
     .then(addresses => addresses[0]);
 
-  const comitClient = new ComitClient(cnd);
-  comitClient.ethereumWallet = ethereumWallet;
-  comitClient.bitcoinWallet = bitcoinWallet;
+  const comitClient = new ComitClient(cnd)
+    .withBitcoinWallet(bitcoinWallet)
+    .withEthereumWallet(ethereumWallet);
 
   return {
     name,

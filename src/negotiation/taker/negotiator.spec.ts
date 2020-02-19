@@ -16,9 +16,9 @@ jest.mock("../../ethereum_wallet");
 jest.mock("../../cnd");
 
 const defaultCnd = new Cnd("");
-const defaultComitClient = new ComitClient(defaultCnd);
-defaultComitClient.bitcoinWallet = new MockBitcoinWallet();
-defaultComitClient.ethereumWallet = new EthereumWallet("");
+const defaultComitClient = new ComitClient(defaultCnd)
+  .withBitcoinWallet(new MockBitcoinWallet())
+  .withEthereumWallet(new EthereumWallet(""));
 
 describe("taker.Negotiator", () => {
   beforeEach(() => {

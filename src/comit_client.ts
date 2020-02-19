@@ -5,10 +5,20 @@ import { Action, EmbeddedRepresentationSubEntity, Entity } from "./siren";
 import { Swap } from "./swap";
 
 export class ComitClient {
-  public bitcoinWallet?: BitcoinWallet;
-  public ethereumWallet?: EthereumWallet;
+  private bitcoinWallet?: BitcoinWallet;
+  private ethereumWallet?: EthereumWallet;
 
   constructor(private readonly cnd: Cnd) {}
+
+  public withBitcoinWallet(bitcoinWallet: BitcoinWallet): ComitClient {
+    this.bitcoinWallet = bitcoinWallet;
+    return this;
+  }
+
+  public withEthereumWallet(ethereumWallet: EthereumWallet): ComitClient {
+    this.ethereumWallet = ethereumWallet;
+    return this;
+  }
 
   public async sendSwap(swapRequest: SwapRequest): Promise<Swap> {
     if (
