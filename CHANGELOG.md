@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.1] - 2020-02-19
+
 ### Fixed
 - Do not gitignore the `dist/` folder to ensure it is included in the published package, add a CI test to test it. 
 
@@ -135,7 +137,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.11.0...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.11.1...HEAD
+[0.11.1]: https://github.com/comit-network/comit-js-sdk/compare/0.11.0...0.11.1
 [0.11.0]: https://github.com/comit-network/comit-js-sdk/compare/0.10.1...0.11.0
 [0.10.1]: https://github.com/comit-network/comit-js-sdk/compare/0.10.0...0.10.1
 [0.10.0]: https://github.com/comit-network/comit-js-sdk/compare/0.9.1...0.10.0
