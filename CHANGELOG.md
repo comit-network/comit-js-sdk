@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2020-02-19
+
 ### Changed
 - Set all files names to snake_case.
 - `Order` interface renamed to `OrderParams`, `Order` is now a class that allows the taker to check it against criteria.
@@ -130,7 +132,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.10.1...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.11.0...HEAD
+[0.11.0]: https://github.com/comit-network/comit-js-sdk/compare/0.10.1...0.11.0
 [0.10.1]: https://github.com/comit-network/comit-js-sdk/compare/0.10.0...0.10.1
 [0.10.0]: https://github.com/comit-network/comit-js-sdk/compare/0.9.1...0.10.0
 [0.9.1]: https://github.com/comit-network/comit-js-sdk/compare/0.8.0...0.9.1
