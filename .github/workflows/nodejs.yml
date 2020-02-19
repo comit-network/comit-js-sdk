@@ -11,6 +11,16 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10.x
+      - name: Check that dist folder is NOT gitignored
+        run: |
+          if [[ $(grep -c dist .gitignore) -eq 0 ]]
+            then
+              echo "dist/ is not gitignored"
+              exit 0
+            else
+              echo "dist/ is gitignored, we need to fail"
+              exit 1
+          fi
       - name: yarn install and test
         run: |
           yarn install

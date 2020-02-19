@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Do not gitignore the `dist/` folder to ensure it is included in the published package, add a CI test to test it. 
+
 ## [0.11.0] - 2020-02-19
 
 ### Changed
