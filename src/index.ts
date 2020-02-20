@@ -24,21 +24,14 @@ export { ComitClient } from "./comit_client";
 
 export { Swap } from "./swap";
 
-export {
-  OrderParams,
-  OrderAsset,
-  orderSwapMatchesForMaker,
-  isNative,
-  orderSwapAssetMatchesForMaker,
-  assetOrderToSwap
-} from "./negotiation/order";
+export { Order, OrderAsset } from "./negotiation/order";
 export {
   ExecutionParams,
   defaultLedgerParams,
   isValidExecutionParams,
   NetworkType
 } from "./negotiation/execution_params";
-export { MakerNegotiator } from "./negotiation/maker_negotiator";
-export { TakerNegotiator } from "./negotiation/taker_negotiator";
+export { Negotiator as MakerNegotiator } from "./negotiation/maker/negotiator";
+export { Negotiator as TakerNegotiator } from "./negotiation/taker/negotiator";
 
 export { TryParams } from "./timeout_promise";

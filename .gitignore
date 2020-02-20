@@ -2,8 +2,11 @@ node_modules/
 
 .idea/
 
+# NEVER GITIGNORE THE DIST folder
+# If you git ignore it then `npm/yarn publish` will NOT push it to npmjs.com.
+
 docs/
-dist/
+website/
 
 # This is a library
 yarn.lock

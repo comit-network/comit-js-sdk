@@ -1,22 +1,18 @@
 import express from "express";
 import * as http from "http";
-import { ComitClient } from "../comit_client";
-import { sleep, timeoutPromise, TryParams } from "../timeout_promise";
-import { ExecutionParams } from "./execution_params";
-import {
-  areOrderParamsValid,
-  OrderParams,
-  orderParamsToTradingPair,
-  orderSwapMatchesForMaker
-} from "./order";
+import { ComitClient } from "../../comit_client";
+import { sleep, timeoutPromise, TryParams } from "../../timeout_promise";
+import { ExecutionParams } from "../execution_params";
+import { isOrderValid, Order, toTradingPair } from "../order";
+import orderSwapMatches from "./swap_order_matching";
 
-export class MakerNegotiator {
-  private ordersByTradingPair: { [tradingPair: string]: OrderParams } = {};
-  private ordersById: { [orderId: string]: OrderParams } = {};
+export class Negotiator {
+  private ordersByTradingPair: { [tradingPair: string]: Order } = {};
+  private ordersById: { [orderId: string]: Order } = {};
   private readonly executionParams: ExecutionParams;
   private readonly comitClient: ComitClient;
   private readonly tryParams: TryParams;
-  private readonly makerhttpApi: MakerHttpApi;
+  private readonly httpService: HttpService;
 
   constructor(
     comitClient: ComitClient,
@@ -26,7 +22,7 @@ export class MakerNegotiator {
     this.executionParams = executionParams;
     this.comitClient = comitClient;
     this.tryParams = tryParams;
-    this.makerhttpApi = new MakerHttpApi(
+    this.httpService = new HttpService(
       this.getOrderById.bind(this),
       this.getExecutionParams.bind(this),
       this.takeOrder.bind(this),
@@ -37,25 +33,23 @@ export class MakerNegotiator {
   /**
    * add an Order to the order book.
    * @returns true if the order parameters are valid and were successfully added to the order book, false otherwise.
-   * @param orderParams - the order to add.
+   * @param order - the order to add.
    */
-  public addOrder(orderParams: OrderParams): boolean {
-    if (!areOrderParamsValid(orderParams)) {
+  public addOrder(order: Order): boolean {
+    if (!isOrderValid(order)) {
       return false;
     }
-    this.ordersByTradingPair[
-      orderParamsToTradingPair(orderParams)
-    ] = orderParams;
-    this.ordersById[orderParams.id] = orderParams;
+    this.ordersByTradingPair[toTradingPair(order)] = order;
+    this.ordersById[order.id] = order;
     return true;
   }
 
   // Below are methods related to the negotiation protocol
-  public getOrderByTradingPair(tradingPair: string): OrderParams | undefined {
+  public getOrderByTradingPair(tradingPair: string): Order | undefined {
     return this.ordersByTradingPair[tradingPair];
   }
 
-  public getOrderById(orderId: string): OrderParams | undefined {
+  public getOrderById(orderId: string): Order | undefined {
     return this.ordersById[orderId];
   }
 
@@ -63,11 +57,11 @@ export class MakerNegotiator {
     return this.executionParams;
   }
 
-  public takeOrder(swapId: string, orderParams: OrderParams) {
+  public takeOrder(swapId: string, order: Order) {
     // Fire the auto-accept of the order in the background
     (async () => {
       try {
-        await this.tryAcceptSwap(swapId, orderParams, this.tryParams);
+        await this.tryAcceptSwap(swapId, order, this.tryParams);
       } catch (error) {
         console.log("Could not accept the swap");
       }
@@ -76,27 +70,27 @@ export class MakerNegotiator {
   // End of methods related to the negotiation protocol
 
   public getUrl(): string | undefined {
-    return this.makerhttpApi.getUrl();
+    return this.httpService.getUrl();
   }
 
   public listen(port: number, hostname?: string) {
-    return this.makerhttpApi.listen(port, hostname);
+    return this.httpService.listen(port, hostname);
   }
 
   private tryAcceptSwap(
     swapId: string,
-    orderParams: OrderParams,
+    order: Order,
     { maxTimeoutSecs, tryIntervalSecs }: TryParams
   ) {
     return timeoutPromise(
       maxTimeoutSecs * 1000,
-      this.acceptSwap(swapId, orderParams, tryIntervalSecs)
+      this.acceptSwap(swapId, order, tryIntervalSecs)
     );
   }
 
   private async acceptSwap(
     swapId: string,
-    orderParams: OrderParams,
+    order: Order,
     tryIntervalSecs: number
   ) {
     while (true) {
@@ -112,7 +106,7 @@ export class MakerNegotiator {
 
       if (
         swapDetails.properties &&
-        orderSwapMatchesForMaker(orderParams, swapDetails.properties)
+        orderSwapMatches(order, swapDetails.properties)
       ) {
         return swap.accept(this.tryParams);
       } else {
@@ -126,23 +120,20 @@ export class MakerNegotiator {
   }
 }
 
-class MakerHttpApi {
-  private readonly getOrderById: (orderId: string) => OrderParams | undefined;
+class HttpService {
+  private readonly getOrderById: (orderId: string) => Order | undefined;
   private readonly getExecutionParams: () => ExecutionParams;
-  private readonly takeOrder: (
-    swapId: string,
-    orderParams: OrderParams
-  ) => void;
+  private readonly takeOrder: (swapId: string, order: Order) => void;
   private readonly getOrderByTradingPair: (
     tradingPair: string
-  ) => OrderParams | undefined;
+  ) => Order | undefined;
   private server: http.Server | undefined;
 
   constructor(
-    getOrderById: (orderId: string) => OrderParams | undefined,
+    getOrderById: (orderId: string) => Order | undefined,
     getExecutionParams: () => ExecutionParams,
-    takeOrder: (swapId: string, orderParams: OrderParams) => void,
-    getOrderByTradingPair: (tradingPair: string) => OrderParams | undefined
+    takeOrder: (swapId: string, order: Order) => void,
+    getOrderByTradingPair: (tradingPair: string) => Order | undefined
   ) {
     this.getOrderByTradingPair = getOrderByTradingPair;
     this.getOrderById = getOrderById;
@@ -178,7 +169,7 @@ class MakerHttpApi {
       const body = req.body;
 
       if (!order) {
-        res.status(404).send("OrderParams not found");
+        res.status(404).send("Order not found");
       } else if (!body || !body.swapId) {
         res.status(400).send("swapId missing from payload");
       } else {
