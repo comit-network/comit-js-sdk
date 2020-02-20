@@ -7,3 +7,6 @@ website/
 yarn.lock
 
 coverage/
+
+.mergify.yml
+.github/
