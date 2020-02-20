@@ -1,10 +1,10 @@
-import { Asset } from "../../cnd";
+import { Asset } from "../..";
 import { OrderAsset } from "../order";
 import {
   assetOrderToSwap,
   MatchingCriteria,
-  Order,
-  rateMatches
+  rateMatches,
+  TakerOrder
 } from "./order";
 
 const defaultOrderParams = {
@@ -79,8 +79,10 @@ describe("negotiation.taker.Order", () => {
   });
 
   it("matches taker criteria", () => {
-    const order = new Order(defaultOrderParams, defaultMatchingCriteria, () =>
-      Promise.resolve(undefined)
+    const order = new TakerOrder(
+      defaultOrderParams,
+      defaultMatchingCriteria,
+      () => Promise.resolve(undefined)
     );
 
     expect(order.matches()).toBeTruthy();
@@ -103,7 +105,7 @@ describe("negotiation.taker.Order", () => {
       }
     };
 
-    const order = new Order(rawOrder, defaultMatchingCriteria, () =>
+    const order = new TakerOrder(rawOrder, defaultMatchingCriteria, () =>
       Promise.resolve(undefined)
     );
 
@@ -122,7 +124,7 @@ describe("negotiation.taker.Order", () => {
         ledger: "ethereum"
       }
     };
-    const order = new Order(defaultOrderParams, matchingCriteria, () =>
+    const order = new TakerOrder(defaultOrderParams, matchingCriteria, () =>
       Promise.resolve(undefined)
     );
 
@@ -130,17 +132,23 @@ describe("negotiation.taker.Order", () => {
   });
 
   it("is valid", () => {
-    const order = new Order(defaultOrderParams, defaultMatchingCriteria, () =>
-      Promise.resolve(undefined)
+    const order = new TakerOrder(
+      defaultOrderParams,
+      defaultMatchingCriteria,
+      () => Promise.resolve(undefined)
     );
 
     expect(order.isValid()).toBeTruthy();
   });
 
   it("doesnt take order if it is not valid", async () => {
-    const order = new Order(defaultOrderParams, defaultMatchingCriteria, () => {
-      throw new Error("Test fail, order should not be taken");
-    });
+    const order = new TakerOrder(
+      defaultOrderParams,
+      defaultMatchingCriteria,
+      () => {
+        throw new Error("Test fail, order should not be taken");
+      }
+    );
 
     order.isValid = () => {
       return false;

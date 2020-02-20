@@ -27,6 +27,11 @@ export interface Peer {
   address_hint: string;
 }
 
+/**
+ * The parameters that the two parties have agreed on for swap execution.
+ *
+ * The swap request is sent by the party in the role of Alice to initiate a swap with Bob.
+ */
 export interface SwapRequest {
   alpha_ledger: Ledger;
   alpha_asset: Asset;
@@ -80,6 +85,10 @@ export type LedgerAction =
   | {
       type: "ethereum-call-contract";
       payload: EthereumCallContractPayload;
+    }
+  | {
+      type: string;
+      payload: any;
     };
 
 export interface SwapDetails extends Entity {
@@ -196,7 +205,7 @@ export interface SwapProperties {
 }
 
 /**
- * Facilitates access to the cnd REST API
+ * Facilitates access to the [COMIT network daemon (cnd)](@link https://github.com/comit-network/comit-rs) REST API.
  */
 export class Cnd {
   private readonly cndUrl: string;
@@ -248,7 +257,7 @@ export class Cnd {
     );
   }
 
-  public async executeAction(
+  public async executeSirenAction(
     action: Action,
     resolver?: FieldValueResolverFn
   ): Promise<AxiosResponse> {

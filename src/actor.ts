@@ -1,8 +1,11 @@
 import { BitcoinWallet } from "./bitcoin_wallet";
-import { Cnd } from "./cnd";
+import { Cnd } from "./cnd/cnd";
 import { ComitClient } from "./comit_client";
 import { EthereumWallet } from "./ethereum_wallet";
 
+/**
+ * Representation of an actor during swap execution.
+ */
 export interface Actor {
   name?: string;
   comitClient: ComitClient;

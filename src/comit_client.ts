@@ -1,25 +1,49 @@
 import { BitcoinWallet } from "./bitcoin_wallet";
-import { Cnd, SwapRequest, SwapSubEntity } from "./cnd";
+import { Cnd, SwapRequest, SwapSubEntity } from "./cnd/cnd";
+import { Action, EmbeddedRepresentationSubEntity, Entity } from "./cnd/siren";
 import { EthereumWallet } from "./ethereum_wallet";
-import { Action, EmbeddedRepresentationSubEntity, Entity } from "./siren";
 import { Swap } from "./swap";
 
+/**
+ * The ComitClient class is a one-stop shop interface for interacting with {@link Swap}s of {@link Cnd}.
+ *
+ * It bundles all the necessary dependencies ({@link BitcoinWallet}, {@link EthereumWallet}, {@link Cnd}) to
+ * provide you with instances of {@link Swap}s.
+ */
 export class ComitClient {
   private bitcoinWallet?: BitcoinWallet;
   private ethereumWallet?: EthereumWallet;
 
   constructor(private readonly cnd: Cnd) {}
 
+  /**
+   * Sets a {@link BitcoinWallet} in the ComitClient.
+   *
+   * If you are planning to use this instance to handle swaps involving Bitcoin, you should set this.
+   *
+   * @param bitcoinWallet The wallet that should be used to handle Bitcoin related actions of swaps.
+   */
   public withBitcoinWallet(bitcoinWallet: BitcoinWallet): ComitClient {
     this.bitcoinWallet = bitcoinWallet;
     return this;
   }
 
+  /**
+   * Sets a {@link EthereumWallet} in the ComitClient.
+   *
+   * If you are planning to use this instance to handle swaps involving Ethereum, you should set this.
+   *
+   * @param ethereumWallet The wallet that should be used to handle Ethereum related actions of swaps.
+   */
   public withEthereumWallet(ethereumWallet: EthereumWallet): ComitClient {
     this.ethereumWallet = ethereumWallet;
     return this;
   }
 
+  /**
+   * Send a {@link SwapRequest} to {@link Cnd} to create a {@link Swap}.
+   * @param swapRequest
+   */
   public async sendSwap(swapRequest: SwapRequest): Promise<Swap> {
     if (
       swapRequest.alpha_ledger.name === "ethereum" &&
@@ -114,7 +138,6 @@ export class ComitClient {
       return undefined;
     }
   }
-
   private newSwap(swap: EmbeddedRepresentationSubEntity | Entity): Swap {
     if (!this.bitcoinWallet) {
       throw new Error("BitcoinWallet is not set.");

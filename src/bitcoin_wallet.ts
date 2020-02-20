@@ -1,6 +1,10 @@
 import { Amount, Chain, Network, Pool, TX, WalletDB } from "bcoin";
 import Logger from "blgr";
 
+/**
+ * Interface defining the Bitcoin wallet used in the SDK.
+ * You can plug your own wallet by passing a custom implementation of this interface to the {@link ComitClient}.
+ */
 export interface BitcoinWallet {
   getAddress(): Promise<string>;
 
@@ -20,6 +24,9 @@ export interface BitcoinWallet {
   getFee(): string;
 }
 
+/**
+ * Simple Bitcoin wallet based on [bcoin]{@link https://github.com/bcoin-org/bcoin}.
+ */
 export class InMemoryBitcoinWallet implements BitcoinWallet {
   public static async newInstance(
     network: string,

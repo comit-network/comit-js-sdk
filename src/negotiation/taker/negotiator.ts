@@ -1,4 +1,4 @@
-import { SwapRequest } from "../../cnd";
+import { SwapRequest } from "../..";
 import { ComitClient } from "../../comit_client";
 import { Swap } from "../../swap";
 import {
@@ -6,18 +6,24 @@ import {
   ExecutionParams,
   isValidExecutionParams
 } from "../execution_params";
-import { Order as RawOrder } from "../order";
+import { Order } from "../order";
 import { MakerClient } from "./maker_client";
 import {
   assetOrderToSwap,
   MatchingCriteria,
   matchingCriteriaToTradingPair,
-  Order
+  TakerOrder
 } from "./order";
 
-export class Negotiator {
+export { Negotiator as TakerNegotiator };
+
+/**
+ * Handles the negotiation on the taker side of a trade.
+ * Bundles functionality to get orders from a maker, take them and initiate the swap execution.
+ */
+class Negotiator {
   private static newSwapRequest(
-    rawOrder: RawOrder,
+    rawOrder: Order,
     executionParams: ExecutionParams
   ): undefined | SwapRequest {
     if (!executionParams.ledgers) {
@@ -55,6 +61,10 @@ export class Negotiator {
   private readonly comitClient: ComitClient;
   private readonly makerClient: MakerClient;
 
+  /**
+   * @param comitClient The {@link ComitClient} of the taker for swap execution
+   * @param makerUrl The url where the maker provides offers according to the {@link MakerNegotiator}
+   */
   constructor(comitClient: ComitClient, makerUrl: string) {
     this.comitClient = comitClient;
     this.makerClient = new MakerClient(makerUrl);
@@ -67,22 +77,20 @@ export class Negotiator {
    * opportunity to the lib consumer to know that this maker returns invalid orders and the details of such order.
    * @param criteria - The criteria of the order to be requested from the maker.
    */
-  public async getOrder(criteria: MatchingCriteria): Promise<Order> {
+  public async getOrder(criteria: MatchingCriteria): Promise<TakerOrder> {
     const tradingPair = matchingCriteriaToTradingPair(criteria);
     const rawOrder = await this.makerClient.getOrderByTradingPair(tradingPair);
 
-    return new Order(rawOrder, criteria, this.execAndTakeOrder.bind(this));
+    return new TakerOrder(rawOrder, criteria, this.execAndTakeOrder.bind(this));
   }
 
-  private async execAndTakeOrder(
-    rawOrder: RawOrder
-  ): Promise<Swap | undefined> {
-    const executionParams = await this.makerClient.getExecutionParams(rawOrder);
+  private async execAndTakeOrder(order: Order): Promise<Swap | undefined> {
+    const executionParams = await this.makerClient.getExecutionParams(order.id);
     if (!isValidExecutionParams(executionParams)) {
       return;
     }
 
-    const swapRequest = Negotiator.newSwapRequest(rawOrder, executionParams);
+    const swapRequest = Negotiator.newSwapRequest(order, executionParams);
     if (!swapRequest) {
       return;
     }
@@ -91,7 +99,7 @@ export class Negotiator {
 
     const swapDetails = await swapHandle.fetchDetails();
     const swapId = swapDetails.properties!.id;
-    await this.makerClient.takeOrder(rawOrder.id, swapId);
+    await this.makerClient.takeOrder(order.id, swapId);
     return swapHandle;
   }
 }
