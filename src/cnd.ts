@@ -260,6 +260,86 @@ export class Cnd {
     });
   }
 
+  /**
+   * Post a swap request on the lightning REST API route of cnd `/swaps/han/ethereum/ether/halight/lightning/bitcoin`
+   * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
+   * @return The location of the swap (href) as returned by the REST API in the location header.
+   */
+  public async postHanEthereumEtherHalightLightningBitcoin(
+    body?: any
+  ): Promise<string> {
+    return axios
+      .post(
+        this.rootUrl()
+          .path("swaps/han/ethereum/ether/halight/lightning/bitcoin")
+          .toString(),
+        body
+      )
+      .then(res => {
+        return res.headers.location;
+      });
+  }
+
+  /**
+   * Post a swap request on the lightning REST API route of cnd `/swaps/herc20/ethereum/erc20/halight/lightning/bitcoin`
+   * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
+   * @return The location of the swap (href) as returned by the REST API in the location header.
+   */
+  public async postHerc20EthereumErc20HalightLightningBitcoin(
+    body?: any
+  ): Promise<string> {
+    return axios
+      .post(
+        this.rootUrl()
+          .path("swaps/herc20/ethereum/erc20/halight/lightning/bitcoin")
+          .toString(),
+        body
+      )
+      .then(res => {
+        return res.headers.location;
+      });
+  }
+
+  /**
+   * Post a swap request on the lightning REST API route of cnd `/swaps/halight/lightning/bitcoin/han/ethereum/ether`
+   * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
+   * @return The location of the swap (href) as returned by the REST API in the location header.
+   */
+  public async postHalightLightningBitcoinHanEthereumEther(
+    body?: any
+  ): Promise<string> {
+    return axios
+      .post(
+        this.rootUrl()
+          .path("swaps/halight/lightning/bitcoin/han/ethereum/ether")
+          .toString(),
+        body
+      )
+      .then(res => {
+        return res.headers.location;
+      });
+  }
+
+  /**
+   * Post a swap request on the lightning REST API route of cnd `/swaps/halight/lightning/bitcoin/herc20/ethereum/erc20`
+   * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
+   * @return The location of the swap (href) as returned by the REST API in the location header.
+   */
+  public async postHalightLightningBitcoinHerc20EthereumErc20(
+    body?: any
+  ): Promise<string> {
+    return axios
+      .post(
+        this.rootUrl()
+          .path("swaps/halight/lightning/bitcoin/herc20/ethereum/erc20")
+          .toString(),
+        body
+      )
+      .then(res => {
+        return res.headers.location;
+      });
+  }
+
   private rootUrl() {
     return new URI(this.cndUrl);
   }

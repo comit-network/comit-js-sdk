@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Functions to submit swap request to cnd using the new routes created for Lightning.
+
 ## [0.11.1] - 2020-02-19
 
 ### Fixed
