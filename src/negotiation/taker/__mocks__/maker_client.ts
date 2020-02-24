@@ -32,7 +32,7 @@ export const mockGetExecutionParams = jest.fn().mockImplementation(() => {
 });
 
 export const mockTakeOrder = jest.fn().mockImplementation(() => {
-  // The mocked function returns Promise<void>
+  // The mocked function returns Promise of type void
 });
 
 export const MakerClient = jest.fn().mockImplementation(() => {
