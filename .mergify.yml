@@ -10,19 +10,13 @@ pull_request_rules:
       - head~=^(?!release.*).*$
       - "#changes-requested-reviews-by=0"
     actions:
-      merge:
-        method: merge
-        strict: smart
-        strict_method: merge
+      comment: "bors r+"
   - name: merge green dependabot PRs
     conditions:
       - "status-success=build"
       - "author:dependabot-preview[bot]"
     actions:
-      merge:
-        method: merge
-        strict: smart
-        strict_method: merge
+      comment: "bors r+"
   - name: Delete branch if the pull request is merged
     conditions:
       - merged
