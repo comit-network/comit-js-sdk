@@ -8,6 +8,7 @@
   "author": "CoBloX developers <team@coblox.tech>",
   "license": "Apache-2.0",
   "scripts": {
+    "pretest": "git config core.hooksPath .githooks",
     "prepare": "tsc",
     "fix": "tslint -p . --fix && prettier --write '**/*.{ts,js,json,yml}'",
     "test": "tsc --noEmit && tslint -p . && prettier --check '**/*.{ts,js,json,yml}' && jest",
