@@ -1,5 +1,5 @@
 import { BigNumber } from "bignumber.js";
-import { Asset } from "../../cnd";
+import { Asset } from "../..";
 import { Swap } from "../../swap";
 import { getToken } from "../../tokens/tokens";
 import {
@@ -23,21 +23,20 @@ export interface MatchingCriteriaAsset {
   maxNominalAmount?: string;
 }
 
+export { Order as TakerOrder };
+
 /**
  * Handles an order for the taker. It has helper functions to facilitate the handler of an
- * order by a taker. This should only be instantiated via `TakerNegotiatior.getOrder()` and should not be constructed from
+ * order by a taker. This should only be instantiated via {@link getOrder} and should not be constructed from
  * scratch.
- * @param rawParams - The raw parameters of the order.
- * @param criteria - The criteria used to get this order.
- * @param takeOrder - Function passed from the `Negotiator` to coordinate calls to `cnd` and the maker to effectively
- * take the order and start the atomic swap execution.
  */
-export class Order {
+class Order {
   /**
-   * **Note: This should not be used, `Order` should be created by using `TakerNegotiatior.getOrder()`
+   * **Note: This should not be used, `Order` should be created by using {@link getOrder}
    * @param rawOrder - The parameters of the order, as received from the maker.
    * @param criteria - The criteria used to filter/retrieve this order.
-   * @param takeOrder - `Negotiator.execAndTakeOrder()`
+   * @param takeOrder - Function passed from the {@link TakerNegotiator} to coordinate calls to `cnd` and the maker to effectively
+   * take the order and start the atomic swap execution.
    */
   constructor(
     public readonly rawOrder: RawOrder,
@@ -58,7 +57,7 @@ export class Order {
 
   /**
    * Check that the order is valid and safe. Ensure that all properties are set and that the expiries
-   * are safe. It does not check whether the ledgers/assets are correct, this is done with `Order.matches()`.
+   * are safe. It does not check whether the ledgers/assets are correct, this is done with {@link matches}.
    */
   public isValid(): boolean {
     return isOrderValid(this.rawOrder);

@@ -10,12 +10,12 @@ export {
   EthereumDeployContractPayload,
   Peer,
   SwapRequest
-} from "./cnd";
+} from "./cnd/cnd";
+export * from "./cnd/siren";
 
 export { Actor, createActor } from "./actor";
 
 export { BitcoinWallet, InMemoryBitcoinWallet } from "./bitcoin_wallet";
-export * from "./siren";
 
 export { EthereumWallet } from "./ethereum_wallet";
 export { BigNumber } from "bignumber.js";
@@ -31,7 +31,7 @@ export {
   isValidExecutionParams,
   NetworkType
 } from "./negotiation/execution_params";
-export { Negotiator as MakerNegotiator } from "./negotiation/maker/negotiator";
-export { Negotiator as TakerNegotiator } from "./negotiation/taker/negotiator";
+export { MakerNegotiator } from "./negotiation/maker/negotiator";
+export { TakerNegotiator } from "./negotiation/taker/negotiator";
 
-export { TryParams } from "./timeout_promise";
+export { TryParams } from "./util/timeout_promise";

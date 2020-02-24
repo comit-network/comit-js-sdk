@@ -1,10 +1,16 @@
+import { AxiosResponse } from "axios";
 import { BigNumber } from "bignumber.js";
 import { BitcoinWallet } from "./bitcoin_wallet";
-import { Cnd, LedgerAction, SwapDetails } from "./cnd";
+import { Cnd, LedgerAction, SwapDetails } from "./cnd/cnd";
+import { Field } from "./cnd/siren";
 import { EthereumWallet } from "./ethereum_wallet";
-import { Field } from "./siren";
-import { sleep, timeoutPromise, TryParams } from "./timeout_promise";
+import { sleep, timeoutPromise, TryParams } from "./util/timeout_promise";
 
+/**
+ * A statefull class that represents a single swap.
+ *
+ * It has all the dependencies embedded that are necessary for taking actions on the swap.
+ */
 export class Swap {
   constructor(
     private readonly bitcoinWallet: BitcoinWallet,
@@ -13,31 +19,85 @@ export class Swap {
     readonly self: string
   ) {}
 
-  public async accept(params: TryParams) {
-    return await this.tryExecuteAction("accept", params);
+  /**
+   * Looks for and executes the accept action of this {@link Swap}.
+   * If the {@link Swap} is not in the right state this call will throw a timeout exception.
+   *
+   * @param tryParams Controls at which stage the exception is thrown.
+   */
+  public async accept(tryParams: TryParams): Promise<void> {
+    await this.tryExecuteSirenAction<void>("accept", tryParams);
   }
 
-  public async decline(params: TryParams) {
-    return await this.tryExecuteAction("decline", params);
+  /**
+   * Looks for and executes the decline action of this {@link Swap}.
+   * If the {@link Swap} is not in the right state this call will throw a timeout exception.
+   *
+   * @param tryParams Controls at which stage the exception is thrown.
+   */
+  public async decline(tryParams: TryParams): Promise<void> {
+    await this.tryExecuteSirenAction<void>("decline", tryParams);
   }
 
-  public async deploy(params: TryParams) {
-    const response = await this.tryExecuteAction("deploy", params);
+  /**
+   * Looks for and executes the deploy action of this {@link Swap}.
+   * If the {@link Swap} is not in the right state this call will throw a timeout exception.
+   *
+   * This is only valid for ERC20 swaps.
+   *
+   * @param tryParams Controls at which stage the exception is thrown.
+   * @returns The hash of the transaction that was sent to the blockchain network.
+   */
+  public async deploy(tryParams: TryParams): Promise<string> {
+    const response = await this.tryExecuteSirenAction<LedgerAction>(
+      "deploy",
+      tryParams
+    );
     return await this.doLedgerAction(response.data);
   }
 
-  public async fund(params: TryParams) {
-    const response = await this.tryExecuteAction("fund", params);
+  /**
+   * Looks for and executes the fund action of this {@link Swap}.
+   * If the {@link Swap} is not in the right state this call will throw a timeout exception.
+   *
+   * @param tryParams Controls at which stage the exception is thrown.
+   * @returns The hash of the transaction that was sent to the blockchain network.
+   */
+  public async fund(tryParams: TryParams): Promise<string> {
+    const response = await this.tryExecuteSirenAction<LedgerAction>(
+      "fund",
+      tryParams
+    );
     return await this.doLedgerAction(response.data);
   }
 
-  public async redeem(params: TryParams) {
-    const response = await this.tryExecuteAction("redeem", params);
+  /**
+   * Looks for and executes the redeem action of this {@link Swap}.
+   * If the {@link Swap} is not in the right state this call will throw a timeout exception.
+   *
+   * @param tryParams Controls at which stage the exception is thrown.
+   * @returns The hash of the transaction that was sent to the blockchain network.
+   */
+  public async redeem(tryParams: TryParams): Promise<string> {
+    const response = await this.tryExecuteSirenAction<LedgerAction>(
+      "redeem",
+      tryParams
+    );
     return await this.doLedgerAction(response.data);
   }
 
-  public async refund(params: TryParams) {
-    const response = await this.tryExecuteAction("refund", params);
+  /**
+   * Looks for and executes the refund action of this {@link Swap}.
+   * If the {@link Swap} is not in the right state this call will throw a timeout exception.
+   *
+   * @param tryParams Controls at which stage the exception is thrown.
+   * @returns The hash of the transaction that was sent to the blockchain network.
+   */
+  public async refund(tryParams: TryParams): Promise<string> {
+    const response = await this.tryExecuteSirenAction<LedgerAction>(
+      "refund",
+      tryParams
+    );
     return await this.doLedgerAction(response.data);
   }
 
@@ -46,31 +106,47 @@ export class Swap {
     return response.data;
   }
 
-  public tryExecuteAction(
+  /**
+   * Low level API for executing actions on the {@link Swap}.
+   *
+   * If you are using any of the above actions ({@link Swap.redeem}, etc) you shouldn't need to use this.
+   *
+   * @param actionName The name of the Siren action you want to execute.
+   * @param tryParams Controls at which stage the exception is thrown.
+   * @returns The response from {@link Cnd}. The actual response depends on the action you executed (hence the type parameter).
+   */
+  public tryExecuteSirenAction<R>(
     actionName: string,
     { maxTimeoutSecs, tryIntervalSecs }: TryParams
-  ) {
+  ): Promise<AxiosResponse<R>> {
     return timeoutPromise(
       maxTimeoutSecs * 1000,
-      this.executeAction(actionName, tryIntervalSecs)
+      this.executeSirenAction(actionName, tryIntervalSecs)
     );
   }
 
-  public async doLedgerAction(action: LedgerAction) {
-    switch (action.type) {
+  /**
+   * Low level API for executing a ledger action returned from {@link Cnd}.
+   *
+   * Uses the wallets given in the constructor to send transactions according to the given ledger action.
+   *
+   * @param ledgerAction The ledger action returned from {@link Cnd}.
+   */
+  public async doLedgerAction(ledgerAction: LedgerAction): Promise<string> {
+    switch (ledgerAction.type) {
       case "bitcoin-broadcast-signed-transaction": {
-        const { hex, network } = action.payload;
+        const { hex, network } = ledgerAction.payload;
 
         return await this.bitcoinWallet.broadcastTransaction(hex, network);
       }
       case "bitcoin-send-amount-to-address": {
-        const { to, amount, network } = action.payload;
+        const { to, amount, network } = ledgerAction.payload;
         const sats = parseInt(amount, 10);
 
         return await this.bitcoinWallet.sendToAddress(to, sats, network);
       }
       case "ethereum-call-contract": {
-        const { data, contract_address, gas_limit } = action.payload;
+        const { data, contract_address, gas_limit } = ledgerAction.payload;
 
         return await this.ethereumWallet.callContract(
           data,
@@ -79,15 +155,21 @@ export class Swap {
         );
       }
       case "ethereum-deploy-contract": {
-        const { amount, data, gas_limit } = action.payload;
+        const { amount, data, gas_limit } = ledgerAction.payload;
         const value = new BigNumber(amount);
 
         return await this.ethereumWallet.deployContract(data, value, gas_limit);
       }
+
+      default:
+        throw new Error(`Cannot handle ${ledgerAction.type}`);
     }
   }
 
-  private async executeAction(actionName: string, tryIntervalSecs: number) {
+  private async executeSirenAction(
+    actionName: string,
+    tryIntervalSecs: number
+  ) {
     while (true) {
       await sleep(tryIntervalSecs * 1000);
 
@@ -104,7 +186,7 @@ export class Swap {
         continue;
       }
 
-      return this.cnd.executeAction(action!, (field: Field) =>
+      return this.cnd.executeSirenAction(action!, (field: Field) =>
         this.fieldValueResolver(field)
       );
     }

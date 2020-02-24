@@ -10,6 +10,9 @@ import { EventFragment, FunctionFragment } from "ethers/utils/abi-coder";
 import { HDNode } from "ethers/utils/hdnode";
 import erc20 from "../ethereum_abi/erc20.json";
 
+/**
+ * Simple Ethereum wallet based on [ethers.js]{@link https://github.com/ethers-io/ethers.js/}.
+ */
 export class EthereumWallet {
   private readonly wallet: Wallet;
 
@@ -56,29 +59,35 @@ export class EthereumWallet {
     data: string,
     amount: BigNumber,
     gasLimit: string
-  ) {
+  ): Promise<string> {
     const value = new BigNumberEthers(amount.toString());
     const transaction: TransactionRequest = {
       data,
       value,
       gasLimit
     };
-    const response = await this.wallet.sendTransaction(transaction);
-
-    return response.hash;
+    return this.sendTransaction(transaction);
   }
 
   public async callContract(
     data: string,
     contractAddress: string,
     gasLimit: string
-  ) {
+  ): Promise<string> {
     const transaction: TransactionRequest = {
       data,
       to: contractAddress,
       gasLimit
     };
+    return this.sendTransaction(transaction);
+  }
+
+  private async sendTransaction(transaction: TransactionRequest) {
     const response = await this.wallet.sendTransaction(transaction);
+
+    if (!response.hash) {
+      throw new Error("Returned transaction didn't have a hash.");
+    }
 
     return response.hash;
   }

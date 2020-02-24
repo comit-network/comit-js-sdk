@@ -1,10 +1,12 @@
 import { BigNumber } from "bignumber.js";
-import { Asset, Ledger, SwapProperties } from "../../cnd";
+import { Asset, Ledger, SwapProperties } from "../../cnd/cnd";
 import { getToken, Token } from "../../tokens/tokens";
 import { fromNominal, isNative, Order, OrderAsset } from "../order";
 
 /**
  * Check that a given swap matches the agreed conditions of an accepted order.
+ * See: {@link MakerNegotiator}
+ *
  * @param order - The order to check against the swap.
  * @param props - The properties of the the swap to check against the order.
  */

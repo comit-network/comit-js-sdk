@@ -2,17 +2,32 @@ import axios from "axios";
 import { ExecutionParams } from "../execution_params";
 import { Order } from "../order";
 
+/**
+ * A client for the {@link HttpService} exposed by the maker.
+ * This client is used by the taker to request and take orders from a maker.
+ */
 export class MakerClient {
+  /**
+   * @param makerUrl The URL to reach the maker's {@link HttpService}, see {@link getUrl}
+   */
   constructor(private readonly makerUrl: string) {}
 
+  /**
+   * Get an {@link Order} from the maker for a given trading pair (e.g. ethereum-ether-bitcoin-bitcoin).
+   * @param tradingPair A trading pair (e.g. ETH-BTC).
+   */
   public async getOrderByTradingPair(tradingPair: string): Promise<Order> {
     const response = await axios.get(`${this.makerUrl}orders/${tradingPair}`);
     return response.data;
   }
 
-  public async getExecutionParams(order: Order): Promise<ExecutionParams> {
+  /**
+   * Get the execution parameters of the maker for a certain {@link Order}.
+   * @param orderId The id of an {@link Order} as received by the maker.
+   */
+  public async getExecutionParams(orderId: string): Promise<ExecutionParams> {
     const response = await axios.get(
-      `${this.makerUrl}orders/${order.id}/executionParams`
+      `${this.makerUrl}orders/${orderId}/executionParams`
     );
     return response.data;
   }

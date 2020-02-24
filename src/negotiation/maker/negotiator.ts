@@ -1,12 +1,18 @@
 import express from "express";
 import * as http from "http";
 import { ComitClient } from "../../comit_client";
-import { sleep, timeoutPromise, TryParams } from "../../timeout_promise";
+import { sleep, timeoutPromise, TryParams } from "../../util/timeout_promise";
 import { ExecutionParams } from "../execution_params";
 import { isOrderValid, Order, toTradingPair } from "../order";
 import orderSwapMatches from "./swap_order_matching";
 
-export class Negotiator {
+export { Negotiator as MakerNegotiator };
+
+/**
+ * Handles the negotiation on the maker side of a trade.
+ * Bundles functionality to create orders for a maker and make them available for the taker.
+ */
+class Negotiator {
   private ordersByTradingPair: { [tradingPair: string]: Order } = {};
   private ordersById: { [orderId: string]: Order } = {};
   private readonly executionParams: ExecutionParams;
@@ -14,6 +20,12 @@ export class Negotiator {
   private readonly tryParams: TryParams;
   private readonly httpService: HttpService;
 
+  /**
+   *
+   * @param comitClient The {@link ComitClient} of the taker for swap execution.
+   * @param executionParams The {@link ExecutionParams} of the maker for swap execution.
+   * @param tryParams The {@link TryParams} of the maker for swap execution.
+   */
   constructor(
     comitClient: ComitClient,
     executionParams: ExecutionParams,
@@ -31,9 +43,9 @@ export class Negotiator {
   }
 
   /**
-   * add an Order to the order book.
-   * @returns true if the order parameters are valid and were successfully added to the order book, false otherwise.
-   * @param order - the order to add.
+   * Add an Order to the order book.
+   * @returns True if the order parameters are valid and were successfully added to the order book, false otherwise.
+   * @param order The order to add.
    */
   public addOrder(order: Order): boolean {
     if (!isOrderValid(order)) {
@@ -45,18 +57,42 @@ export class Negotiator {
   }
 
   // Below are methods related to the negotiation protocol
+
+  /**
+   * Get an {@link Order} by trading pair (e.g. ethereum-ether-bitcoin-bitcoin).
+   * @param tradingPair A trading pair (e.g. bitcoin-bitcoin-ethereum-erc20).
+   * @returns An {@link Order} or undefined if there is no {@link Order} for the given trading pair.
+   */
   public getOrderByTradingPair(tradingPair: string): Order | undefined {
     return this.ordersByTradingPair[tradingPair];
   }
 
+  /**
+   * Get an {@link Order} by {@link Order.id}.
+   * @param orderId The {@link Order.id}.
+   * @returns An {@link Order} or undefined if there is no {@link Order} for the given id.
+   */
   public getOrderById(orderId: string): Order | undefined {
     return this.ordersById[orderId];
   }
 
+  /**
+   * Get the {@link ExecutionParams} of the maker.
+   * @returns The {@link ExecutionParams} of the maker.
+   */
   public getExecutionParams(): ExecutionParams {
     return this.executionParams;
   }
 
+  /**
+   * Take an order by accepting the swap request on the maker side.
+   *
+   * This function uses the given swapId and order to find a matching {@link Swap} using the {@link ComitClient}.
+   * If a matching {@link Swap} can be found {@link Swap#accept} is called.
+   *
+   * @param swapId The id of a swap.
+   * @param order The order corresponding to the swap.
+   */
   public takeOrder(swapId: string, order: Order) {
     // Fire the auto-accept of the order in the background
     (async () => {
@@ -69,10 +105,18 @@ export class Negotiator {
   }
   // End of methods related to the negotiation protocol
 
+  /**
+   * @returns The maker's {@link HttpService} URL.
+   */
   public getUrl(): string | undefined {
     return this.httpService.getUrl();
   }
 
+  /**
+   * Exposes the maker's {@link HttpService} on the given port and hostname.
+   * @param port The port where the {@link HttpService} should be exposed.
+   * @param hostname Optionally a hostname can be provided as well.
+   */
   public listen(port: number, hostname?: string) {
     return this.httpService.listen(port, hostname);
   }
@@ -120,6 +164,9 @@ export class Negotiator {
   }
 }
 
+/**
+ * A simple [express]{@link http://expressjs.com/} HTTP service to allow takers to access the maker's orders.
+ */
 class HttpService {
   private readonly getOrderById: (orderId: string) => Order | undefined;
   private readonly getExecutionParams: () => ExecutionParams;

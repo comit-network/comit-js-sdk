@@ -1,3 +1,6 @@
+/**
+ * Defines the parameters (for how long and how often) to try executing an action of a {@link Swap}.
+ */
 export interface TryParams {
   maxTimeoutSecs: number;
   tryIntervalSecs: number;
