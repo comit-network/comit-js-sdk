@@ -39,7 +39,7 @@ export class MakerClient {
    * @param swapId - To facilitate matching between swap requests and orders, the taker first tells their
    * cnd to send a swap request to the maker's cnd, then use the unique swap id, known by both cnds, to tell the maker
    * that it is taking the order and what swap request is being use for this order. While this facilitates the
-   * order<>swap matching logic on the maker's side, the maker still needs to double check the parameters of the swap.
+   * order-to-swap matching logic on the maker's side, the maker still needs to double check the parameters of the swap.
    */
   public async takeOrder(orderId: string, swapId: string): Promise<void> {
     const response = await axios.post(
