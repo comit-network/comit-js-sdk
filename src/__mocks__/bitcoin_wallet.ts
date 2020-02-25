@@ -1,7 +1,7 @@
 import { BitcoinWallet } from "../bitcoin_wallet";
 
 export class MockBitcoinWallet implements BitcoinWallet {
-  public broadcastTransaction(
+  public async broadcastTransaction(
     // @ts-ignore
     transactionHex: string,
     // @ts-ignore
@@ -10,11 +10,11 @@ export class MockBitcoinWallet implements BitcoinWallet {
     return Promise.resolve("");
   }
 
-  public getAddress(): Promise<string> {
+  public async getAddress(): Promise<string> {
     return Promise.resolve("");
   }
 
-  public getBalance(): Promise<number> {
+  public async getBalance(): Promise<number> {
     return Promise.resolve(0);
   }
 
@@ -23,7 +23,7 @@ export class MockBitcoinWallet implements BitcoinWallet {
   }
 
   // @ts-ignore
-  public sendToAddress(
+  public async sendToAddress(
     // @ts-ignore
     address: string,
     // @ts-ignore

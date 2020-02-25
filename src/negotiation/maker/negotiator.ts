@@ -93,15 +93,13 @@ class Negotiator {
    * @param swapId The id of a swap.
    * @param order The order corresponding to the swap.
    */
-  public takeOrder(swapId: string, order: Order) {
-    // Fire the auto-accept of the order in the background
-    (async () => {
-      try {
-        await this.tryAcceptSwap(swapId, order, this.tryParams);
-      } catch (error) {
-        console.log("Could not accept the swap");
-      }
-    })();
+  public async takeOrder(swapId: string, order: Order) {
+    // Fire the auto-accept
+    try {
+      await this.tryAcceptSwap(swapId, order, this.tryParams);
+    } catch (error) {
+      console.log("Could not accept the swap", error);
+    }
   }
   // End of methods related to the negotiation protocol
 
@@ -117,11 +115,11 @@ class Negotiator {
    * @param port The port where the {@link HttpService} should be exposed.
    * @param hostname Optionally a hostname can be provided as well.
    */
-  public listen(port: number, hostname?: string) {
+  public async listen(port: number, hostname?: string) {
     return this.httpService.listen(port, hostname);
   }
 
-  private tryAcceptSwap(
+  private async tryAcceptSwap(
     swapId: string,
     order: Order,
     { maxTimeoutSecs, tryIntervalSecs }: TryParams

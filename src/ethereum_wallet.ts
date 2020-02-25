@@ -27,7 +27,7 @@ export class EthereumWallet {
     return this.wallet.address;
   }
 
-  public getBalance() {
+  public async getBalance() {
     return this.wallet.getBalance();
   }
 

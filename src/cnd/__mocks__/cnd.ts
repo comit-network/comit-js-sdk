@@ -1,8 +1,8 @@
-export const mockPostSwap = jest.fn().mockImplementation(() => {
+export const mockPostSwap = jest.fn().mockImplementation(async () => {
   return Promise.resolve("/mock/swap/location");
 });
 
-export const mockFetch = jest.fn().mockImplementation(() => {
+export const mockFetch = jest.fn().mockImplementation(async () => {
   return Promise.resolve({
     data: {
       properties: { id: "123456" },

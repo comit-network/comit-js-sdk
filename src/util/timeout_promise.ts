@@ -6,11 +6,14 @@ export interface TryParams {
   tryIntervalSecs: number;
 }
 
-export function timeoutPromise<T>(ms: number, promise: Promise<T>): Promise<T> {
+export async function timeoutPromise<T>(
+  ms: number,
+  promise: Promise<T>
+): Promise<T> {
   const timeout = new Promise<T>((_, reject) => {
     const id = setTimeout(() => {
       clearTimeout(id);
-      reject("Timed out in " + ms + "ms.");
+      reject(`Timed out in ${ms}ms.`);
     }, ms);
   });
 

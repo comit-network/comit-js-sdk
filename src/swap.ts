@@ -7,7 +7,7 @@ import { EthereumWallet } from "./ethereum_wallet";
 import { sleep, timeoutPromise, TryParams } from "./util/timeout_promise";
 
 /**
- * A statefull class that represents a single swap.
+ * A stateful class that represents a single swap.
  *
  * It has all the dependencies embedded that are necessary for taking actions on the swap.
  */
@@ -53,7 +53,7 @@ export class Swap {
       "deploy",
       tryParams
     );
-    return await this.doLedgerAction(response.data);
+    return this.doLedgerAction(response.data);
   }
 
   /**
@@ -68,7 +68,7 @@ export class Swap {
       "fund",
       tryParams
     );
-    return await this.doLedgerAction(response.data);
+    return this.doLedgerAction(response.data);
   }
 
   /**
@@ -83,7 +83,7 @@ export class Swap {
       "redeem",
       tryParams
     );
-    return await this.doLedgerAction(response.data);
+    return this.doLedgerAction(response.data);
   }
 
   /**
@@ -98,7 +98,7 @@ export class Swap {
       "refund",
       tryParams
     );
-    return await this.doLedgerAction(response.data);
+    return this.doLedgerAction(response.data);
   }
 
   public async fetchDetails(): Promise<SwapDetails> {
@@ -115,7 +115,7 @@ export class Swap {
    * @param tryParams Controls at which stage the exception is thrown.
    * @returns The response from {@link Cnd}. The actual response depends on the action you executed (hence the type parameter).
    */
-  public tryExecuteSirenAction<R>(
+  public async tryExecuteSirenAction<R>(
     actionName: string,
     { maxTimeoutSecs, tryIntervalSecs }: TryParams
   ): Promise<AxiosResponse<R>> {
@@ -137,18 +137,18 @@ export class Swap {
       case "bitcoin-broadcast-signed-transaction": {
         const { hex, network } = ledgerAction.payload;
 
-        return await this.bitcoinWallet.broadcastTransaction(hex, network);
+        return this.bitcoinWallet.broadcastTransaction(hex, network);
       }
       case "bitcoin-send-amount-to-address": {
         const { to, amount, network } = ledgerAction.payload;
         const sats = parseInt(amount, 10);
 
-        return await this.bitcoinWallet.sendToAddress(to, sats, network);
+        return this.bitcoinWallet.sendToAddress(to, sats, network);
       }
       case "ethereum-call-contract": {
         const { data, contract_address, gas_limit } = ledgerAction.payload;
 
-        return await this.ethereumWallet.callContract(
+        return this.ethereumWallet.callContract(
           data,
           contract_address,
           gas_limit
@@ -158,7 +158,7 @@ export class Swap {
         const { amount, data, gas_limit } = ledgerAction.payload;
         const value = new BigNumber(amount);
 
-        return await this.ethereumWallet.deployContract(data, value, gas_limit);
+        return this.ethereumWallet.deployContract(data, value, gas_limit);
       }
 
       default:
