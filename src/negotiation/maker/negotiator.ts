@@ -93,7 +93,7 @@ class Negotiator {
    * @param swapId The id of a swap.
    * @param order The order corresponding to the swap.
    */
-  public async takeOrder(swapId: string, order: Order) {
+  public async takeOrder(swapId: string, order: Order): Promise<void> {
     // Fire the auto-accept
     try {
       await this.tryAcceptSwap(swapId, order, this.tryParams);
@@ -115,7 +115,7 @@ class Negotiator {
    * @param port The port where the {@link HttpService} should be exposed.
    * @param hostname Optionally a hostname can be provided as well.
    */
-  public async listen(port: number, hostname?: string) {
+  public async listen(port: number, hostname?: string): Promise<void> {
     return this.httpService.listen(port, hostname);
   }
 
@@ -123,7 +123,7 @@ class Negotiator {
     swapId: string,
     order: Order,
     { maxTimeoutSecs, tryIntervalSecs }: TryParams
-  ) {
+  ): Promise<void> {
     return timeoutPromise(
       maxTimeoutSecs * 1000,
       this.acceptSwap(swapId, order, tryIntervalSecs)
@@ -134,7 +134,7 @@ class Negotiator {
     swapId: string,
     order: Order,
     tryIntervalSecs: number
-  ) {
+  ): Promise<void> {
     while (true) {
       await sleep(tryIntervalSecs * 1000);
 
@@ -187,7 +187,7 @@ class HttpService {
     this.server = undefined;
   }
 
-  public async listen(port: number, hostname?: string) {
+  public async listen(port: number, hostname?: string): Promise<void> {
     const app = express();
 
     app.use(express.json());

@@ -98,7 +98,7 @@ export function rateMatches(
   return true;
 }
 
-function orderRate(rawOrder: RawOrder) {
+function orderRate(rawOrder: RawOrder): BigNumber {
   const buy = new BigNumber(rawOrder.bid.nominalAmount);
   const sell = new BigNumber(rawOrder.ask.nominalAmount);
 

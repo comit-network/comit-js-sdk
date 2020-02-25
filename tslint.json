@@ -18,7 +18,8 @@
     "no-return-await": true,
     "no-string-throw": true,
     "radix": true,
-    "restrict-plus-operands": true
+    "restrict-plus-operands": true,
+    "typedef": [true, "call-signature", "property-declaration"]
   },
   "rulesDirectory": []
 }

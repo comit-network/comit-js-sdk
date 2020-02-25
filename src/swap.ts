@@ -169,7 +169,7 @@ export class Swap {
   private async executeSirenAction(
     actionName: string,
     tryIntervalSecs: number
-  ) {
+  ): Promise<AxiosResponse> {
     while (true) {
       await sleep(tryIntervalSecs * 1000);
 
