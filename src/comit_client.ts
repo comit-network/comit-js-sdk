@@ -116,11 +116,11 @@ export class ComitClient {
       .map(swap => this.newSwap(swap));
   }
 
-  public getPeerId(): Promise<string> {
+  public async getPeerId(): Promise<string> {
     return this.cnd.getPeerId();
   }
 
-  public getPeerListenAddresses(): Promise<string[]> {
+  public async getPeerListenAddresses(): Promise<string[]> {
     return this.cnd.getPeerListenAddresses();
   }
 

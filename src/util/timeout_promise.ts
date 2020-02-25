@@ -6,17 +6,20 @@ export interface TryParams {
   tryIntervalSecs: number;
 }
 
-export function timeoutPromise<T>(ms: number, promise: Promise<T>): Promise<T> {
+export async function timeoutPromise<T>(
+  ms: number,
+  promise: Promise<T>
+): Promise<T> {
   const timeout = new Promise<T>((_, reject) => {
     const id = setTimeout(() => {
       clearTimeout(id);
-      reject("Timed out in " + ms + "ms.");
+      reject(`Timed out in ${ms}ms.`);
     }, ms);
   });
 
   return Promise.race([promise, timeout]);
 }
 
-export async function sleep(ms: number) {
+export async function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }

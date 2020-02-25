@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Functions to submit swap request to cnd using the new routes created for Lightning.
+- Added lints to enforce `async` keyword and declaration of returned types.
 
 ### Changed
 - `Breaking API Change`: Rename `Swap.tryExecuteAction` to `Swap.tryExecuteSirenAction`. This should make it more explicit that we are only making an HTTP request to cnd here which might return a ledger action.

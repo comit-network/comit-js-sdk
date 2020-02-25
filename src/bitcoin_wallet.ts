@@ -32,7 +32,7 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
     network: string,
     peerUri: string,
     hdKey: string
-  ) {
+  ): Promise<InMemoryBitcoinWallet> {
     const parsedNetwork = Network.get(network);
 
     const logger = new Logger({
@@ -113,14 +113,14 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
     private readonly wallet: any
   ) {}
 
-  public async getBalance() {
+  public async getBalance(): Promise<number> {
     const balance = await this.wallet.getBalance();
     // TODO: Balances stay unconfirmed, try to use bcoin.SPVNode (and set node.http to undefined) see if it catches the confirmations
     const amount = new Amount(balance.toJSON().unconfirmed, "sat");
     return amount.toBTC(true);
   }
 
-  public async getAddress() {
+  public async getAddress(): Promise<string> {
     const receiveAddress = await this.wallet.receiveAddress(0);
     return receiveAddress.toString(this.network);
   }
@@ -159,12 +159,12 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
     return transaction.txid();
   }
 
-  public getFee() {
+  public getFee(): string {
     // should be dynamic in a real application
     return "150";
   }
 
-  private assertNetwork(network: string) {
+  private assertNetwork(network: string): void {
     if (network !== this.network.type) {
       throw new Error(
         `This wallet is only connected to the ${this.network.type} network and cannot perform actions on the ${network} network`

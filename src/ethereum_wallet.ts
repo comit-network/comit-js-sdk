@@ -23,11 +23,11 @@ export class EthereumWallet {
     this.wallet = wallet.connect(provider);
   }
 
-  public getAccount() {
+  public getAccount(): string {
     return this.wallet.address;
   }
 
-  public getBalance() {
+  public async getBalance(): Promise<BigNumberEthers> {
     return this.wallet.getBalance();
   }
 
@@ -82,7 +82,9 @@ export class EthereumWallet {
     return this.sendTransaction(transaction);
   }
 
-  private async sendTransaction(transaction: TransactionRequest) {
+  private async sendTransaction(
+    transaction: TransactionRequest
+  ): Promise<string> {
     const response = await this.wallet.sendTransaction(transaction);
 
     if (!response.hash) {
