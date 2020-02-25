@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0] - 2020-02-25
+
 ### Added
 - Functions to submit swap request to cnd using the new routes created for Lightning.
 - Added lints to enforce `async` keyword and declaration of returned types.
@@ -144,7 +146,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.11.1...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.12.0...HEAD
+[0.12.0]: https://github.com/comit-network/comit-js-sdk/compare/0.11.1...0.12.0
 [0.11.1]: https://github.com/comit-network/comit-js-sdk/compare/0.11.0...0.11.1
 [0.11.0]: https://github.com/comit-network/comit-js-sdk/compare/0.10.1...0.11.0
 [0.10.1]: https://github.com/comit-network/comit-js-sdk/compare/0.10.0...0.10.1
