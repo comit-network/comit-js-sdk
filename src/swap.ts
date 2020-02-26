@@ -4,6 +4,7 @@ import { BitcoinWallet } from "./bitcoin_wallet";
 import { Cnd, LedgerAction, SwapDetails } from "./cnd/cnd";
 import { Field } from "./cnd/siren";
 import { EthereumWallet } from "./ethereum_wallet";
+import { LightningWallet } from "./lightning_wallet";
 import { sleep, timeoutPromise, TryParams } from "./util/timeout_promise";
 
 /**
@@ -12,12 +13,40 @@ import { sleep, timeoutPromise, TryParams } from "./util/timeout_promise";
  * It has all the dependencies embedded that are necessary for taking actions on the swap.
  */
 export class Swap {
+  private bitcoinWallet?: BitcoinWallet;
+  private ethereumWallet?: EthereumWallet;
+  private lightningWallet?: LightningWallet;
+
   constructor(
-    private readonly bitcoinWallet: BitcoinWallet,
-    private readonly ethereumWallet: EthereumWallet,
     private readonly cnd: Cnd,
-    readonly self: string
-  ) {}
+    readonly self: string,
+    wallets?: {
+      bitcoinWallet?: BitcoinWallet;
+      ethereumWallet?: EthereumWallet;
+      lightningWallet?: LightningWallet;
+    }
+  ) {
+    if (wallets) {
+      this.bitcoinWallet = wallets.bitcoinWallet;
+      this.ethereumWallet = wallets.ethereumWallet;
+      this.lightningWallet = wallets.lightningWallet;
+    }
+  }
+
+  public withBitcoinWallet(bitcoinWallet: BitcoinWallet): Swap {
+    this.bitcoinWallet = bitcoinWallet;
+    return this;
+  }
+
+  public withEthereumWallet(ethereumWallet: EthereumWallet): Swap {
+    this.ethereumWallet = ethereumWallet;
+    return this;
+  }
+
+  public withLightningWallet(lightningWallet: LightningWallet): Swap {
+    this.lightningWallet = lightningWallet;
+    return this;
+  }
 
   /**
    * Looks for and executes the accept action of this {@link Swap}.
@@ -136,31 +165,73 @@ export class Swap {
     switch (ledgerAction.type) {
       case "bitcoin-broadcast-signed-transaction": {
         const { hex, network } = ledgerAction.payload;
+        const bitcoinWallet = this.assertBitcoinWallet();
 
-        return this.bitcoinWallet.broadcastTransaction(hex, network);
+        return bitcoinWallet.broadcastTransaction(hex, network);
       }
       case "bitcoin-send-amount-to-address": {
+        const bitcoinWallet = this.assertBitcoinWallet();
+
         const { to, amount, network } = ledgerAction.payload;
         const sats = parseInt(amount, 10);
 
-        return this.bitcoinWallet.sendToAddress(to, sats, network);
+        return bitcoinWallet.sendToAddress(to, sats, network);
       }
       case "ethereum-call-contract": {
+        const ethereumWallet = this.assertEthereumWallet();
+
         const { data, contract_address, gas_limit } = ledgerAction.payload;
 
-        return this.ethereumWallet.callContract(
-          data,
-          contract_address,
-          gas_limit
-        );
+        return ethereumWallet.callContract(data, contract_address, gas_limit);
       }
       case "ethereum-deploy-contract": {
+        const ethereumWallet = this.assertEthereumWallet();
+
         const { amount, data, gas_limit } = ledgerAction.payload;
         const value = new BigNumber(amount);
 
-        return this.ethereumWallet.deployContract(data, value, gas_limit);
+        return ethereumWallet.deployContract(data, value, gas_limit);
       }
+      case "lnd-send-payment": {
+        const lightningWallet = this.assertLightningWallet();
 
+        const {
+          public_key,
+          amount,
+          secret_hash,
+          final_cltv_delta
+        } = ledgerAction.payload;
+
+        await lightningWallet.sendPayment(
+          public_key,
+          amount,
+          secret_hash,
+          final_cltv_delta
+        );
+
+        return secret_hash;
+      }
+      case "lnd-add-hold-invoice": {
+        const lightningWallet = this.assertLightningWallet();
+
+        const { amount, secret_hash, expiry, memo } = ledgerAction.payload;
+
+        return lightningWallet.addHoldInvoice(
+          amount,
+          secret_hash,
+          expiry,
+          memo
+        );
+      }
+      case "lnd-settle-invoice": {
+        const lightningWallet = this.assertLightningWallet();
+
+        const { secret } = ledgerAction.payload;
+
+        await lightningWallet.settleInvoice(secret);
+
+        return secret;
+      }
       default:
         throw new Error(`Cannot handle ${ledgerAction.type}`);
     }
@@ -196,15 +267,39 @@ export class Swap {
     const classes: string[] = field.class;
 
     if (classes.includes("bitcoin") && classes.includes("address")) {
-      return this.bitcoinWallet.getAddress();
+      const bitcoinWallet = this.assertBitcoinWallet();
+      return bitcoinWallet.getAddress();
     }
 
     if (classes.includes("bitcoin") && classes.includes("feePerWU")) {
-      return Promise.resolve(this.bitcoinWallet.getFee());
+      const bitcoinWallet = this.assertBitcoinWallet();
+      return Promise.resolve(bitcoinWallet.getFee());
     }
 
     if (classes.includes("ethereum") && classes.includes("address")) {
-      return Promise.resolve(this.ethereumWallet.getAccount());
+      const ethereumWallet = this.assertEthereumWallet();
+      return Promise.resolve(ethereumWallet.getAccount());
     }
+  }
+
+  private assertBitcoinWallet(): BitcoinWallet {
+    if (!this.bitcoinWallet) {
+      throw new Error("Bitcoin wallet is not set.");
+    }
+    return this.bitcoinWallet;
+  }
+
+  private assertEthereumWallet(): EthereumWallet {
+    if (!this.ethereumWallet) {
+      throw new Error("Ethereum wallet is not set.");
+    }
+    return this.ethereumWallet;
+  }
+
+  private assertLightningWallet(): LightningWallet {
+    if (!this.lightningWallet) {
+      throw new Error("Lightning wallet is not set.");
+    }
+    return this.lightningWallet;
   }
 }
