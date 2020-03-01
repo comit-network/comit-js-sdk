@@ -1,4 +1,4 @@
-<a href="https://comit.network">
+<a href="https://comit.network/docs/comit-sdk/index">
   <img src="https://github.com/comit-network/comit-js-sdk/raw/master/logo.svg?sanitize=true" height="120px" />
 </a>
 
@@ -20,7 +20,7 @@ If you have any questions, feel free to [reach out to the team in our Gitter cha
 The COMIT Javascript SDK enables the integration of the [comit-network daemon](https://github.com/comit-network/comit-rs) into Javascript applications.
 You'll find the [latest comit-sdk version on npmjs](https://www.npmjs.com/package/comit-sdk).
 
-Below you find a short introduction into the SDK. For more detailed information please refer to the API-documentation in our documentation.
+Below you find a short introduction into the SDK. For more detailed information please refer to the [API-documentation](https://comit.network/docs/comit-sdk/index) in our documentation.
 
 ## Getting started
 
