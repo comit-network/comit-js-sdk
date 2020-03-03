@@ -349,7 +349,7 @@ export class Cnd {
       });
   }
 
-  private rootUrl(): uri.URI {
+  private rootUrl(): URI {
     return new URI(this.cndUrl);
   }
 
