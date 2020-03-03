@@ -80,7 +80,7 @@ export interface LndAddHoldInvoicePayload {
   amount: string;
   secret_hash: string;
   expiry: number;
-  memo: string;
+  cltv_expiry: number;
 }
 
 export interface LndSettleInvoicePayload {

@@ -214,13 +214,18 @@ export class Swap {
       case "lnd-add-hold-invoice": {
         const lightningWallet = this.assertLightningWallet();
 
-        const { amount, secret_hash, expiry, memo } = ledgerAction.payload;
+        const {
+          amount,
+          secret_hash,
+          expiry,
+          cltv_expiry
+        } = ledgerAction.payload;
 
         return lightningWallet.addHoldInvoice(
           amount,
           secret_hash,
           expiry,
-          memo
+          cltv_expiry
         );
       }
       case "lnd-settle-invoice": {

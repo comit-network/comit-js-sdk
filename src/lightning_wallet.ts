@@ -49,7 +49,7 @@ export class LightningWallet {
     satAmount: string,
     secretHash: string,
     expiry: number,
-    memo: string
+    cltvExpiry: number
   ): Promise<string> {
     const satAmountNum = parseInt(satAmount, 10);
     const hash = Buffer.from(secretHash, "hex");
@@ -57,7 +57,7 @@ export class LightningWallet {
       await this.lnd.invoicesrpc.addHoldInvoice({
         value: satAmountNum,
         hash,
-        memo,
+        cltvExpiry,
         expiry
       })
     ).paymentRequest;
