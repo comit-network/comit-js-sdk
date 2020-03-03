@@ -104,7 +104,9 @@ export class LightningWallet {
     const openChannel = this.lnd.lnrpc.openChannel(request);
 
     openChannel.on("error", (err: any) => {
-      console.log("Error encountered", err);
+      throw new Error(
+        `Error encountered for Open Channel: ${JSON.stringify(err)}`
+      );
     });
 
     const status: OpenStatusUpdate = await pEvent(openChannel, "data");
