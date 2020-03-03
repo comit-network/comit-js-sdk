@@ -10,5 +10,7 @@ website/
 # This is a library
 yarn.lock
 
+yarn-error.log
+
 # no need to commit coverage reports for now
 coverage/

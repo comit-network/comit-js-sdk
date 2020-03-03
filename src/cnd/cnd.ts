@@ -69,6 +69,24 @@ export interface EthereumCallContractPayload {
   network: string;
 }
 
+export interface LndSendPaymentPayload {
+  public_key: string;
+  amount: string;
+  secret_hash: string;
+  final_cltv_delta: number;
+}
+
+export interface LndAddHoldInvoicePayload {
+  amount: string;
+  secret_hash: string;
+  expiry: number;
+  memo: string;
+}
+
+export interface LndSettleInvoicePayload {
+  secret: string;
+}
+
 export type LedgerAction =
   | {
       type: "bitcoin-send-amount-to-address";
@@ -85,6 +103,18 @@ export type LedgerAction =
   | {
       type: "ethereum-call-contract";
       payload: EthereumCallContractPayload;
+    }
+  | {
+      type: "lnd-send-payment";
+      payload: LndSendPaymentPayload;
+    }
+  | {
+      type: "lnd-add-hold-invoice";
+      payload: LndAddHoldInvoicePayload;
+    }
+  | {
+      type: "lnd-settle-invoice";
+      payload: LndSettleInvoicePayload;
     }
   | {
       type: string;
@@ -274,7 +304,7 @@ export class Cnd {
    * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
    * @return The location of the swap (href) as returned by the REST API in the location header.
    */
-  public async postHanEthereumEtherHalightLightningBitcoin(
+  public async createHanEthereumEtherHalightLightningBitcoin(
     body?: any
   ): Promise<string> {
     return axios
@@ -294,7 +324,7 @@ export class Cnd {
    * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
    * @return The location of the swap (href) as returned by the REST API in the location header.
    */
-  public async postHerc20EthereumErc20HalightLightningBitcoin(
+  public async createHerc20EthereumErc20HalightLightningBitcoin(
     body?: any
   ): Promise<string> {
     return axios
@@ -314,7 +344,7 @@ export class Cnd {
    * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
    * @return The location of the swap (href) as returned by the REST API in the location header.
    */
-  public async postHalightLightningBitcoinHanEthereumEther(
+  public async createHalightLightningBitcoinHanEthereumEther(
     body?: any
   ): Promise<string> {
     return axios
@@ -334,7 +364,7 @@ export class Cnd {
    * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
    * @return The location of the swap (href) as returned by the REST API in the location header.
    */
-  public async postHalightLightningBitcoinHerc20EthereumErc20(
+  public async createHalightLightningBitcoinHerc20EthereumErc20(
     body?: any
   ): Promise<string> {
     return axios

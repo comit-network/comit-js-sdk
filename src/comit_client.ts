@@ -148,10 +148,9 @@ export class ComitClient {
     }
 
     return new Swap(
-      this.bitcoinWallet,
-      this.ethereumWallet,
       this.cnd,
-      swap.links!.find(link => link.rel.includes("self"))!.href
+      swap.links!.find(link => link.rel.includes("self"))!.href,
+      { bitcoinWallet: this.bitcoinWallet, ethereumWallet: this.ethereumWallet }
     );
   }
 }
