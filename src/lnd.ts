@@ -26,6 +26,7 @@ export class Lnd {
    */
   public static async init(config: RpcClientConfig): Promise<Lnd> {
     return new Lnd(
+      config,
       await createLnRpc(config),
       await createAutopilotRpc(config),
       await createChainRpc(config),
@@ -39,6 +40,7 @@ export class Lnd {
   }
 
   private constructor(
+    public config: RpcClientConfig,
     public lnrpc: LnRpc,
     public autopilotrpc: AutopilotRpc,
     public chainrpc: ChainRpc,

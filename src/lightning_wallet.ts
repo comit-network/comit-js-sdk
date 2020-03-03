@@ -10,23 +10,22 @@ import { Lnd } from "./lnd";
 
 export class LightningWallet {
   public static async newInstance(
-    certPath: string,
+    certPath: string | false,
     macaroonPath: string,
-    lndHost: string,
-    lndPort: number
+    lndRpcSocket: string,
+    lndP2pSocket: string
   ): Promise<LightningWallet> {
     const lnd = await Lnd.init({
       tls: certPath,
       macaroonPath,
-      server: `${lndHost}:${lndPort}`
+      server: lndRpcSocket
     });
-    return new LightningWallet(lnd, lndHost, lndPort);
+    return new LightningWallet(lnd, lndP2pSocket);
   }
 
-  public constructor(
+  private constructor(
     public readonly lnd: Lnd,
-    private readonly p2pHost: string,
-    private readonly p2pPort: number
+    public readonly p2pSocket: string
   ) {}
 
   public async sendPayment(
@@ -83,10 +82,6 @@ export class LightningWallet {
 
   public async getPubkey(): Promise<string> {
     return (await this.lnd.lnrpc.getInfo()).identityPubkey;
-  }
-
-  public getLndP2pSocket(): string {
-    return `${this.p2pHost}:${this.p2pPort}`;
   }
 
   public async getInfo(): Promise<GetInfoResponse> {
