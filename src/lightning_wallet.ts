@@ -89,11 +89,11 @@ export class LightningWallet {
   }
 
   public async openChannel(
-    pubkey: string,
+    toPubkey: string,
     satAmount: number
   ): Promise<Outpoint> {
     const request = {
-      nodePubkey: Buffer.from(pubkey, "hex"),
+      nodePubkey: Buffer.from(toPubkey, "hex"),
       localFundingAmount: satAmount.toString()
     };
     const openChannel = this.lnd.lnrpc.openChannel(request);
