@@ -42,7 +42,7 @@ export class LightningWallet {
       dest: publicKeyBuf,
       amt: satAmount,
       paymentHash,
-      cltvLimit: finalCltvDelta
+      finalCltvDelta
     });
   }
 
@@ -53,19 +53,20 @@ export class LightningWallet {
     memo: string
   ): Promise<string> {
     const satAmountNum = parseInt(satAmount, 10);
-
+    const hash = Buffer.from(secretHash, "hex");
     return (
       await this.lnd.invoicesrpc.addHoldInvoice({
         value: satAmountNum,
-        hash: secretHash,
-        expiry,
-        memo
+        hash,
+        memo,
+        expiry
       })
     ).paymentRequest;
   }
 
   public async settleInvoice(secret: string): Promise<void> {
-    await this.lnd.invoicesrpc.settleInvoice({ preimage: secret });
+    const preimage = Buffer.from(secret, "hex");
+    await this.lnd.invoicesrpc.settleInvoice({ preimage });
   }
 
   public async newAddress(type: AddressType): Promise<string> {
