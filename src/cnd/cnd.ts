@@ -70,21 +70,30 @@ export interface EthereumCallContractPayload {
 }
 
 export interface LndSendPaymentPayload {
-  public_key: string;
+  self_public_key: string;
+  to_public_key: string;
   amount: string;
   secret_hash: string;
   final_cltv_delta: number;
+  chain: string;
+  network: string;
 }
 
 export interface LndAddHoldInvoicePayload {
+  self_public_key: string;
   amount: string;
   secret_hash: string;
   expiry: number;
   cltv_expiry: number;
+  chain: string;
+  network: string;
 }
 
 export interface LndSettleInvoicePayload {
+  self_public_key: string;
   secret: string;
+  chain: string;
+  network: string;
 }
 
 export type LedgerAction =

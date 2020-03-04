@@ -196,14 +196,19 @@ export class Swap {
         const lightningWallet = this.assertLightningWallet();
 
         const {
-          public_key,
+          self_public_key,
+          to_public_key,
           amount,
           secret_hash,
-          final_cltv_delta
+          final_cltv_delta,
+          chain,
+          network
         } = ledgerAction.payload;
 
+        await lightningWallet.assertLndDetails(self_public_key, chain, network);
+
         await lightningWallet.sendPayment(
-          public_key,
+          to_public_key,
           amount,
           secret_hash,
           final_cltv_delta
@@ -215,11 +220,16 @@ export class Swap {
         const lightningWallet = this.assertLightningWallet();
 
         const {
+          self_public_key,
           amount,
           secret_hash,
           expiry,
-          cltv_expiry
+          cltv_expiry,
+          chain,
+          network
         } = ledgerAction.payload;
+
+        await lightningWallet.assertLndDetails(self_public_key, chain, network);
 
         return lightningWallet.addHoldInvoice(
           amount,
@@ -231,7 +241,14 @@ export class Swap {
       case "lnd-settle-invoice": {
         const lightningWallet = this.assertLightningWallet();
 
-        const { secret } = ledgerAction.payload;
+        const {
+          self_public_key,
+          secret,
+          chain,
+          network
+        } = ledgerAction.payload;
+
+        await lightningWallet.assertLndDetails(self_public_key, chain, network);
 
         await lightningWallet.settleInvoice(secret);
 

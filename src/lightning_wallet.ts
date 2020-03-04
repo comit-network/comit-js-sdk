@@ -1,5 +1,6 @@
 import {
   AddressType,
+  Chain,
   GetInfoResponse,
   Invoice,
   OpenStatusUpdate,
@@ -132,6 +133,38 @@ export class LightningWallet {
       return { rHash, paymentRequest };
     } else {
       return { rHash: rHash.toString("hex"), paymentRequest };
+    }
+  }
+
+  public async assertLndDetails(
+    selfPublicKey: string,
+    chain: string,
+    network: string
+  ): Promise<void> {
+    const getinfo = await this.lnd.lnrpc.getInfo();
+
+    if (getinfo.identityPubkey !== selfPublicKey) {
+      throw new Error(
+        `lnd self public key does not match cnd expectations. Expected:${selfPublicKey}, actual:${getinfo.identityPubkey}`
+      );
+    }
+
+    if (getinfo.chains.length !== 1) {
+      throw new Error(
+        `lnd is connected to several chains, this is unexpected. Chains: ${JSON.stringify(
+          getinfo.chains
+        )}`
+      );
+    }
+
+    // Type hacking until https://github.com/RadarTech/lnrpc/pull/73 is merged and released
+    const chainUnknown = getinfo.chains[0] as unknown;
+    const lndChain = chainUnknown as Chain;
+
+    if (lndChain.chain !== chain || lndChain.network !== network) {
+      throw new Error(
+        `lnd chain does not match cnd expectation. Expected:${lndChain}, actual:{ chain: "${chain}", network: "${network}" }`
+      );
     }
   }
 }
