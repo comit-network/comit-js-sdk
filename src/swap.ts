@@ -3,9 +3,7 @@ import { BigNumber } from "bignumber.js";
 import { Cnd, LedgerAction, SwapDetails } from "./cnd/cnd";
 import { Field } from "./cnd/siren";
 import { sleep, timeoutPromise, TryParams } from "./util/timeout_promise";
-import { BitcoinWallet } from "./wallet/bitcoin";
-import { EthereumWallet } from "./wallet/ethereum";
-import { LightningWallet } from "./wallet/lightning";
+import { AllWallets, Wallets } from "./wallet";
 
 /**
  * A stateful class that represents a single swap.
@@ -13,39 +11,14 @@ import { LightningWallet } from "./wallet/lightning";
  * It has all the dependencies embedded that are necessary for taking actions on the swap.
  */
 export class Swap {
-  private bitcoinWallet?: BitcoinWallet;
-  private ethereumWallet?: EthereumWallet;
-  private lightningWallet?: LightningWallet;
+  private readonly wallets: Wallets;
 
   constructor(
     private readonly cnd: Cnd,
     readonly self: string,
-    wallets?: {
-      bitcoinWallet?: BitcoinWallet;
-      ethereumWallet?: EthereumWallet;
-      lightningWallet?: LightningWallet;
-    }
+    wallets: AllWallets
   ) {
-    if (wallets) {
-      this.bitcoinWallet = wallets.bitcoinWallet;
-      this.ethereumWallet = wallets.ethereumWallet;
-      this.lightningWallet = wallets.lightningWallet;
-    }
-  }
-
-  public withBitcoinWallet(bitcoinWallet: BitcoinWallet): Swap {
-    this.bitcoinWallet = bitcoinWallet;
-    return this;
-  }
-
-  public withEthereumWallet(ethereumWallet: EthereumWallet): Swap {
-    this.ethereumWallet = ethereumWallet;
-    return this;
-  }
-
-  public withLightningWallet(lightningWallet: LightningWallet): Swap {
-    this.lightningWallet = lightningWallet;
-    return this;
+    this.wallets = new Wallets(wallets);
   }
 
   /**
@@ -165,36 +138,31 @@ export class Swap {
     switch (ledgerAction.type) {
       case "bitcoin-broadcast-signed-transaction": {
         const { hex, network } = ledgerAction.payload;
-        const bitcoinWallet = this.assertBitcoinWallet();
 
-        return bitcoinWallet.broadcastTransaction(hex, network);
+        return this.wallets.bitcoin.broadcastTransaction(hex, network);
       }
       case "bitcoin-send-amount-to-address": {
-        const bitcoinWallet = this.assertBitcoinWallet();
-
         const { to, amount, network } = ledgerAction.payload;
         const sats = parseInt(amount, 10);
 
-        return bitcoinWallet.sendToAddress(to, sats, network);
+        return this.wallets.bitcoin.sendToAddress(to, sats, network);
       }
       case "ethereum-call-contract": {
-        const ethereumWallet = this.assertEthereumWallet();
-
         const { data, contract_address, gas_limit } = ledgerAction.payload;
 
-        return ethereumWallet.callContract(data, contract_address, gas_limit);
+        return this.wallets.ethereum.callContract(
+          data,
+          contract_address,
+          gas_limit
+        );
       }
       case "ethereum-deploy-contract": {
-        const ethereumWallet = this.assertEthereumWallet();
-
         const { amount, data, gas_limit } = ledgerAction.payload;
         const value = new BigNumber(amount);
 
-        return ethereumWallet.deployContract(data, value, gas_limit);
+        return this.wallets.ethereum.deployContract(data, value, gas_limit);
       }
       case "lnd-send-payment": {
-        const lightningWallet = this.assertLightningWallet();
-
         const {
           self_public_key,
           to_public_key,
@@ -205,9 +173,13 @@ export class Swap {
           network
         } = ledgerAction.payload;
 
-        await lightningWallet.assertLndDetails(self_public_key, chain, network);
+        await this.wallets.lightning.assertLndDetails(
+          self_public_key,
+          chain,
+          network
+        );
 
-        await lightningWallet.sendPayment(
+        await this.wallets.lightning.sendPayment(
           to_public_key,
           amount,
           secret_hash,
@@ -217,8 +189,6 @@ export class Swap {
         return secret_hash;
       }
       case "lnd-add-hold-invoice": {
-        const lightningWallet = this.assertLightningWallet();
-
         const {
           self_public_key,
           amount,
@@ -229,9 +199,13 @@ export class Swap {
           network
         } = ledgerAction.payload;
 
-        await lightningWallet.assertLndDetails(self_public_key, chain, network);
+        await this.wallets.lightning.assertLndDetails(
+          self_public_key,
+          chain,
+          network
+        );
 
-        return lightningWallet.addHoldInvoice(
+        return this.wallets.lightning.addHoldInvoice(
           amount,
           secret_hash,
           expiry,
@@ -239,8 +213,6 @@ export class Swap {
         );
       }
       case "lnd-settle-invoice": {
-        const lightningWallet = this.assertLightningWallet();
-
         const {
           self_public_key,
           secret,
@@ -248,9 +220,13 @@ export class Swap {
           network
         } = ledgerAction.payload;
 
-        await lightningWallet.assertLndDetails(self_public_key, chain, network);
+        await this.wallets.lightning.assertLndDetails(
+          self_public_key,
+          chain,
+          network
+        );
 
-        await lightningWallet.settleInvoice(secret);
+        await this.wallets.lightning.settleInvoice(secret);
 
         return secret;
       }
@@ -289,39 +265,15 @@ export class Swap {
     const classes: string[] = field.class;
 
     if (classes.includes("bitcoin") && classes.includes("address")) {
-      const bitcoinWallet = this.assertBitcoinWallet();
-      return bitcoinWallet.getAddress();
+      return this.wallets.bitcoin.getAddress();
     }
 
     if (classes.includes("bitcoin") && classes.includes("feePerWU")) {
-      const bitcoinWallet = this.assertBitcoinWallet();
-      return Promise.resolve(bitcoinWallet.getFee());
+      return this.wallets.bitcoin.getFee();
     }
 
     if (classes.includes("ethereum") && classes.includes("address")) {
-      const ethereumWallet = this.assertEthereumWallet();
-      return Promise.resolve(ethereumWallet.getAccount());
+      return this.wallets.ethereum.getAccount();
     }
-  }
-
-  private assertBitcoinWallet(): BitcoinWallet {
-    if (!this.bitcoinWallet) {
-      throw new Error("Bitcoin wallet is not set.");
-    }
-    return this.bitcoinWallet;
-  }
-
-  private assertEthereumWallet(): EthereumWallet {
-    if (!this.ethereumWallet) {
-      throw new Error("Ethereum wallet is not set.");
-    }
-    return this.ethereumWallet;
-  }
-
-  private assertLightningWallet(): LightningWallet {
-    if (!this.lightningWallet) {
-      throw new Error("Lightning wallet is not set.");
-    }
-    return this.lightningWallet;
   }
 }
