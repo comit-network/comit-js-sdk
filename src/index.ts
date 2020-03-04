@@ -34,8 +34,8 @@ export {
   isValidExecutionParams,
   NetworkType
 } from "./negotiation/execution_params";
-export { MakerNegotiator } from "./negotiation/maker/negotiator";
-export { TakerNegotiator } from "./negotiation/taker/negotiator";
+export { MakerNegotiator } from "./negotiation/maker/maker_negotiator";
+export { TakerNegotiator } from "./negotiation/taker/taker_negotiator";
 
 export { TryParams } from "./util/timeout_promise";
 export { Lnd } from "./lnd";
