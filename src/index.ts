@@ -16,9 +16,9 @@ export * from "./cnd/siren";
 
 export { Actor, createActor } from "./actor";
 
-export { BitcoinWallet, InMemoryBitcoinWallet } from "./bitcoin_wallet";
-export { EthereumWallet } from "./ethereum_wallet";
-export { LightningWallet, Outpoint } from "./lightning_wallet";
+export { BitcoinWallet, InMemoryBitcoinWallet } from "./wallet/bitcoin";
+export { EthereumWallet } from "./wallet/ethereum";
+export { LightningWallet, Outpoint } from "./wallet/lightning";
 
 export { BigNumber } from "bignumber.js";
 

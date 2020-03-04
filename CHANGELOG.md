@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Breaking API Change**: Changed the `Swap` constructor to simplify internal code.
+- Expect more fields to be returned in the lightning actions on cnd REST API to confirm the lnd instances to which cnd and the app are connected are the same.
+- **Breaking API Change**: `LightningWallet.SendPayment` helper function now accepts a `cltvExpiry` argument, `memo` has been removed.
+
 ## [0.13.0] - 2020-03-03
 
 ### Added

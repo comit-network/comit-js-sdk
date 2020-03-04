@@ -1,7 +1,7 @@
-import { MockBitcoinWallet } from "../../__mocks__/bitcoin_wallet";
 import { Cnd } from "../..";
+import { EthereumWallet } from "../..";
 import { ComitClient } from "../../comit_client";
-import { EthereumWallet } from "../../ethereum_wallet";
+import { MockBitcoinWallet } from "../../wallet/__mocks__/bitcoin";
 import {
   // @ts-ignore: tslint does not know that this is actually ./__mocks__/maker_client
   mockGetExecutionParams,
@@ -12,7 +12,7 @@ import { TakerNegotiator } from "./negotiator";
 import { MatchingCriteria } from "./order";
 
 jest.mock("./maker_client");
-jest.mock("../../ethereum_wallet");
+jest.mock("../../wallet/ethereum");
 jest.mock("../../cnd/cnd");
 
 const defaultCnd = new Cnd("");

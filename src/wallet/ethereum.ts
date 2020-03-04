@@ -8,7 +8,7 @@ import {
 } from "ethers/utils";
 import { EventFragment, FunctionFragment } from "ethers/utils/abi-coder";
 import { HDNode } from "ethers/utils/hdnode";
-import erc20 from "../ethereum_abi/erc20.json";
+import erc20 from "../../ethereum_abi/erc20.json";
 
 /**
  * Simple Ethereum wallet based on [ethers.js]{@link https://github.com/ethers-io/ethers.js/}.

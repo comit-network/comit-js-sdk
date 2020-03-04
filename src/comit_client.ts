@@ -1,8 +1,8 @@
-import { BitcoinWallet } from "./bitcoin_wallet";
 import { Cnd, SwapRequest, SwapSubEntity } from "./cnd/cnd";
 import { Action, EmbeddedRepresentationSubEntity, Entity } from "./cnd/siren";
-import { EthereumWallet } from "./ethereum_wallet";
 import { Swap } from "./swap";
+import { BitcoinWallet } from "./wallet/bitcoin";
+import { EthereumWallet } from "./wallet/ethereum";
 
 /**
  * The ComitClient class is a one-stop shop interface for interacting with {@link Swap}s of {@link Cnd}.
@@ -150,7 +150,7 @@ export class ComitClient {
     return new Swap(
       this.cnd,
       swap.links!.find(link => link.rel.includes("self"))!.href,
-      { bitcoinWallet: this.bitcoinWallet, ethereumWallet: this.ethereumWallet }
+      { bitcoin: this.bitcoinWallet, ethereum: this.ethereumWallet }
     );
   }
 }
