@@ -7,7 +7,7 @@ import {
   SendResponse
 } from "@radar/lnrpc";
 import pEvent from "p-event";
-import { Lnd } from "./lnd";
+import { Lnd } from "../lnd";
 
 export class LightningWallet {
   public static async newInstance(

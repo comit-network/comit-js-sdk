@@ -1,4 +1,4 @@
-import { BitcoinWallet } from "../bitcoin_wallet";
+import { BitcoinWallet } from "../bitcoin";
 
 export class MockBitcoinWallet implements BitcoinWallet {
   public async broadcastTransaction(

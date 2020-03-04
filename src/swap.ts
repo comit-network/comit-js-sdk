@@ -1,11 +1,11 @@
 import { AxiosResponse } from "axios";
 import { BigNumber } from "bignumber.js";
-import { BitcoinWallet } from "./bitcoin_wallet";
 import { Cnd, LedgerAction, SwapDetails } from "./cnd/cnd";
 import { Field } from "./cnd/siren";
-import { EthereumWallet } from "./ethereum_wallet";
-import { LightningWallet } from "./lightning_wallet";
 import { sleep, timeoutPromise, TryParams } from "./util/timeout_promise";
+import { BitcoinWallet } from "./wallet/bitcoin";
+import { EthereumWallet } from "./wallet/ethereum";
+import { LightningWallet } from "./wallet/lightning";
 
 /**
  * A stateful class that represents a single swap.
