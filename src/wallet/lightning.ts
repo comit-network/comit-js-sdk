@@ -1,6 +1,5 @@
 import {
   AddressType,
-  Chain,
   GetInfoResponse,
   Invoice,
   OpenStatusUpdate,
@@ -157,10 +156,7 @@ export class LightningWallet {
       );
     }
 
-    // Type hacking until https://github.com/RadarTech/lnrpc/pull/73 is merged and released
-    const chainUnknown = getinfo.chains[0] as unknown;
-    const lndChain = chainUnknown as Chain;
-
+    const lndChain = getinfo.chains[0];
     if (lndChain.chain !== chain || lndChain.network !== network) {
       throw new Error(
         `lnd chain does not match cnd expectation. Expected:${lndChain}, actual:{ chain: "${chain}", network: "${network}" }`
