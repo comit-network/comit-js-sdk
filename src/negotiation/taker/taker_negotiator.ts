@@ -15,13 +15,11 @@ import {
   TakerOrder
 } from "./order";
 
-export { Negotiator as TakerNegotiator };
-
 /**
  * Handles the negotiation on the taker side of a trade.
  * Bundles functionality to get orders from a maker, take them and initiate the swap execution.
  */
-class Negotiator {
+export class TakerNegotiator {
   private static newSwapRequest(
     rawOrder: Order,
     executionParams: ExecutionParams
@@ -90,7 +88,7 @@ class Negotiator {
       return;
     }
 
-    const swapRequest = Negotiator.newSwapRequest(order, executionParams);
+    const swapRequest = TakerNegotiator.newSwapRequest(order, executionParams);
     if (!swapRequest) {
       return;
     }

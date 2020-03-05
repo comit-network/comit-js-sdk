@@ -6,13 +6,11 @@ import { ExecutionParams } from "../execution_params";
 import { isOrderValid, Order, toTradingPair } from "../order";
 import orderSwapMatches from "./swap_order_matching";
 
-export { Negotiator as MakerNegotiator };
-
 /**
  * Handles the negotiation on the maker side of a trade.
  * Bundles functionality to create orders for a maker and make them available for the taker.
  */
-class Negotiator {
+export class MakerNegotiator {
   private ordersByTradingPair: { [tradingPair: string]: Order } = {};
   private ordersById: { [orderId: string]: Order } = {};
   private readonly executionParams: ExecutionParams;
