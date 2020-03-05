@@ -1,8 +1,8 @@
-import axios, { AxiosPromise, AxiosResponse } from "axios";
-import URI from "urijs";
+import axios, { AxiosInstance, AxiosPromise, AxiosResponse } from "axios";
 import actionToHttpRequest, {
   FieldValueResolverFn
 } from "./action_to_http_request";
+import { problemResponseInterceptor } from "./axios_rfc7807_middleware";
 import { Action, EmbeddedRepresentationSubEntity, Entity } from "./siren";
 
 interface GetInfo {
@@ -247,10 +247,16 @@ export interface SwapProperties {
  * Facilitates access to the [COMIT network daemon (cnd)](@link https://github.com/comit-network/comit-rs) REST API.
  */
 export class Cnd {
-  private readonly cndUrl: string;
+  private readonly client: AxiosInstance;
 
   public constructor(cndUrl: string) {
-    this.cndUrl = cndUrl;
+    this.client = axios.create({
+      baseURL: cndUrl
+    });
+    this.client.interceptors.response.use(
+      response => response,
+      problemResponseInterceptor
+    );
   }
 
   public async getPeerId(): Promise<string> {
@@ -258,6 +264,7 @@ export class Cnd {
     if (!info.id) {
       throw new Error("id field not present");
     }
+
     return info.id;
   }
 
@@ -266,34 +273,25 @@ export class Cnd {
     if (!info.listen_addresses) {
       throw new Error("listen addresses field not present");
     }
+
     return info.listen_addresses;
   }
 
   public async postSwap(swap: SwapRequest): Promise<string> {
-    return axios
-      .post(
-        this.rootUrl()
-          .path("swaps/rfc003")
-          .toString(),
-        swap
-      )
-      .then(res => {
-        return res.headers.location;
-      });
+    const response = await this.client.post("swaps/rfc003", swap);
+
+    return response.headers.location;
   }
 
   public async getSwaps(): Promise<SwapSubEntity[]> {
     const response = await this.fetch("swaps");
     const entity = response.data as Entity;
+
     return entity.entities as SwapSubEntity[];
   }
 
   public fetch<T>(path: string): AxiosPromise<T> {
-    return axios.get(
-      this.rootUrl()
-        .path(path)
-        .toString()
-    );
+    return this.client.get(path);
   }
 
   public async executeSirenAction(
@@ -302,10 +300,7 @@ export class Cnd {
   ): Promise<AxiosResponse> {
     const request = await actionToHttpRequest(action, resolver);
 
-    return axios.request({
-      baseURL: this.cndUrl,
-      ...request
-    });
+    return this.client.request(request);
   }
 
   /**
@@ -316,16 +311,12 @@ export class Cnd {
   public async createHanEthereumEtherHalightLightningBitcoin(
     body?: any
   ): Promise<string> {
-    return axios
-      .post(
-        this.rootUrl()
-          .path("swaps/han/ethereum/ether/halight/lightning/bitcoin")
-          .toString(),
-        body
-      )
-      .then(res => {
-        return res.headers.location;
-      });
+    const response = await this.client.post(
+      "swaps/han/ethereum/ether/halight/lightning/bitcoin",
+      body
+    );
+
+    return response.headers.location;
   }
 
   /**
@@ -336,16 +327,12 @@ export class Cnd {
   public async createHerc20EthereumErc20HalightLightningBitcoin(
     body?: any
   ): Promise<string> {
-    return axios
-      .post(
-        this.rootUrl()
-          .path("swaps/herc20/ethereum/erc20/halight/lightning/bitcoin")
-          .toString(),
-        body
-      )
-      .then(res => {
-        return res.headers.location;
-      });
+    const response = await this.client.post(
+      "swaps/herc20/ethereum/erc20/halight/lightning/bitcoin",
+      body
+    );
+
+    return response.headers.location;
   }
 
   /**
@@ -356,16 +343,12 @@ export class Cnd {
   public async createHalightLightningBitcoinHanEthereumEther(
     body?: any
   ): Promise<string> {
-    return axios
-      .post(
-        this.rootUrl()
-          .path("swaps/halight/lightning/bitcoin/han/ethereum/ether")
-          .toString(),
-        body
-      )
-      .then(res => {
-        return res.headers.location;
-      });
+    const response = await this.client.post(
+      "swaps/halight/lightning/bitcoin/han/ethereum/ether",
+      body
+    );
+
+    return response.headers.location;
   }
 
   /**
@@ -376,24 +359,17 @@ export class Cnd {
   public async createHalightLightningBitcoinHerc20EthereumErc20(
     body?: any
   ): Promise<string> {
-    return axios
-      .post(
-        this.rootUrl()
-          .path("swaps/halight/lightning/bitcoin/herc20/ethereum/erc20")
-          .toString(),
-        body
-      )
-      .then(res => {
-        return res.headers.location;
-      });
-  }
+    const response = await this.client.post(
+      "swaps/halight/lightning/bitcoin/herc20/ethereum/erc20",
+      body
+    );
 
-  private rootUrl(): URI {
-    return new URI(this.cndUrl);
+    return response.headers.location;
   }
 
   private async getInfo(): Promise<GetInfo> {
-    const response = await axios.get(this.rootUrl().toString());
+    const response = await this.client.get("/");
+
     return response.data;
   }
 }
