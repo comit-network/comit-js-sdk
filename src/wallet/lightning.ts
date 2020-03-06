@@ -135,6 +135,14 @@ export class LightningWallet {
     }
   }
 
+  /**
+   * Asserts that the available lnd instance is the same than the one connected to cnd.
+   *
+   * @param selfPublicKey
+   * @param chain
+   * @param network
+   * @throws Error if the lnd instance details mismatch
+   */
   public async assertLndDetails(
     selfPublicKey: string,
     chain: string,

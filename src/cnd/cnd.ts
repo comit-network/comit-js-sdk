@@ -259,15 +259,27 @@ export class Cnd {
     );
   }
 
+  /**
+   * Get the peer id of the cnd node
+   *
+   * @returns Promise that resolves with the peer id of the cnd node,
+   * @throws A {@link Problem} from the cnd REST API or an {@link Error}.
+   */
   public async getPeerId(): Promise<string> {
     const info = await this.getInfo();
     if (!info.id) {
-      throw new Error("id field not present");
+      return Promise.reject(new Error("id field not present"));
     }
 
     return info.id;
   }
 
+  /**
+   * Get the address on which cnd is listening for peer-to-peer/COMIT messages.
+   *
+   * @returns An array of multiaddresses
+   * @throws A {@link Problem} from the cnd REST API or an {@link Error}.
+   */
   public async getPeerListenAddresses(): Promise<string[]> {
     const info = await this.getInfo();
     if (!info.listen_addresses) {
@@ -277,12 +289,25 @@ export class Cnd {
     return info.listen_addresses;
   }
 
+  /**
+   * Sends a swap request to cnd.
+   *
+   * @param swap The details of the swap to initiate.
+   * @returns The URL of the swap request on the cnd REST API.
+   * @throws A {@link Problem} from the cnd REST API or an {@link Error}.
+   */
   public async postSwap(swap: SwapRequest): Promise<string> {
     const response = await this.client.post("swaps/rfc003", swap);
 
     return response.headers.location;
   }
 
+  /**
+   * List the swaps handled by this cnd instance.
+   *
+   * @returns An Array of {@link SwapSubEntity}, which contains details of the swaps.
+   * @throws A {@link Problem} from the cnd REST API or an {@link Error}.
+   */
   public async getSwaps(): Promise<SwapSubEntity[]> {
     const response = await this.fetch("swaps");
     const entity = response.data as Entity;
@@ -290,10 +315,27 @@ export class Cnd {
     return entity.entities as SwapSubEntity[];
   }
 
+  /**
+   * Fetch data from the REST API.
+   *
+   * @param path The URL to GET.
+   * @returns The data returned by cnd.
+   * @throws A {@link Problem} from the cnd REST API or an {@link Error}.
+   */
   public fetch<T>(path: string): AxiosPromise<T> {
     return this.client.get(path);
   }
 
+  /**
+   * Proceed with an action request on the cnd REST API.
+   * This request could be a GET HTTP request, which only returns data needed to further proceed with the action,
+   * or a POST request, which is the action itself, to instruct cnd about a swap.
+   *
+   * @param action The action to perform.
+   * @param resolver A function that returns data needed to perform the action, this data is likely to be provided by a
+   * blockchain wallet or interface (e.g. wallet address).
+   * @throws A {@link Problem} from the cnd REST API, or {@link ChainError} if the blockchain wallet throws, or an {@link Error}.
+   */
   public async executeSirenAction(
     action: Action,
     resolver?: FieldValueResolverFn

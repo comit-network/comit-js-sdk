@@ -7,6 +7,7 @@ export class Problem extends Error {
   public readonly status?: number;
   public readonly detail?: string;
   public readonly instance?: string;
+  public readonly isProblem: boolean;
 
   constructor({ title, type, status, detail, instance }: ProblemMembers) {
     super(title);
@@ -15,6 +16,7 @@ export class Problem extends Error {
     this.detail = detail;
     this.instance = instance;
     this.title = title;
+    this.isProblem = true;
   }
 }
 
