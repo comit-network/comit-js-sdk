@@ -2,8 +2,10 @@ import { Amount, Chain, Network, Pool, TX, WalletDB } from "bcoin";
 import Logger from "blgr";
 
 /**
- * Interface defining the Bitcoin wallet used in the SDK.
- * You can plug your own wallet by passing a custom implementation of this interface to the {@link ComitClient}.
+ * Interface defining the Bitcoin wallet functionalities needed by the SDK to execute a swap involving Bitcoin.
+ * It is expected from a COMIT App developer to write their own class that would implement this interface.
+ * Depending on the use case and platform, such class could interact with a hardware wallet API, display QR codes,
+ * take input via text fields, etc.
  */
 export interface BitcoinWallet {
   getAddress(): Promise<string>;
@@ -25,7 +27,11 @@ export interface BitcoinWallet {
 }
 
 /**
- * Simple Bitcoin wallet based on [bcoin]{@link https://github.com/bcoin-org/bcoin}.
+ * Dummy Bitcoin wallet based on [bcoin]{@link https://github.com/bcoin-org/bcoin}.
+ *
+ * This is to be used for demos, examples and dev environment only. No safeguards are applied, no data is written on
+ * the disk.
+ * This is not to be used for mainnet, instead, implement your own {@link BitcoinWallet}
  */
 export class InMemoryBitcoinWallet implements BitcoinWallet {
   public static async newInstance(
