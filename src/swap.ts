@@ -6,16 +6,12 @@ import { sleep, timeoutPromise, TryParams } from "./util/timeout_promise";
 import { AllWallets, Wallets } from "./wallet";
 
 export class ChainError extends Error {
-  public readonly isChainError: boolean;
-
   constructor(
     public readonly attemptedAction: string,
     public readonly callError: Error,
     public readonly callParams: any
   ) {
     super(callError.message);
-
-    this.isChainError = true;
   }
 }
 

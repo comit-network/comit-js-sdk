@@ -268,7 +268,7 @@ export class Cnd {
   public async getPeerId(): Promise<string> {
     const info = await this.getInfo();
     if (!info.id) {
-      return Promise.reject(new Error("id field not present"));
+      throw new Error("id field not present");
     }
 
     return info.id;
