@@ -325,7 +325,7 @@ export class Swap {
     while (true) {
       await sleep(tryIntervalSecs * 1000);
 
-      // This may throw if cnd returns an error or there is a network error
+      // This throws if cnd returns an error or there is a network error
       const swap = await this.fetchDetails();
       const actions = swap.actions;
 
@@ -339,10 +339,15 @@ export class Swap {
         continue;
       }
 
-      // This may throw if cnd returns an error or there is a network error
-      return this.cnd.executeSirenAction(action!, (field: Field) =>
-        this.fieldValueResolver(field)
-      );
+      // This throws if cnd returns an error or there is a network error
+      return this.cnd.executeSirenAction(action!, async (field: Field) => {
+        try {
+          // Awaiting here allows us to have better context
+          return await this.fieldValueResolver(field);
+        } catch (error) {
+          throw new ChainError(actionName, error, field);
+        }
+      });
     }
   }
 
