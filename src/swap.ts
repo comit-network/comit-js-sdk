@@ -11,7 +11,7 @@ export class WalletError extends Error {
     public readonly source: Error,
     public readonly callParams: any
   ) {
-    super(JSON.stringify(source));
+    super(source.message);
   }
 }
 
