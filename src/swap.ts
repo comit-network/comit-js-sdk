@@ -8,10 +8,10 @@ import { AllWallets, Wallets } from "./wallet";
 export class WalletError extends Error {
   constructor(
     public readonly attemptedAction: string,
-    public readonly callError: Error,
+    public readonly source: Error,
     public readonly callParams: any
   ) {
-    super(callError.message);
+    super(source.message);
   }
 }
 
