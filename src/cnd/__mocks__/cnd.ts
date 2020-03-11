@@ -1,3 +1,7 @@
+/**
+ * @ignore
+ * @packageDocumentation
+ */
 export const mockPostSwap = jest.fn().mockImplementation(async () => {
   return Promise.resolve("/mock/swap/location");
 });

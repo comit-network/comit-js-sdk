@@ -1,3 +1,7 @@
+/**
+ * @ignore
+ * @packageDocumentation
+ */
 export const mockGetOrderByTradingPair = jest
   .fn()
   .mockImplementation((tradingPair: string) => {
