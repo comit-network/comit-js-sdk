@@ -334,7 +334,7 @@ export class Cnd {
    * @param action The action to perform.
    * @param resolver A function that returns data needed to perform the action, this data is likely to be provided by a
    * blockchain wallet or interface (e.g. wallet address).
-   * @throws A {@link Problem} from the cnd REST API, or {@link ChainError} if the blockchain wallet throws, or an {@link Error}.
+   * @throws A {@link Problem} from the cnd REST API, or {@link WalletError} if the blockchain wallet throws, or an {@link Error}.
    */
   public async executeSirenAction(
     action: Action,

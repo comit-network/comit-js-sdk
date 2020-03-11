@@ -1,7 +1,7 @@
 import nock = require("nock");
 import { Problem } from "./cnd/axios_rfc7807_middleware";
 import { Cnd, LedgerAction, SwapDetails } from "./cnd/cnd";
-import { ChainError, Swap } from "./swap";
+import { Swap, WalletError } from "./swap";
 
 describe("Swap", () => {
   it("Throws a problem if cnd returns an error when executing an action", async () => {
@@ -36,7 +36,7 @@ describe("Swap", () => {
     await expect(promise).rejects.toBeInstanceOf(Problem);
   });
 
-  it("Throws a ChainError if a wallet returns an error when resolving fields", async () => {
+  it("Throws a WalletError if a wallet returns an error when resolving fields", async () => {
     const basePath = "http://example.com";
     const cnd = new Cnd(basePath);
 
@@ -64,10 +64,10 @@ describe("Swap", () => {
       tryIntervalSecs: 0.01
     });
 
-    await expect(promise).rejects.toBeInstanceOf(ChainError);
+    await expect(promise).rejects.toBeInstanceOf(WalletError);
   });
 
-  it("Throws a ChainError if a wallet returns an error when executing an action", async () => {
+  it("Throws a WalletError if a wallet returns an error when executing an action", async () => {
     const basePath = "http://example.com";
     const cnd = new Cnd(basePath);
 
@@ -119,6 +119,6 @@ describe("Swap", () => {
 
     const promise = swap.deploy(tryParams);
 
-    await expect(promise).rejects.toBeInstanceOf(ChainError);
+    await expect(promise).rejects.toBeInstanceOf(WalletError);
   });
 });

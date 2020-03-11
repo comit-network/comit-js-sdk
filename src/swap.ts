@@ -5,7 +5,7 @@ import { Field } from "./cnd/siren";
 import { sleep, timeoutPromise, TryParams } from "./util/timeout_promise";
 import { AllWallets, Wallets } from "./wallet";
 
-export class ChainError extends Error {
+export class WalletError extends Error {
   constructor(
     public readonly attemptedAction: string,
     public readonly callError: Error,
@@ -61,7 +61,7 @@ export class Swap {
    *
    * @param tryParams Controls at which stage the exception is thrown.
    * @returns The hash of the transaction that was sent to the blockchain network.
-   * @throws A {@link Problem} from the cnd REST API, or {@link ChainError} if the blockchain wallet throws, or an {@link Error}.
+   * @throws A {@link Problem} from the cnd REST API, or {@link WalletError} if the blockchain wallet throws, or an {@link Error}.
    */
   public async deploy(tryParams: TryParams): Promise<string> {
     const response = await this.tryExecuteSirenAction<LedgerAction>(
@@ -77,7 +77,7 @@ export class Swap {
    *
    * @param tryParams Controls at which stage the exception is thrown.
    * @returns The hash of the transaction that was sent to the blockchain network.
-   * @throws A {@link Problem} from the cnd REST API, or {@link ChainError} if the blockchain wallet throws, or an {@link Error}.
+   * @throws A {@link Problem} from the cnd REST API, or {@link WalletError} if the blockchain wallet throws, or an {@link Error}.
    */
   public async fund(tryParams: TryParams): Promise<string> {
     const response = await this.tryExecuteSirenAction<LedgerAction>(
@@ -93,7 +93,7 @@ export class Swap {
    *
    * @param tryParams Controls at which stage the exception is thrown.
    * @returns The hash of the transaction that was sent to the blockchain network.
-   * @throws A {@link Problem} from the cnd REST API, or {@link ChainError} if the blockchain wallet throws, or an {@link Error}.
+   * @throws A {@link Problem} from the cnd REST API, or {@link WalletError} if the blockchain wallet throws, or an {@link Error}.
    */
   public async redeem(tryParams: TryParams): Promise<string> {
     const response = await this.tryExecuteSirenAction<LedgerAction>(
@@ -109,7 +109,7 @@ export class Swap {
    *
    * @param tryParams Controls at which stage the exception is thrown.
    * @returns The result of the refund action, a hash of the transaction that was sent to the blockchain.
-   * @throws A {@link Problem} from the cnd REST API, or {@link ChainError} if the blockchain wallet throws, or an {@link Error}.
+   * @throws A {@link Problem} from the cnd REST API, or {@link WalletError} if the blockchain wallet throws, or an {@link Error}.
    */
   public async refund(tryParams: TryParams): Promise<string> {
     const response = await this.tryExecuteSirenAction<LedgerAction>(
@@ -141,7 +141,7 @@ export class Swap {
    * @param tryParams Controls at which stage the exception is thrown.
    * @returns The response from {@link Cnd}. The actual response depends on the action you executed (hence the
    * type parameter).
-   * @throws A {@link Problem} from the cnd REST API, or {@link ChainError} if the blockchain wallet throws, or an {@link Error}.
+   * @throws A {@link Problem} from the cnd REST API, or {@link WalletError} if the blockchain wallet throws, or an {@link Error}.
    */
   public async tryExecuteSirenAction<R>(
     actionName: string,
@@ -159,7 +159,7 @@ export class Swap {
    * Uses the wallets given in the constructor to send transactions according to the given ledger action.
    *
    * @param ledgerAction The ledger action returned from {@link Cnd}.
-   * @throws A {@link ChainError} if a wallet or blockchain action failed.
+   * @throws A {@link WalletError} if a wallet or blockchain action failed.
    */
   public async doLedgerAction(ledgerAction: LedgerAction): Promise<string> {
     switch (ledgerAction.type) {
@@ -169,7 +169,7 @@ export class Swap {
         try {
           return this.wallets.bitcoin.broadcastTransaction(hex, network);
         } catch (error) {
-          throw new ChainError(ledgerAction.type, error, { hex, network });
+          throw new WalletError(ledgerAction.type, error, { hex, network });
         }
       }
       case "bitcoin-send-amount-to-address": {
@@ -179,7 +179,11 @@ export class Swap {
         try {
           return this.wallets.bitcoin.sendToAddress(to, sats, network);
         } catch (error) {
-          throw new ChainError(ledgerAction.type, error, { to, sats, network });
+          throw new WalletError(ledgerAction.type, error, {
+            to,
+            sats,
+            network
+          });
         }
       }
       case "ethereum-call-contract": {
@@ -192,7 +196,7 @@ export class Swap {
             gas_limit
           );
         } catch (error) {
-          throw new ChainError(ledgerAction.type, error, {
+          throw new WalletError(ledgerAction.type, error, {
             data,
             contract_address,
             gas_limit
@@ -206,7 +210,7 @@ export class Swap {
         try {
           return this.wallets.ethereum.deployContract(data, value, gas_limit);
         } catch (error) {
-          throw new ChainError(ledgerAction.type, error, {
+          throw new WalletError(ledgerAction.type, error, {
             data,
             value,
             gas_limit
@@ -240,7 +244,7 @@ export class Swap {
 
           return secret_hash;
         } catch (error) {
-          throw new ChainError(ledgerAction.type, error, {
+          throw new WalletError(ledgerAction.type, error, {
             self_public_key,
             to_public_key,
             amount,
@@ -276,7 +280,7 @@ export class Swap {
             cltv_expiry
           );
         } catch (error) {
-          throw new ChainError(ledgerAction.type, error, {
+          throw new WalletError(ledgerAction.type, error, {
             self_public_key,
             amount,
             secret_hash,
@@ -305,7 +309,7 @@ export class Swap {
 
           return secret;
         } catch (error) {
-          throw new ChainError(ledgerAction.type, error, {
+          throw new WalletError(ledgerAction.type, error, {
             self_public_key,
             secret,
             chain,
@@ -345,7 +349,7 @@ export class Swap {
           // Awaiting here allows us to have better context
           return await this.fieldValueResolver(field);
         } catch (error) {
-          throw new ChainError(actionName, error, field);
+          throw new WalletError(actionName, error, field);
         }
       });
     }
