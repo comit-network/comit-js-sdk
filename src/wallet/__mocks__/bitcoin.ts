@@ -1,3 +1,7 @@
+/**
+ * @ignore
+ * @packageDocumentation
+ */
 import { BitcoinWallet } from "../bitcoin";
 
 export class MockBitcoinWallet implements BitcoinWallet {
