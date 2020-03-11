@@ -328,8 +328,6 @@ export class Cnd {
 
   /**
    * Proceed with an action request on the cnd REST API.
-   * This request could be a GET HTTP request, which only returns data needed to further proceed with the action,
-   * or a POST request, which is the action itself, to instruct cnd about a swap.
    *
    * @param action The action to perform.
    * @param resolver A function that returns data needed to perform the action, this data is likely to be provided by a
