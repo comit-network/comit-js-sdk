@@ -122,7 +122,7 @@ export class Swap {
   /**
    * Fetch the details of a swap.
    *
-   * @return The details of the swap at returned by cnd REST API.
+   * @return The details of the swap are returned by cnd REST API.
    * @throws A {@link Problem} from the cnd REST API or an {@link Error}.
    */
   public async fetchDetails(): Promise<SwapDetails> {

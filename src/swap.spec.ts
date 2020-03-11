@@ -110,7 +110,7 @@ describe("Swap", () => {
       tryIntervalSecs: 0.01
     };
 
-    // To be sure we are testing the right thing, we verify this does not throws
+    // To be sure we are testing the right thing, we verify this does not throw
     const executeActionPromise = swap.tryExecuteSirenAction<LedgerAction>(
       "deploy",
       tryParams
