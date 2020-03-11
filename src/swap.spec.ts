@@ -12,7 +12,7 @@ describe("Swap", () => {
 
     const swap = new Swap(cnd, selfPath, {});
 
-    const scope = nock(basePath)
+    nock(basePath)
       .get(selfPath)
       .reply(
         400,
@@ -34,8 +34,6 @@ describe("Swap", () => {
     });
 
     await expect(promise).rejects.toBeInstanceOf(Problem);
-
-    return scope;
   });
 
   it("Throws a ChainError if a wallet returns an error when resolving fields", async () => {
@@ -57,7 +55,7 @@ describe("Swap", () => {
       ]
     };
 
-    const scope = nock(basePath)
+    nock(basePath)
       .get(selfPath)
       .reply(200, JSON.stringify(swapDetails), {});
 
@@ -67,8 +65,6 @@ describe("Swap", () => {
     });
 
     await expect(promise).rejects.toBeInstanceOf(ChainError);
-
-    return scope;
   });
 
   it("Throws a ChainError if a wallet returns an error when executing an action", async () => {
@@ -89,7 +85,7 @@ describe("Swap", () => {
       ]
     };
 
-    const swapScope = nock(basePath)
+    nock(basePath)
       .get(selfPath)
       .times(2)
       .reply(200, JSON.stringify(swapDetails), {});
@@ -104,7 +100,7 @@ describe("Swap", () => {
       }
     };
 
-    const actionScope = nock(basePath)
+    nock(basePath)
       .get("/swap-id/deploy")
       .times(2)
       .reply(200, JSON.stringify(actionPayload), {});
@@ -124,7 +120,5 @@ describe("Swap", () => {
     const promise = swap.deploy(tryParams);
 
     await expect(promise).rejects.toBeInstanceOf(ChainError);
-
-    return { swapScope, actionScope };
   });
 });
