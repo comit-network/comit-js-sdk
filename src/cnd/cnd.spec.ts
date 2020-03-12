@@ -93,10 +93,10 @@ async function setup(
   const basePath = "http://example.com";
   const cnd = new Cnd(basePath);
 
-  const intercepter = nock(basePath).post("/swaps/rfc003");
+  const interceptor = nock(basePath).post("/swaps/rfc003");
   const postSwap = () => cnd.postSwap({} as any);
 
-  const scope = await testFn(intercepter, postSwap);
+  const scope = await testFn(interceptor, postSwap);
 
   scope.done();
 }
