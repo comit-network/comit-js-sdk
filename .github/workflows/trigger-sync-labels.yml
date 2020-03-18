@@ -4,7 +4,6 @@ on:
   repository_dispatch:
     types:
       - sync-labels
-  push:
 
 jobs:
   sync:
@@ -17,10 +16,10 @@ jobs:
         run: |
           curl --header "Authorization: token ${REPO_TOKEN}" \
             --header 'Accept: application/vnd.github.v3.raw' \
-            --location  'https://api.github.com/repos/coblox/admin/contents/.github/labels.yml?ref=85-sync-labels' \
+            --location  'https://api.github.com/repos/coblox/admin/contents/.github/labels.yml' \
             --output labels.yml
-          ls
-          cat labels.yml
+          # For debug purposes
+          ls; cat labels.yml
       - name: Sync label locally
         uses: micnncim/action-label-syncer@v1
         env:
