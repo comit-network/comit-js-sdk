@@ -1,0 +1,18 @@
+on:
+  repository_dispatch:
+    types:
+      - sync-labels
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    name: Sync labels on coblox/admin
+    steps:
+      - name: Download label file
+        run: |
+          curl -sSf -o labels.yml https://raw.githubusercontent.com/coblox/admin/85-sync-labels/.github/labels.yml # To be changed to master
+      - name: Sync label locally
+        uses: micnncim/action-label-syncer@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          manifest: labels.yml
