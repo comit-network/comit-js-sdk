@@ -5,11 +5,16 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    name: Sync labels on coblox/admin
+    name: Sync labels from coblox/admin
     steps:
       - name: Download label file
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_REP_TOKEN }}
         run: |
-          curl -sSf -o labels.yml https://raw.githubusercontent.com/coblox/admin/85-sync-labels/.github/labels.yml # To be changed to master
+          curl --header 'Authorization: token ${GITHUB_TOKEN}' \
+            --header 'Accept: application/vnd.github.v3.raw' \
+            --remote-name \
+            --location https://api.github.com/coblox/admin/85-sync-labels/.github/labels.yml -o labels.yml # To be changed to master
       - name: Sync label locally
         uses: micnncim/action-label-syncer@v1
         env:
