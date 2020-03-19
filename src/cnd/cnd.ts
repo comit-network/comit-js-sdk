@@ -235,7 +235,7 @@ export interface SwapProperties {
       beta_redeem_identity: string | null;
       beta_refund_identity: string | null;
       secret_hash: string;
-      status: "SENT" | "ACCEPTED" | "REJECTED";
+      status: "SENT" | "ACCEPTED" | "DECLINED";
       [k: string]: any;
     };
     [k: string]: any;
