@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fix
+- Fix the possible swap status values returned by cnd.
+
 ### Added
 - Cnd's error responses follow the RFC7807 format.
 The SDK now recognizes this: Promises returned from calls on `Cnd` will now reject with an instance of `Problem` that contains more detailed information, why the request failed.
