@@ -53,8 +53,8 @@ export interface CoreRequestBody {
   beta_amount: string; // Asset name is in the route
   // final_cltv_delta: number; // beta_expiry
   // cltv_expiry: number; // beta_expiry
-  alpha_expiry: number; // Fits in JS numbers
-  beta_expiry: number; // Fits in JS numbers
+  // alpha_expiry: number; // Fits in JS numbers
+  // beta_expiry: number; // Fits in JS numbers
   // chain: string; // (from lnd action payload) In the URL
   alpha_network: string; // For Ethereum we use "chain" terminology but we could revert to "network" on this new route to keep same terminology across all ledgers
   beta_network: string; // The bitcoin network
@@ -70,22 +70,46 @@ export interface CoreRequestBody {
   peer: Peer; // cnd details of the counterpart
 }
 
+export interface AlphaHanAdditionalRequestBody {
+  alpha_absolute_expiry: number;
+}
+
+export interface BetaHanAdditionalRequestBody {
+  beta_absolute_expiry: number;
+}
+
 export interface AlphaHerc20AdditionalRequestBody {
   // ERC20 asset need one more information not specified in the Route.
   // Instead of making it optional for all route it should be mandatory
   // for the route that uses it.
   alpha_contract_address: string;
+  alpha_absolute_expiry: number;
 }
 
 export interface BetaHerc20AdditionalRequestBody {
   beta_contract_address: string;
+  beta_absolute_expiry: number;
 }
 
-export type HanEthereumEtherHalightLightningBitcoinRequestBody = CoreRequestBody;
+export interface AlphaHalightAdditionalRequestBody {
+  alpha_cltv_expiry: string;
+}
+
+export interface BetaHalightAdditionalRequestBody {
+  beta_cltv_expiry: string;
+}
+
+export type HanEthereumEtherHalightLightningBitcoinRequestBody = CoreRequestBody &
+  AlphaHanAdditionalRequestBody &
+  BetaHalightAdditionalRequestBody;
 export type Herc20EthereumErc20HalightLightningBitcoinRequestBody = CoreRequestBody &
-  AlphaHerc20AdditionalRequestBody;
-export type HalightLightningBitcoinHanEthereumEtherRequestBody = CoreRequestBody;
+  AlphaHerc20AdditionalRequestBody &
+  BetaHalightAdditionalRequestBody;
+export type HalightLightningBitcoinHanEthereumEtherRequestBody = CoreRequestBody &
+  AlphaHalightAdditionalRequestBody &
+  BetaHanAdditionalRequestBody;
 export type HalightLightningBitcoinHerc20EthereumErc20RequestBody = CoreRequestBody &
+  AlphaHalightAdditionalRequestBody &
   BetaHerc20AdditionalRequestBody;
 
 export interface BitcoinSendAmountToAddressPayload {
