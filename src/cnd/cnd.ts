@@ -62,8 +62,8 @@ export interface CoreRequestBody {
   // So that the interface is simpler (no optional fields) and also adds an element of security (ensure it's connected to the right lnd).
   // Also we dropped the `redeem` and `refund` terminology as they are redundant with the `alpha/beta` qualifier.
   // Finally, this interface is to be used by both Bob and Alice so using the `refund`/`redeem` terminology would just make it more complex
-  alpha_ledger_identity: string;
-  beta_ledger_identity: string;
+  alpha_identity: string;
+  beta_identity: string;
   // The same endpoint is to be used on both nodes, depending on the role the communication and protocol execution changes.
   // `role` may not be specific enough to be clear. We could consider adding `protocol_` or `cryptographic_` prefix
   role: "Alice" | "Bob";
