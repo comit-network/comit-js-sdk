@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.1] - 2020-03-23
+
 ### Fix
 - Fix the possible swap status values returned by cnd.
 
@@ -167,7 +169,8 @@ The SDK now recognizes this: Promises returned from calls on `Cnd` will now reje
 ### Added
 - Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.14.0...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.14.1...HEAD
+[0.14.1]: https://github.com/comit-network/comit-js-sdk/compare/0.14.0...0.14.1
 [0.14.0]: https://github.com/comit-network/comit-js-sdk/compare/0.13.0...0.14.0
 [0.13.0]: https://github.com/comit-network/comit-js-sdk/compare/0.12.0...0.13.0
 [0.12.0]: https://github.com/comit-network/comit-js-sdk/compare/0.11.1...0.12.0
