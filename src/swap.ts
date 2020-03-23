@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { BigNumber } from "bignumber.js";
-import { Cnd, LedgerAction, SwapDetails } from "./cnd/cnd";
+import { Cnd, LedgerAction, ledgerIsEthereum, SwapDetails } from "./cnd/cnd";
 import { Field } from "./cnd/siren";
 import Transaction from "./transaction";
 import { sleep, timeoutPromise, TryParams } from "./util/timeout_promise";
@@ -335,6 +335,123 @@ export class Swap {
       default:
         throw new Error(`Cannot handle ${ledgerAction.type}`);
     }
+  }
+
+  /**
+   * Get the Alpha deploy transaction.
+   *
+   * @returns null if cnd hasn't seen a deploy transaction, otherwise, {@link Transaction} if supported or the transaction id as string.
+   */
+  public async getAlphaDeployTransaction(): Promise<
+    Transaction | string | null
+  > {
+    const details = await this.fetchDetails();
+    const transactionId = details.properties!.state!.alpha_ledger!.deploy_tx;
+    return this.getTransaction(details, transactionId);
+  }
+
+  /**
+   * Get the Alpha Fund transaction.
+   *
+   * @returns null if cnd hasn't seen a funding transaction, otherwise, {@link Transaction} if supported or the transaction id as string.
+   */
+  public async getAlphaFundTransaction(): Promise<Transaction | string | null> {
+    const details = await this.fetchDetails();
+    const transactionId = details.properties!.state!.alpha_ledger!.fund_tx;
+    return this.getTransaction(details, transactionId);
+  }
+
+  /**
+   * Get the Alpha Redeem transaction.
+   *
+   * @returns null if cnd hasn't seen a redeem transaction, otherwise, {@link Transaction} if supported or the transaction id as string.
+   */
+  public async getAlphaRedeemTransaction(): Promise<
+    Transaction | string | null
+  > {
+    const details = await this.fetchDetails();
+    const transactionId = details.properties!.state!.alpha_ledger!.redeem_tx;
+    return this.getTransaction(details, transactionId);
+  }
+
+  /**
+   * Get the Alpha Refund transaction.
+   *
+   * @returns null if cnd hasn't seen a refund transaction, otherwise, {@link Transaction} if supported or the transaction id as string.
+   */
+  public async getAlphaRefundTransaction(): Promise<
+    Transaction | string | null
+  > {
+    const details = await this.fetchDetails();
+    const transactionId = details.properties!.state!.alpha_ledger!.refund_tx;
+    return this.getTransaction(details, transactionId);
+  }
+
+  /**
+   * Get the Beta deploy transaction.
+   *
+   * @returns null if cnd hasn't seen a deploy transaction, otherwise, {@link Transaction} if supported or the transaction id as string.
+   */
+  public async getBetaDeployTransaction(): Promise<
+    Transaction | string | null
+  > {
+    const details = await this.fetchDetails();
+    const transactionId = details.properties!.state!.beta_ledger!.deploy_tx;
+    return this.getTransaction(details, transactionId);
+  }
+
+  /**
+   * Get the Beta Fund transaction.
+   *
+   * @returns null if cnd hasn't seen a funding transaction, otherwise, {@link Transaction} if supported or the transaction id as string.
+   */
+  public async getBetaFundTransaction(): Promise<Transaction | string | null> {
+    const details = await this.fetchDetails();
+    const transactionId = details.properties!.state!.beta_ledger!.fund_tx;
+    return this.getTransaction(details, transactionId);
+  }
+
+  /**
+   * Get the Beta Redeem transaction.
+   *
+   * @returns null if cnd hasn't seen a redeem transaction, otherwise, {@link Transaction} if supported or the transaction id as string.
+   */
+  public async getBetaRedeemTransaction(): Promise<
+    Transaction | string | null
+  > {
+    const details = await this.fetchDetails();
+    const transactionId = details.properties!.state!.beta_ledger!.redeem_tx;
+    return this.getTransaction(details, transactionId);
+  }
+
+  /**
+   * Get the Beta Refund transaction.
+   *
+   * @returns null if cnd hasn't seen a refund transaction, otherwise, {@link Transaction} if supported or the transaction id as string.
+   */
+  public async getBetaRefundTransaction(): Promise<
+    Transaction | string | null
+  > {
+    const details = await this.fetchDetails();
+    const transactionId = details.properties!.state!.beta_ledger!.refund_tx;
+    return this.getTransaction(details, transactionId);
+  }
+
+  private getTransaction(
+    details: SwapDetails,
+    transactionId: string | null
+  ): Transaction | string | null {
+    if (!transactionId) {
+      return null;
+    }
+    const alphaLedger = details.properties!.parameters.alpha_ledger;
+    if (ledgerIsEthereum(alphaLedger)) {
+      return new Transaction(
+        { ethereum: this.wallets.ethereum },
+        transactionId
+      );
+    }
+    return transactionId;
   }
 
   private async executeSirenAction(
