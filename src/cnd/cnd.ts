@@ -78,11 +78,11 @@ export interface BetaHerc20AdditionalRequestBody {
 }
 
 export interface AlphaHalightAdditionalRequestBody {
-  alpha_cltv_expiry: string;
+  alpha_cltv_expiry: number;
 }
 
 export interface BetaHalightAdditionalRequestBody {
-  beta_cltv_expiry: string;
+  beta_cltv_expiry: number;
 }
 
 export type HanEthereumEtherHalightLightningBitcoinRequestBody = CoreRequestBody &
