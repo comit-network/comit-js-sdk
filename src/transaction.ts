@@ -21,7 +21,7 @@ export enum SwapTransactionStatus {
 export class Transaction {
   constructor(
     private wallet: { ethereum?: EthereumWallet },
-    public transactionId: string
+    public id: string
   ) {}
 
   /**
@@ -36,19 +36,17 @@ export class Transaction {
 
   private async ethereumStatus(): Promise<SwapTransactionStatus> {
     const wallet = this.ethereumWallet;
-    const receipt = await wallet.getTransactionReceipt(this.transactionId);
+    const receipt = await wallet.getTransactionReceipt(this.id);
     if (!receipt) {
-      throw new Error(
-        `Could not retrieve receipt for ${this.transactionId} on Ethereum`
-      );
+      throw new Error(`Could not retrieve receipt for ${this.id} on Ethereum`);
     }
     if (receipt.status === undefined || receipt.status === 0) {
       return SwapTransactionStatus.Failed;
     }
-    const transaction = await wallet.getTransaction(this.transactionId);
+    const transaction = await wallet.getTransaction(this.id);
     if (!transaction) {
       throw new Error(
-        `Could not retrieve transaction for ${this.transactionId} on Ethereum`
+        `Could not retrieve transaction for ${this.id} on Ethereum`
       );
     }
     if (transaction.confirmations === 0) {

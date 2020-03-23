@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- `Transaction.transactionId` is now public.
+- `Transaction.transactionId` is now public and renamed to `Transaction.id`.
 
 ## [0.14.1] - 2020-03-23
 
