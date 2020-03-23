@@ -1,6 +1,10 @@
 import { BigNumber } from "bignumber.js";
 import { Contract, ethers, Wallet } from "ethers";
-import { TransactionRequest } from "ethers/providers";
+import {
+  TransactionReceipt,
+  TransactionRequest,
+  TransactionResponse
+} from "ethers/providers";
 import {
   Arrayish,
   BigNumber as BigNumberEthers,
@@ -80,6 +84,18 @@ export class EthereumWallet {
       gasLimit
     };
     return this.sendTransaction(transaction);
+  }
+
+  public async getTransactionReceipt(
+    transactionId: string
+  ): Promise<TransactionReceipt> {
+    return this.wallet.provider.getTransactionReceipt(transactionId);
+  }
+
+  public async getTransaction(
+    transactionId: string
+  ): Promise<TransactionResponse> {
+    return this.wallet.provider.getTransaction(transactionId);
   }
 
   private async sendTransaction(

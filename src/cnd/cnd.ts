@@ -16,6 +16,10 @@ export interface Ledger {
   network?: string;
 }
 
+export function ledgerIsEthereum(ledger: Ledger): boolean {
+  return ledger.name === "ethereum";
+}
+
 export interface Asset {
   name: string;
   quantity: string;
@@ -228,12 +232,24 @@ export interface SwapProperties {
      */
     alpha_ledger: {
       /**
-       * The transaction ID of the deployment transaction on the alpha ledgers.
+       * The transaction ID of the deployment transaction on the alpha ledger.
        */
       deploy_tx: string | null;
+      /**
+       * The transaction ID of the funding transaction on the alpha ledger.
+       */
       fund_tx: string | null;
+      /**
+       * The address of the htlc on the alpha ledger.
+       */
       htlc_location: any;
+      /**
+       * The transaction ID of the redeem transaction on the alpha ledger.
+       */
       redeem_tx: string | null;
+      /**
+       * The transaction ID of the refund transaction on the alpha ledger.
+       */
       refund_tx: string | null;
       /**
        * The status of the HTLC on the alpha ledgers.
@@ -252,12 +268,24 @@ export interface SwapProperties {
      */
     beta_ledger: {
       /**
-       * The transaction ID of the deployment transaction on the beta ledgers.
+       * The transaction ID of the deployment transaction on the beta ledger.
        */
       deploy_tx: string | null;
+      /**
+       * The transaction ID of the funding transaction on the beta ledger.
+       */
       fund_tx: string | null;
+      /**
+       * The address of the htlc on the beta ledger.
+       */
       htlc_location: any;
+      /**
+       * The transaction ID of the redeem transaction on the beta ledger.
+       */
       redeem_tx: string | null;
+      /**
+       * The transaction ID of the refund transaction on the beta ledger.
+       */
       refund_tx: string | null;
       /**
        * The status of the HTLC on the beta ledgers.
