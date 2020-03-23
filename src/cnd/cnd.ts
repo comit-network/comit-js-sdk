@@ -44,6 +44,56 @@ export interface SwapRequest {
   peer: Peer;
 }
 
+export interface CoreRequestBody {
+  alpha_amount: string;
+  beta_amount: string;
+  alpha_network: string;
+  beta_network: string;
+  alpha_identity: string;
+  beta_identity: string;
+  role: "Alice" | "Bob";
+  peer: Peer;
+}
+
+export interface AlphaHanAdditionalRequestBody {
+  alpha_absolute_expiry: number;
+}
+
+export interface BetaHanAdditionalRequestBody {
+  beta_absolute_expiry: number;
+}
+
+export interface AlphaHerc20AdditionalRequestBody {
+  alpha_contract_address: string;
+  alpha_absolute_expiry: number;
+}
+
+export interface BetaHerc20AdditionalRequestBody {
+  beta_contract_address: string;
+  beta_absolute_expiry: number;
+}
+
+export interface AlphaHalightAdditionalRequestBody {
+  alpha_cltv_expiry: string;
+}
+
+export interface BetaHalightAdditionalRequestBody {
+  beta_cltv_expiry: string;
+}
+
+export type HanEthereumEtherHalightLightningBitcoinRequestBody = CoreRequestBody &
+  AlphaHanAdditionalRequestBody &
+  BetaHalightAdditionalRequestBody;
+export type Herc20EthereumErc20HalightLightningBitcoinRequestBody = CoreRequestBody &
+  AlphaHerc20AdditionalRequestBody &
+  BetaHalightAdditionalRequestBody;
+export type HalightLightningBitcoinHanEthereumEtherRequestBody = CoreRequestBody &
+  AlphaHalightAdditionalRequestBody &
+  BetaHanAdditionalRequestBody;
+export type HalightLightningBitcoinHerc20EthereumErc20RequestBody = CoreRequestBody &
+  AlphaHalightAdditionalRequestBody &
+  BetaHerc20AdditionalRequestBody;
+
 export interface BitcoinSendAmountToAddressPayload {
   to: string;
   amount: string;
@@ -349,7 +399,7 @@ export class Cnd {
    * @return The location of the swap (href) as returned by the REST API in the location header.
    */
   public async createHanEthereumEtherHalightLightningBitcoin(
-    body?: any
+    body: HanEthereumEtherHalightLightningBitcoinRequestBody
   ): Promise<string> {
     const response = await this.client.post(
       "swaps/han/ethereum/ether/halight/lightning/bitcoin",
@@ -365,7 +415,7 @@ export class Cnd {
    * @return The location of the swap (href) as returned by the REST API in the location header.
    */
   public async createHerc20EthereumErc20HalightLightningBitcoin(
-    body?: any
+    body: Herc20EthereumErc20HalightLightningBitcoinRequestBody
   ): Promise<string> {
     const response = await this.client.post(
       "swaps/herc20/ethereum/erc20/halight/lightning/bitcoin",
@@ -381,7 +431,7 @@ export class Cnd {
    * @return The location of the swap (href) as returned by the REST API in the location header.
    */
   public async createHalightLightningBitcoinHanEthereumEther(
-    body?: any
+    body: HalightLightningBitcoinHanEthereumEtherRequestBody
   ): Promise<string> {
     const response = await this.client.post(
       "swaps/halight/lightning/bitcoin/han/ethereum/ether",
@@ -397,7 +447,7 @@ export class Cnd {
    * @return The location of the swap (href) as returned by the REST API in the location header.
    */
   public async createHalightLightningBitcoinHerc20EthereumErc20(
-    body?: any
+    body: HalightLightningBitcoinHerc20EthereumErc20RequestBody
   ): Promise<string> {
     const response = await this.client.post(
       "swaps/halight/lightning/bitcoin/herc20/ethereum/erc20",
