@@ -21,7 +21,7 @@ export enum SwapTransactionStatus {
 export default class Transaction {
   constructor(
     private wallet: { ethereum?: EthereumWallet },
-    private transactionId: string
+    public transactionId: string
   ) {}
 
   /**
