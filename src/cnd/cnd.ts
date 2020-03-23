@@ -28,7 +28,7 @@ export interface Asset {
 
 export interface Peer {
   peer_id: string;
-  address_hint: string;
+  address_hint?: string;
 }
 
 /**
