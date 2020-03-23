@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Cnd's error responses follow the RFC7807 format.
 The SDK now recognizes this: Promises returned from calls on `Cnd` will now reject with an instance of `Problem` that contains more detailed information, why the request failed.
+- New `Transaction` class to easily check the status of a given blockchain transaction.
 
 ## [0.14.0] - 2020-03-05
 
