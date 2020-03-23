@@ -2,6 +2,7 @@ import { AxiosResponse } from "axios";
 import { BigNumber } from "bignumber.js";
 import { Cnd, LedgerAction, SwapDetails } from "./cnd/cnd";
 import { Field } from "./cnd/siren";
+import Transaction from "./transaction";
 import { sleep, timeoutPromise, TryParams } from "./util/timeout_promise";
 import { AllWallets, Wallets } from "./wallet";
 
@@ -63,7 +64,7 @@ export class Swap {
    * @returns The hash of the transaction that was sent to the blockchain network.
    * @throws A {@link Problem} from the cnd REST API, or {@link WalletError} if the blockchain wallet throws, or an {@link Error}.
    */
-  public async deploy(tryParams: TryParams): Promise<string> {
+  public async deploy(tryParams: TryParams): Promise<Transaction | string> {
     const response = await this.tryExecuteSirenAction<LedgerAction>(
       "deploy",
       tryParams
@@ -79,7 +80,7 @@ export class Swap {
    * @returns The hash of the transaction that was sent to the blockchain network.
    * @throws A {@link Problem} from the cnd REST API, or {@link WalletError} if the blockchain wallet throws, or an {@link Error}.
    */
-  public async fund(tryParams: TryParams): Promise<string> {
+  public async fund(tryParams: TryParams): Promise<Transaction | string> {
     const response = await this.tryExecuteSirenAction<LedgerAction>(
       "fund",
       tryParams
@@ -95,7 +96,7 @@ export class Swap {
    * @returns The hash of the transaction that was sent to the blockchain network.
    * @throws A {@link Problem} from the cnd REST API, or {@link WalletError} if the blockchain wallet throws, or an {@link Error}.
    */
-  public async redeem(tryParams: TryParams): Promise<string> {
+  public async redeem(tryParams: TryParams): Promise<Transaction | string> {
     const response = await this.tryExecuteSirenAction<LedgerAction>(
       "redeem",
       tryParams
@@ -111,7 +112,7 @@ export class Swap {
    * @returns The result of the refund action, a hash of the transaction that was sent to the blockchain.
    * @throws A {@link Problem} from the cnd REST API, or {@link WalletError} if the blockchain wallet throws, or an {@link Error}.
    */
-  public async refund(tryParams: TryParams): Promise<string> {
+  public async refund(tryParams: TryParams): Promise<Transaction | string> {
     const response = await this.tryExecuteSirenAction<LedgerAction>(
       "refund",
       tryParams
@@ -161,7 +162,9 @@ export class Swap {
    * @param ledgerAction The ledger action returned from {@link Cnd}.
    * @throws A {@link WalletError} if a wallet or blockchain action failed.
    */
-  public async doLedgerAction(ledgerAction: LedgerAction): Promise<string> {
+  public async doLedgerAction(
+    ledgerAction: LedgerAction
+  ): Promise<Transaction | string> {
     switch (ledgerAction.type) {
       case "bitcoin-broadcast-signed-transaction": {
         const { hex, network } = ledgerAction.payload;
@@ -190,10 +193,14 @@ export class Swap {
         const { data, contract_address, gas_limit } = ledgerAction.payload;
 
         try {
-          return this.wallets.ethereum.callContract(
+          const transactionId = await this.wallets.ethereum.callContract(
             data,
             contract_address,
             gas_limit
+          );
+          return new Transaction(
+            { ethereum: this.wallets.ethereum },
+            transactionId
           );
         } catch (error) {
           throw new WalletError(ledgerAction.type, error, {
@@ -208,7 +215,15 @@ export class Swap {
         const value = new BigNumber(amount);
 
         try {
-          return this.wallets.ethereum.deployContract(data, value, gas_limit);
+          const transactionId = await this.wallets.ethereum.deployContract(
+            data,
+            value,
+            gas_limit
+          );
+          return new Transaction(
+            { ethereum: this.wallets.ethereum },
+            transactionId
+          );
         } catch (error) {
           throw new WalletError(ledgerAction.type, error, {
             data,
