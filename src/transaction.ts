@@ -18,7 +18,7 @@ export enum SwapTransactionStatus {
 /**
  * A handy interface to know the status of a blockchain transaction
  */
-export default class Transaction {
+export class Transaction {
   constructor(
     private wallet: { ethereum?: EthereumWallet },
     public transactionId: string

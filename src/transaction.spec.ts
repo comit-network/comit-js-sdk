@@ -1,4 +1,4 @@
-import Transaction, { SwapTransactionStatus } from "./transaction";
+import { Transaction, SwapTransactionStatus } from "./transaction";
 import { EthereumWallet } from "./wallet/ethereum";
 
 const defaultEthereumWallet = new EthereumWallet("");
