@@ -1,6 +1,6 @@
 import { EthereumWallet } from "./wallet/ethereum";
 
-export enum SwapTransactionStatus {
+export enum TransactionStatus {
   /**
    * The transaction was rejected by the blockchain node.
    */
@@ -27,21 +27,21 @@ export class Transaction {
   /**
    * @returns The transaction status by asking the blockchain.
    */
-  public async status(): Promise<SwapTransactionStatus> {
+  public async status(): Promise<TransactionStatus> {
     if (!!this.wallet.ethereum) {
       return this.ethereumStatus();
     }
     throw new Error("Wallet was not set");
   }
 
-  private async ethereumStatus(): Promise<SwapTransactionStatus> {
+  private async ethereumStatus(): Promise<TransactionStatus> {
     const wallet = this.ethereumWallet;
     const receipt = await wallet.getTransactionReceipt(this.id);
     if (!receipt) {
       throw new Error(`Could not retrieve receipt for ${this.id} on Ethereum`);
     }
     if (receipt.status === undefined || receipt.status === 0) {
-      return SwapTransactionStatus.Failed;
+      return TransactionStatus.Failed;
     }
     const transaction = await wallet.getTransaction(this.id);
     if (!transaction) {
@@ -50,9 +50,9 @@ export class Transaction {
       );
     }
     if (transaction.confirmations === 0) {
-      return SwapTransactionStatus.Pending;
+      return TransactionStatus.Pending;
     }
-    return SwapTransactionStatus.Confirmed;
+    return TransactionStatus.Confirmed;
   }
 
   private get ethereumWallet(): EthereumWallet {

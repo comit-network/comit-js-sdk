@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mark `address_hint` as optional in cnd Swap Request, as per cnd's API.
 - Use number chain id instead of string network for Ethereum in lighting routes body request.
 - Nest Alpha and Beta parameters in lighting routes body request.
+- **Breaking API Change**: Rename `SwapTransactionStatus` to `TransactionStatus`.
 
 ## [0.14.1] - 2020-03-23
 

@@ -21,7 +21,7 @@ export {
 } from "./cnd/cnd";
 export { Problem } from "./cnd/axios_rfc7807_middleware";
 export * from "./cnd/siren";
-export { Transaction, SwapTransactionStatus } from "./transaction";
+export { Transaction, TransactionStatus } from "./transaction";
 
 export { Actor, createActor } from "./actor";
 
