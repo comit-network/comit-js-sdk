@@ -48,7 +48,7 @@ export interface SwapRequest {
   peer: Peer;
 }
 
-export interface CoreRequestBody {
+interface CoreRequestBody {
   alpha_amount: string;
   beta_amount: string;
   alpha_network: string;
@@ -59,44 +59,44 @@ export interface CoreRequestBody {
   peer: Peer;
 }
 
-export interface AlphaHanAdditionalRequestBody {
+interface AlphaHan {
   alpha_absolute_expiry: number;
 }
 
-export interface BetaHanAdditionalRequestBody {
+interface BetaHan {
   beta_absolute_expiry: number;
 }
 
-export interface AlphaHerc20AdditionalRequestBody {
+interface AlphaHerc20 {
   alpha_contract_address: string;
   alpha_absolute_expiry: number;
 }
 
-export interface BetaHerc20AdditionalRequestBody {
+interface BetaHerc20 {
   beta_contract_address: string;
   beta_absolute_expiry: number;
 }
 
-export interface AlphaHalightAdditionalRequestBody {
+interface AlphaHalight {
   alpha_cltv_expiry: number;
 }
 
-export interface BetaHalightAdditionalRequestBody {
+interface BetaHalight {
   beta_cltv_expiry: number;
 }
 
 export type HanEthereumEtherHalightLightningBitcoinRequestBody = CoreRequestBody &
-  AlphaHanAdditionalRequestBody &
-  BetaHalightAdditionalRequestBody;
+  AlphaHan &
+  BetaHalight;
 export type Herc20EthereumErc20HalightLightningBitcoinRequestBody = CoreRequestBody &
-  AlphaHerc20AdditionalRequestBody &
-  BetaHalightAdditionalRequestBody;
+  AlphaHerc20 &
+  BetaHalight;
 export type HalightLightningBitcoinHanEthereumEtherRequestBody = CoreRequestBody &
-  AlphaHalightAdditionalRequestBody &
-  BetaHanAdditionalRequestBody;
+  AlphaHalight &
+  BetaHan;
 export type HalightLightningBitcoinHerc20EthereumErc20RequestBody = CoreRequestBody &
-  AlphaHalightAdditionalRequestBody &
-  BetaHerc20AdditionalRequestBody;
+  AlphaHalight &
+  BetaHerc20;
 
 export interface BitcoinSendAmountToAddressPayload {
   to: string;
