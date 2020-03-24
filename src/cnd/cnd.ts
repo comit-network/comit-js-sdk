@@ -51,8 +51,6 @@ export interface SwapRequest {
 interface CoreRequestBody {
   alpha_amount: string;
   beta_amount: string;
-  alpha_network: string;
-  beta_network: string;
   alpha_identity: string;
   beta_identity: string;
   role: "Alice" | "Bob";
@@ -85,18 +83,42 @@ interface BetaHalight {
   beta_cltv_expiry: number;
 }
 
+interface AlphaBitcoin {
+  alpha_network: string;
+}
+
+interface BetaBitcoin {
+  beta_network: string;
+}
+
+interface AlphaEthereum {
+  alpha_chain_id: number;
+}
+
+interface BetaEthereum {
+  beta_chain_id: number;
+}
+
 export type HanEthereumEtherHalightLightningBitcoinRequestBody = CoreRequestBody &
   AlphaHan &
-  BetaHalight;
+  AlphaEthereum &
+  BetaHalight &
+  BetaBitcoin;
 export type Herc20EthereumErc20HalightLightningBitcoinRequestBody = CoreRequestBody &
   AlphaHerc20 &
+  AlphaEthereum &
+  BetaBitcoin &
   BetaHalight;
 export type HalightLightningBitcoinHanEthereumEtherRequestBody = CoreRequestBody &
   AlphaHalight &
-  BetaHan;
+  AlphaBitcoin &
+  BetaHan &
+  BetaEthereum;
 export type HalightLightningBitcoinHerc20EthereumErc20RequestBody = CoreRequestBody &
   AlphaHalight &
-  BetaHerc20;
+  AlphaBitcoin &
+  BetaHerc20 &
+  BetaEthereum;
 
 export interface BitcoinSendAmountToAddressPayload {
   to: string;

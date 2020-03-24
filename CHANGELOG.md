@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `Transaction.transactionId` is now public and renamed to `Transaction.id`.
 - **Breaking API Change**: Correct the type for `alpha_cltv_expiry` & `beta_cltv_expiry`.
-- Mark `address_hint` as optional in cnd Swap Request, as per cnd's API. 
+- Mark `address_hint` as optional in cnd Swap Request, as per cnd's API.
+- Use number chain id instead of string network for Ethereum in lighting routes body request.
 
 ## [0.14.1] - 2020-03-23
 
