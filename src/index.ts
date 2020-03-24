@@ -14,7 +14,10 @@ export {
   HalightLightningBitcoinHanEthereumEtherRequestBody,
   HalightLightningBitcoinHerc20EthereumErc20RequestBody,
   HanEthereumEtherHalightLightningBitcoinRequestBody,
-  Herc20EthereumErc20HalightLightningBitcoinRequestBody
+  Herc20EthereumErc20HalightLightningBitcoinRequestBody,
+  HalightLightningBitcoinRequestParams,
+  HanEthereumEtherRequestParams,
+  Herc20EthereumErc20RequestParams
 } from "./cnd/cnd";
 export { Problem } from "./cnd/axios_rfc7807_middleware";
 export * from "./cnd/siren";

@@ -81,21 +81,29 @@ interface Ethereum {
   chain_id: number;
 }
 
+export type HanEthereumEtherRequestParams = RequestParams & Han & Ethereum;
+export type HalightLightningBitcoinRequestParams = RequestParams &
+  Halight &
+  Bitcoin;
+export type Herc20EthereumErc20RequestParams = RequestParams &
+  Herc20 &
+  Ethereum;
+
 export type HanEthereumEtherHalightLightningBitcoinRequestBody = CoreRequestBody<
-  RequestParams & Han & Ethereum,
-  RequestParams & Halight & Bitcoin
+  HanEthereumEtherRequestParams,
+  HalightLightningBitcoinRequestParams
 >;
 export type Herc20EthereumErc20HalightLightningBitcoinRequestBody = CoreRequestBody<
-  RequestParams & Herc20 & Ethereum,
-  RequestParams & Bitcoin & Halight
+  Herc20EthereumErc20RequestParams,
+  HalightLightningBitcoinRequestParams
 >;
 export type HalightLightningBitcoinHanEthereumEtherRequestBody = CoreRequestBody<
-  RequestParams & Halight & Bitcoin,
-  RequestParams & Han & Ethereum
+  HalightLightningBitcoinRequestParams,
+  HanEthereumEtherRequestParams
 >;
 export type HalightLightningBitcoinHerc20EthereumErc20RequestBody = CoreRequestBody<
-  RequestParams & Halight & Bitcoin,
-  RequestParams & Herc20 & Ethereum
+  HalightLightningBitcoinRequestParams,
+  Herc20EthereumErc20RequestParams
 >;
 
 export interface BitcoinSendAmountToAddressPayload {
