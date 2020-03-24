@@ -10,7 +10,11 @@ export {
   EthereumDeployContractPayload,
   Peer,
   SwapRequest,
-  SwapDetails
+  SwapDetails,
+  HalightLightningBitcoinHanEthereumEtherRequestBody,
+  HalightLightningBitcoinHerc20EthereumErc20RequestBody,
+  HanEthereumEtherHalightLightningBitcoinRequestBody,
+  Herc20EthereumErc20HalightLightningBitcoinRequestBody
 } from "./cnd/cnd";
 export { Problem } from "./cnd/axios_rfc7807_middleware";
 export * from "./cnd/siren";

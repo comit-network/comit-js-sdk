@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Export interfaces of cnd lightning body requests.
+
 ### Changed
 - `Transaction.transactionId` is now public and renamed to `Transaction.id`.
 - **Breaking API Change**: Correct the type for `alpha_cltv_expiry` & `beta_cltv_expiry`.
