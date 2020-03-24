@@ -2,7 +2,7 @@ import { AxiosResponse } from "axios";
 import { BigNumber } from "bignumber.js";
 import { Cnd, LedgerAction, ledgerIsEthereum, SwapDetails } from "./cnd/cnd";
 import { Field } from "./cnd/siren";
-import Transaction from "./transaction";
+import { Transaction } from "./transaction";
 import { sleep, timeoutPromise, TryParams } from "./util/timeout_promise";
 import { AllWallets, Wallets } from "./wallet";
 
