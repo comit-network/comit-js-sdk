@@ -1,4 +1,4 @@
-import { Transaction, SwapTransactionStatus } from "./transaction";
+import { Transaction, TransactionStatus } from "./transaction";
 import { EthereumWallet } from "./wallet/ethereum";
 
 const defaultEthereumWallet = new EthereumWallet("");
@@ -20,7 +20,7 @@ describe("Transaction", () => {
 
     const status = await swapTransaction.status();
 
-    expect(status).toEqual(SwapTransactionStatus.Failed);
+    expect(status).toEqual(TransactionStatus.Failed);
   });
 
   it("returns pending for an unconfirmed Ethereum transaction", async () => {
@@ -45,7 +45,7 @@ describe("Transaction", () => {
 
     const status = await swapTransaction.status();
 
-    expect(status).toEqual(SwapTransactionStatus.Pending);
+    expect(status).toEqual(TransactionStatus.Pending);
   });
 
   it("returns confirmed for a mined Ethereum transaction", async () => {
@@ -70,6 +70,6 @@ describe("Transaction", () => {
 
     const status = await swapTransaction.status();
 
-    expect(status).toEqual(SwapTransactionStatus.Confirmed);
+    expect(status).toEqual(TransactionStatus.Confirmed);
   });
 });
