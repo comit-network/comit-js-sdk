@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Do not throw when attempting to retrieve the status of unconfirmed Ethereum transactions.
+
+### Added
+- Added optional parameter to  `Transaction.status()` to allow to wait for a transaction to be confirmed or rejected before returning.
+
 ## [0.15.0] - 2020-03-25
 
 ### Added

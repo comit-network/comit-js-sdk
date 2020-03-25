@@ -10,6 +10,12 @@ describe("Transaction", () => {
       ""
     );
 
+    defaultEthereumWallet.getTransaction = jest.fn().mockImplementation(() => {
+      return {
+        confirmations: 1
+      };
+    });
+
     defaultEthereumWallet.getTransactionReceipt = jest
       .fn()
       .mockImplementation(() => {
@@ -29,14 +35,6 @@ describe("Transaction", () => {
       ""
     );
 
-    defaultEthereumWallet.getTransactionReceipt = jest
-      .fn()
-      .mockImplementation(() => {
-        return {
-          status: 1
-        };
-      });
-
     defaultEthereumWallet.getTransaction = jest.fn().mockImplementation(() => {
       return {
         confirmations: 0
@@ -54,6 +52,12 @@ describe("Transaction", () => {
       ""
     );
 
+    defaultEthereumWallet.getTransaction = jest.fn().mockImplementation(() => {
+      return {
+        confirmations: 1
+      };
+    });
+
     defaultEthereumWallet.getTransactionReceipt = jest
       .fn()
       .mockImplementation(() => {
@@ -61,12 +65,6 @@ describe("Transaction", () => {
           status: 1
         };
       });
-
-    defaultEthereumWallet.getTransaction = jest.fn().mockImplementation(() => {
-      return {
-        confirmations: 1
-      };
-    });
 
     const status = await swapTransaction.status();
 
