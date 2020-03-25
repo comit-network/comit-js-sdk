@@ -6,13 +6,17 @@ export enum TransactionStatus {
    */
   Failed,
   /**
-   * The transaction was accepted by the blockchain node but yet to be mined.
+   * The transaction was not yet mined and its status is uncertain.
    */
   Pending,
   /**
    * The transaction was mined.
    */
-  Confirmed
+  Confirmed,
+  /**
+   * The transaction could not be retrieved.
+   */
+  NotFound
 }
 
 /**
@@ -25,34 +29,56 @@ export class Transaction {
   ) {}
 
   /**
+   * @param confirmations - Optional number of confirmations to wait for before returning.
    * @returns The transaction status by asking the blockchain.
+   * @throws Ethereum: If the Receipt cannot be retrieved despite the transaction being mined.
    */
-  public async status(): Promise<TransactionStatus> {
+  public async status(confirmations?: number): Promise<TransactionStatus> {
     if (!!this.wallet.ethereum) {
-      return this.ethereumStatus();
+      return this.ethereumStatus(confirmations);
     }
     throw new Error("Wallet was not set");
   }
 
-  private async ethereumStatus(): Promise<TransactionStatus> {
+  private async ethereumStatus(
+    confirmations?: number
+  ): Promise<TransactionStatus> {
     const wallet = this.ethereumWallet;
-    const receipt = await wallet.getTransactionReceipt(this.id);
-    if (!receipt) {
-      throw new Error(`Could not retrieve receipt for ${this.id} on Ethereum`);
-    }
-    if (receipt.status === undefined || receipt.status === 0) {
-      return TransactionStatus.Failed;
-    }
+
     const transaction = await wallet.getTransaction(this.id);
     if (!transaction) {
-      throw new Error(
-        `Could not retrieve transaction for ${this.id} on Ethereum`
-      );
+      return TransactionStatus.NotFound;
     }
-    if (transaction.confirmations === 0) {
-      return TransactionStatus.Pending;
+
+    async function checkReceipt(id: string): Promise<TransactionStatus> {
+      const receipt = await wallet.getTransactionReceipt(id);
+      if (!receipt) {
+        throw new Error(
+          `Could not retrieve receipt for ${id} on Ethereum despite ${transaction.confirmations} confirmations.`
+        );
+      }
+      if (receipt.status === undefined || receipt.status === 0) {
+        return TransactionStatus.Failed;
+      }
+      return TransactionStatus.Confirmed;
     }
-    return TransactionStatus.Confirmed;
+
+    // Requested confirmations is undefined or 0 or already fulfilled
+    if (!confirmations || confirmations <= transaction.confirmations) {
+      if (transaction.confirmations === 0) {
+        // If the transaction is not yet mined then its status is uncertain.
+        return TransactionStatus.Pending;
+      }
+      return checkReceipt(this.id);
+    } else {
+      try {
+        await transaction.wait(confirmations);
+        return checkReceipt(this.id);
+      } catch (e) {
+        // Throws if the transaction is failed
+        return TransactionStatus.Failed;
+      }
+    }
   }
 
   private get ethereumWallet(): EthereumWallet {
