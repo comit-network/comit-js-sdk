@@ -110,11 +110,9 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
   private constructor(
     public readonly network: any,
 
-    // @ts-ignore
     private readonly walletdb: any,
     private readonly pool: any,
 
-    // @ts-ignore
     private readonly chain: any,
     private readonly wallet: any
   ) {}
@@ -168,6 +166,23 @@ export class InMemoryBitcoinWallet implements BitcoinWallet {
   public getFee(): string {
     // should be dynamic in a real application
     return "150";
+  }
+
+  public async close(): Promise<void> {
+    const tasks = [];
+    if (this.pool.opened) {
+      tasks.push(this.pool.close());
+    }
+
+    if (this.chain.opened) {
+      tasks.push(this.chain.close());
+    }
+
+    if (this.walletdb.opened) {
+      tasks.push(this.walletdb.close());
+    }
+
+    await Promise.all(tasks);
   }
 
   private assertNetwork(network: string): void {
