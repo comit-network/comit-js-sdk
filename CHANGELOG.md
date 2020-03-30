@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Method to close `InMemoryBitcoinWallet`.
+
 ## [0.15.1] - 2020-03-26
 
 ### Fixed
@@ -62,7 +65,7 @@ The SDK now recognizes this: Promises returned from calls on `Cnd` will now reje
 ## [0.11.1] - 2020-02-19
 
 ### Fixed
-- Do not gitignore the `dist/` folder to ensure it is included in the published package, add a CI test to test it. 
+- Do not gitignore the `dist/` folder to ensure it is included in the published package, add a CI test to test it.
 
 ## [0.11.0] - 2020-02-19
 
