@@ -1,7 +1,9 @@
 import express from "express";
 import * as http from "http";
+import pTimeout from "p-timeout";
 import { ComitClient } from "../../comit_client";
-import { sleep, timeoutPromise, TryParams } from "../../util/timeout_promise";
+import { TryParams } from "../../swap";
+import { sleep } from "../../util/sleep";
 import { ExecutionParams } from "../execution_params";
 import { isOrderValid, Order, toTradingPair } from "../order";
 import orderSwapMatches from "./swap_order_matching";
@@ -122,9 +124,9 @@ export class MakerNegotiator {
     order: Order,
     { maxTimeoutSecs, tryIntervalSecs }: TryParams
   ): Promise<void> {
-    return timeoutPromise(
-      maxTimeoutSecs * 1000,
-      this.acceptSwap(swapId, order, tryIntervalSecs)
+    return pTimeout(
+      this.acceptSwap(swapId, order, tryIntervalSecs),
+      maxTimeoutSecs * 1000
     );
   }
 

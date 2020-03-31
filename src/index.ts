@@ -34,7 +34,7 @@ export { BigNumber } from "bignumber.js";
 
 export { ComitClient } from "./comit_client";
 
-export { Swap } from "./swap";
+export { Swap, TryParams } from "./swap";
 
 export { Order, OrderAsset } from "./negotiation/order";
 export {
@@ -46,5 +46,4 @@ export {
 export { MakerNegotiator } from "./negotiation/maker/maker_negotiator";
 export { TakerNegotiator } from "./negotiation/taker/taker_negotiator";
 
-export { TryParams } from "./util/timeout_promise";
 export { Lnd } from "./lnd";
