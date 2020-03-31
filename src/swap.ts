@@ -1,9 +1,10 @@
 import { AxiosResponse } from "axios";
 import { BigNumber } from "bignumber.js";
+import pTimeout from "p-timeout";
 import { Cnd, LedgerAction, ledgerIsEthereum, SwapDetails } from "./cnd/cnd";
 import { Field } from "./cnd/siren";
 import { Transaction } from "./transaction";
-import { sleep, timeoutPromise, TryParams } from "./util/timeout_promise";
+import { sleep } from "./util/sleep";
 import { AllWallets, Wallets } from "./wallet";
 
 export class WalletError extends Error {
@@ -148,9 +149,9 @@ export class Swap {
     actionName: string,
     { maxTimeoutSecs, tryIntervalSecs }: TryParams
   ): Promise<AxiosResponse<R>> {
-    return timeoutPromise(
-      maxTimeoutSecs * 1000,
-      this.executeSirenAction(actionName, tryIntervalSecs)
+    return pTimeout(
+      this.executeSirenAction(actionName, tryIntervalSecs),
+      maxTimeoutSecs * 1000
     );
   }
 
@@ -502,4 +503,12 @@ export class Swap {
       return this.wallets.ethereum.getAccount();
     }
   }
+}
+
+/**
+ * Defines the parameters (for how long and how often) to try executing an action of a {@link Swap}.
+ */
+export interface TryParams {
+  maxTimeoutSecs: number;
+  tryIntervalSecs: number;
 }
