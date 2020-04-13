@@ -26,7 +26,12 @@ export { Transaction, TransactionStatus } from "./transaction";
 export { Actor, createActor } from "./actor";
 
 export { AllWallets, Wallets } from "./wallet";
-export { BitcoinWallet, InMemoryBitcoinWallet } from "./wallet/bitcoin";
+export {
+  BitcoinWallet,
+  BitcoindWallet,
+  Network as BitcoinNetwork,
+  BitcoindWalletArgs
+} from "./wallet/bitcoin";
 export { EthereumWallet } from "./wallet/ethereum";
 export { LightningWallet, Outpoint } from "./wallet/lightning";
 

@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Added
+- Implemented `BitcoinWallet` using `bitcoind`.
+
+## Deprecated
+- Implementation of `BitcoinWallet` using `bcoin`.
+
 ## [0.15.2] - 2020-03-30
 
 ### Added
