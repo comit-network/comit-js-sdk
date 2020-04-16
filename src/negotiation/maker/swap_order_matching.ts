@@ -1,5 +1,6 @@
 import { BigNumber } from "bignumber.js";
-import { Asset, Ledger, SwapProperties } from "../../cnd/cnd";
+import { SwapProperties } from "../..";
+import { Asset, Ledger } from "../../cnd/cnd";
 import { getToken, Token } from "../../tokens/tokens";
 import { fromNominal, isNative, Order, OrderAsset } from "../order";
 

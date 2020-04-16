@@ -1,7 +1,9 @@
 import { AxiosResponse } from "axios";
 import { BigNumber } from "bignumber.js";
 import pTimeout from "p-timeout";
-import { Cnd, LedgerAction, ledgerIsEthereum, SwapDetails } from "./cnd/cnd";
+import { LedgerAction } from "./cnd/action_payload";
+import { Cnd, ledgerIsEthereum } from "./cnd/cnd";
+import { SwapDetails } from "./cnd/rfc003_payload";
 import { Field } from "./cnd/siren";
 import { Transaction } from "./transaction";
 import { sleep } from "./util/sleep";

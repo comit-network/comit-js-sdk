@@ -1,16 +1,14 @@
+export { Ledger, Asset, Cnd, Peer } from "./cnd/cnd";
+export { SwapDetails, SwapProperties } from "./cnd/rfc003_payload";
 export {
-  SwapProperties,
-  Ledger,
   LedgerAction,
-  Asset,
   BitcoinBroadcastSignedTransactionPayload,
   BitcoinSendAmountToAddressPayload,
-  Cnd,
   EthereumCallContractPayload,
-  EthereumDeployContractPayload,
-  Peer,
+  EthereumDeployContractPayload
+} from "./cnd/action_payload";
+export {
   SwapRequest,
-  SwapDetails,
   HalightLightningBitcoinHanEthereumEtherRequestBody,
   HalightLightningBitcoinHerc20EthereumErc20RequestBody,
   HanEthereumEtherHalightLightningBitcoinRequestBody,
@@ -18,7 +16,7 @@ export {
   HalightLightningBitcoinRequestParams,
   HanEthereumEtherRequestParams,
   Herc20EthereumErc20RequestParams
-} from "./cnd/cnd";
+} from "./cnd/swaps_payload";
 export { Problem } from "./cnd/axios_rfc7807_middleware";
 export * from "./cnd/siren";
 export { Transaction, TransactionStatus } from "./transaction";
