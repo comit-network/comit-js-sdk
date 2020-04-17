@@ -15,7 +15,16 @@ export {
   Herc20EthereumErc20HalightLightningBitcoinRequestBody,
   HalightLightningBitcoinRequestParams,
   HanEthereumEtherRequestParams,
-  Herc20EthereumErc20RequestParams
+  Herc20EthereumErc20RequestParams,
+  SwapResponse,
+  SwapElementResponse,
+  SwapStatus,
+  LedgerParameters,
+  LedgerState,
+  StepTransaction,
+  EscrowStatus,
+  SwapAction,
+  Step
 } from "./cnd/swaps_payload";
 export { Problem } from "./cnd/axios_rfc7807_middleware";
 export * from "./cnd/siren";
