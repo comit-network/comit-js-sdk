@@ -6,10 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## Added
+## [0.15.3] - 2020-04-20
+
+### Added
 - Implemented `BitcoinWallet` using `bitcoind`.
 
-## Deprecated
+### Deprecated
 - Implementation of `BitcoinWallet` using `bcoin`.
 
 ## [0.15.2] - 2020-03-30
@@ -201,7 +203,8 @@ The SDK now recognizes this: Promises returned from calls on `Cnd` will now reje
 ### Added
 - Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.15.2...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.15.3...HEAD
+[0.15.3]: https://github.com/comit-network/comit-js-sdk/compare/0.15.2...0.15.3
 [0.15.2]: https://github.com/comit-network/comit-js-sdk/compare/0.15.1...0.15.2
 [0.15.1]: https://github.com/comit-network/comit-js-sdk/compare/0.15.0...0.15.1
 [0.15.0]: https://github.com/comit-network/comit-js-sdk/compare/0.14.1...0.15.0
