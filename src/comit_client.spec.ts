@@ -1,4 +1,4 @@
-import { SwapSubEntity } from "./cnd/cnd";
+import { SwapSubEntity } from "./cnd/rfc003_payload";
 import { isOngoing } from "./comit_client";
 
 function defaultSwap(): SwapSubEntity {

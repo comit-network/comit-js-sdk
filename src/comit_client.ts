@@ -1,5 +1,7 @@
-import { Cnd, SwapRequest, SwapSubEntity } from "./cnd/cnd";
+import { Cnd } from "./cnd/cnd";
+import { SwapSubEntity } from "./cnd/rfc003_payload";
 import { Action, EmbeddedRepresentationSubEntity, Entity } from "./cnd/siren";
+import { SwapRequest } from "./cnd/swaps_payload";
 import { Swap } from "./swap";
 import { BitcoinWallet } from "./wallet/bitcoin";
 import { EthereumWallet } from "./wallet/ethereum";
