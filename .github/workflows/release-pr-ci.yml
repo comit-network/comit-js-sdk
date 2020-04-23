@@ -1,8 +1,9 @@
-name: Node CI for Release PR
+name: "Node CI for Draft Release PR"
 
-repository_dispatch:
-  types:
-    - ci-checks
+on:
+  repository_dispatch:
+    types:
+      - ci-checks
 
 jobs:
   build:
