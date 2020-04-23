@@ -68,6 +68,8 @@ jobs:
             This PR was created in response to this release issue: #${{ github.event.issue.number }}.
             I've updated the changelog and bumped the versions in the manifest files in this commit: ${{ steps.make-commit.outputs.commit }}.
 
+            Checks have been triggered and can be found [here](https://github.com/comit-network/comit-js-sdk/actions?query=workflow%3A%22Node+CI+for+Draft+Release+PR%22).
+
             Merging this PR will create a GitHub release and upload any assets that are created as part of the release build.
       # GitHub Action does not allow recursion so the CI checks are not trigger when the release branch is pushed
       - name: Trigger CI checks for new pull request
