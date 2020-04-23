@@ -7,14 +7,11 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        ref: ["${{ github.event.client_payload.branch }}"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ matrix.ref }}
+          ref: ${{ github.event.client_payload.branch }}
       - name: Use Node.js 10.x
         uses: actions/setup-node@v1
         with:
