@@ -74,5 +74,5 @@ jobs:
         uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.GITHUB_REPO_TOKEN }}
-          even-type: ci-checks
+          event-type: ci-checks
           client-payload: '{"branch": "release/${{ env.RELEASE_VERSION }}"}'
