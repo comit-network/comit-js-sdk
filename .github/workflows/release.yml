@@ -9,13 +9,36 @@ on:
 
 jobs:
   release:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/') # only merged release branches must trigger this
     runs-on: ubuntu-latest
+    name: Release
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout merge commit
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+      - name: Extract version from branch name
+        id: extract-version
+        run: |
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          VERSION=${BRANCH_NAME#release/}
+
+          echo "::set-output name=version::$VERSION"
       - uses: actions/setup-node@v1
         with:
           node-version: "10.x"
           registry-url: "https://registry.npmjs.org"
+      - name: Create Release
+        id: create-release
+        uses: thomaseizinger/create-release@1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          target_commitish: ${{ github.event.pull_request.merge_commit_sha }}
+          tag_name: ${{ steps.extract-version.outputs.version }}
+          name: ${{ steps.extract-version.outputs.version }}
+          draft: false
+          prerelease: false
       - name: Release to NPM
         run: |
           yarn install
@@ -23,10 +46,7 @@ jobs:
           yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Release to GitHub
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   merge_release_into_dev:
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/') # only merged release branches must trigger this
     name: Merge release branch back into dev
