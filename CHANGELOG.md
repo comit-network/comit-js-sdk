@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.5] - 2020-04-24
+
 ## [0.15.4] - 2020-04-24
 
 ## [0.15.3] - 2020-04-20
@@ -253,7 +255,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.15.4...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.15.5...HEAD
+
+[0.15.5]: https://github.com/comit-network/comit-js-sdk/compare/0.15.4...0.15.5
 
 [0.15.4]: https://github.com/comit-network/comit-js-sdk/compare/0.15.3...0.15.4
 
