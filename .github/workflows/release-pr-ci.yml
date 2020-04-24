@@ -1,0 +1,25 @@
+name: "Node CI for Draft Release PR"
+
+on:
+  repository_dispatch:
+    types:
+      - ci-checks
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.client_payload.branch }}
+      - name: Use Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: yarn install and test
+        run: |
+          yarn install
+          yarn list
+          yarn test
+        env:
+          CI: true

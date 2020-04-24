@@ -1,8 +1,11 @@
-name: Release
+name: "Publish new release"
+
 on:
-  push:
-    tags:
-      - "[0-9]+.[0-9]+.[0-9]+"
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
 
 jobs:
   release:
@@ -24,3 +27,26 @@ jobs:
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  merge_release_into_dev:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/') # only merged release branches must trigger this
+    name: Merge release branch back into dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract version from branch name
+        id: extract-version
+        run: |
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          VERSION=${BRANCH_NAME#release/}
+
+          echo "::set-output name=version::$VERSION"
+
+      - name: Create pull request for merging release-branch back into dev
+        uses: thomaseizinger/create-pull-request@1.0.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          head: release/${{ steps.extract-version.outputs.version }}
+          base: dev
+          title: Merge release ${{ steps.extract-version.outputs.version }} into dev branch
+          body: |
+            This PR merges the release branch for ${{ steps.extract-version.outputs.version }} back into dev.
+            This happens to ensure that the updates that happend on the release branch, i.e. CHANGELOG and manifest updates are also present on the dev branch.
