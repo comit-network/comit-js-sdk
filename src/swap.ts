@@ -193,13 +193,19 @@ export class Swap {
         }
       }
       case "ethereum-call-contract": {
-        const { data, contract_address, gas_limit } = ledgerAction.payload;
+        const {
+          data,
+          contract_address,
+          gas_limit,
+          chain_id
+        } = ledgerAction.payload;
 
         try {
           const transactionId = await this.wallets.ethereum.callContract(
             data,
             contract_address,
-            gas_limit
+            gas_limit,
+            chain_id
           );
           return new Transaction(
             { ethereum: this.wallets.ethereum },
@@ -214,14 +220,15 @@ export class Swap {
         }
       }
       case "ethereum-deploy-contract": {
-        const { amount, data, gas_limit } = ledgerAction.payload;
+        const { amount, data, gas_limit, chain_id } = ledgerAction.payload;
         const value = new BigNumber(amount);
 
         try {
           const transactionId = await this.wallets.ethereum.deployContract(
             data,
             value,
-            gas_limit
+            gas_limit,
+            chain_id
           );
           return new Transaction(
             { ethereum: this.wallets.ethereum },
