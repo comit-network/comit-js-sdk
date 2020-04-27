@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+-   Reverted accidental breaking change introduced in version `0.15.3`.
+Now correctly exporting deprecated `InMemoryBitcoinWallet`.
+
 ## [0.15.5] - 2020-04-24
 
 ## [0.15.4] - 2020-04-24

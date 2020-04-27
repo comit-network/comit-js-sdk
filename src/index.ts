@@ -34,6 +34,7 @@ export { Actor, createActor } from "./actor";
 
 export { AllWallets, Wallets } from "./wallet";
 export {
+  InMemoryBitcoinWallet,
   BitcoinWallet,
   BitcoindWallet,
   Network as BitcoinNetwork,
