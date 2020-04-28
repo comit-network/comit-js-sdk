@@ -119,7 +119,7 @@ export class EthereumWallet {
 
     if (actualNetwork.chainId !== expectedChainId) {
       return Promise.reject(
-        `This wallet is connected to the chainId with chainId: ${expectedChainId}  and cannot perform actions on against a chainId with ${actualNetwork.chainId} chainId`
+        `This wallet is connected to the chain with chainId: ${expectedChainId}  and cannot perform actions on chain with chainId ${actualNetwork.chainId}`
       );
     }
   }
