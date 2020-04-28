@@ -18,14 +18,14 @@ export interface EthereumDeployContractPayload {
   data: string;
   amount: string;
   gas_limit: string;
-  network: string;
+  chain_id: string;
 }
 
 export interface EthereumCallContractPayload {
   contract_address: string;
   data: string;
   gas_limit: string;
-  network: string;
+  chain_id: string;
 }
 
 export interface LndSendPaymentPayload {

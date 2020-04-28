@@ -62,8 +62,10 @@ export class EthereumWallet {
   public async deployContract(
     data: string,
     amount: BigNumber,
-    gasLimit: string
+    gasLimit: string,
+    chainId: number
   ): Promise<string> {
+    await this.assertNetwork(chainId);
     const value = new BigNumberEthers(amount.toString());
     const transaction: TransactionRequest = {
       data,
@@ -76,8 +78,10 @@ export class EthereumWallet {
   public async callContract(
     data: string,
     contractAddress: string,
-    gasLimit: string
+    gasLimit: string,
+    chainId: number
   ): Promise<string> {
+    await this.assertNetwork(chainId);
     const transaction: TransactionRequest = {
       data,
       to: contractAddress,
@@ -108,5 +112,15 @@ export class EthereumWallet {
     }
 
     return response.hash;
+  }
+
+  private async assertNetwork(expectedChainId: number): Promise<void> {
+    const actualNetwork = await this.wallet.provider.getNetwork();
+
+    if (actualNetwork.chainId !== expectedChainId) {
+      return Promise.reject(
+        `This wallet is connected to the chain with chainId: ${expectedChainId}  and cannot perform actions on chain with chainId ${actualNetwork.chainId}`
+      );
+    }
   }
 }
