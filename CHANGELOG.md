@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-  Add new function (`getAllSwaps`) to `ComitClient` which provides the means of retrieving all swaps regardless of their state. 
+
 ## [0.15.6] - 2020-04-27
 
 ### Fixed
