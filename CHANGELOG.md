@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--  Add new function (`getAllSwaps`) to `ComitClient` which provides the means of retrieving all swaps regardless of their state. 
+-  Add new function (`getAllSwaps`) to `ComitClient` which provides the means of retrieving all swaps regardless of their state.
+
+### Changed
+
+-   **Breaking API Change**: The promise returned by `LightningWallet.sendPayment` now resolves when the payment is `in flight`, previously resolving when `settled`. 
 
 ## [0.15.6] - 2020-04-27
 
