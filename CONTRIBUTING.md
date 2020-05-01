@@ -1,7 +1,6 @@
 # Contributing
 
 Thank you for your interest in contributing to COMIT! Contributions are welcome in many forms, and we appreciate all of them.
-This document is a bit long, please find the link to the sections below:
 
 Please follow the [main contribution guidelines outlined in the comit-rs project](https://github.com/comit-network/comit-rs/blob/dev/CONTRIBUTING.md).
 
