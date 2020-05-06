@@ -19,7 +19,6 @@
   "dependencies": {
     "@radar/lnrpc": "^0.9.1-beta",
     "axios": "^0.19.2",
-    "bcoin": "https://github.com/bcoin-org/bcoin#2496acc7a98a43f00a7b5728eb256877c1bbf001",
     "bignumber.js": "^9.0.0",
     "bitcoin-core": "^2.2.0",
     "content-type": "^1.0.4",
