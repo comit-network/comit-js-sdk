@@ -3,10 +3,12 @@ import {
   GetInfoResponse,
   Invoice,
   OpenStatusUpdate,
+  PaymentStatus,
   SendResponse
 } from "@radar/lnrpc";
 import pEvent from "p-event";
 import { Lnd } from "../lnd";
+import { sleep } from "../util/sleep";
 
 export class LightningWallet {
   public static async newInstance(
@@ -33,16 +35,39 @@ export class LightningWallet {
     satAmount: string,
     secretHash: string,
     finalCltvDelta: number
-  ): Promise<SendResponse> {
+  ): Promise<() => Promise<SendResponse>> {
     const publicKeyBuf = Buffer.from(publicKey, "hex");
     const paymentHash = Buffer.from(secretHash, "hex");
 
-    return this.lnd.lnrpc.sendPaymentSync({
+    const sendResponsePromise = this.lnd.lnrpc.sendPaymentSync({
       dest: publicKeyBuf,
       amt: satAmount,
       paymentHash,
       finalCltvDelta
     });
+
+    let isInFlight = false;
+
+    while (!isInFlight) {
+      const payments = await this.lnd.lnrpc
+        .listPayments({
+          includeIncomplete: true
+        })
+        .then(response => response.payments);
+
+      if (payments) {
+        const payment = payments.find(
+          payment => payment.paymentHash === secretHash
+        );
+        if (payment) {
+          isInFlight = payment.status === PaymentStatus.IN_FLIGHT;
+        }
+      }
+
+      await sleep(100);
+    }
+
+    return async () => sendResponsePromise;
   }
 
   public async addHoldInvoice(

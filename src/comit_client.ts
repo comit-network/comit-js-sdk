@@ -95,6 +95,11 @@ export class ComitClient {
       .map(swap => this.newSwap(swap));
   }
 
+  public async getAllSwaps(): Promise<Swap[]> {
+    const swaps = await this.cnd.getSwaps();
+    return swaps.map(swap => this.newSwap(swap));
+  }
+
   public async getOngoingSwaps(): Promise<Swap[]> {
     const swaps = await this.cnd.getSwaps();
     return swaps
