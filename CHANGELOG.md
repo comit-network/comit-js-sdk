@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0] - 2020-05-05
+
 ### Added
 
--  Add new function (`getAllSwaps`) to `ComitClient` which provides the means of retrieving all swaps regardless of their state.
+-   Add new function (`getAllSwaps`) to `ComitClient` which provides the means of retrieving all swaps regardless of their state.
 
 ### Changed
 
@@ -270,7 +272,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.15.6...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.16.0...HEAD
+
+[0.16.0]: https://github.com/comit-network/comit-js-sdk/compare/0.15.6...0.16.0
 
 [0.15.6]: https://github.com/comit-network/comit-js-sdk/compare/0.15.5...0.15.6
 
