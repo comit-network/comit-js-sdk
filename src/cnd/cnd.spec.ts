@@ -1,5 +1,4 @@
 import nock = require("nock");
-import { Problem } from "./axios_rfc7807_middleware";
 import { Cnd } from "./cnd";
 
 it.each([
@@ -27,14 +26,7 @@ it.each([
 
       const promise = postSwap();
 
-      await expect(promise).rejects.toStrictEqual(
-        new Problem({
-          title: title!,
-          detail: detail!,
-          status: statusCode,
-          type: type!
-        })
-      );
+      await expect(promise).rejects.toMatchSnapshot();
 
       return scope;
     })
@@ -48,8 +40,8 @@ it("should return a generic axios error if the status code is fauly and the cont
 
     const promise = postSwap();
 
-    await expect(promise).rejects.toEqual(
-      new Error("Request failed with status code 400")
+    await expect(promise).rejects.toMatchInlineSnapshot(
+      `[Error: Request failed with status code 400]`
     );
 
     return scope;
