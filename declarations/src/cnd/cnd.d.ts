@@ -2,7 +2,7 @@ import { AxiosPromise, AxiosResponse } from "axios";
 import { FieldValueResolverFn } from "./action_to_http_request";
 import { SwapSubEntity } from "./rfc003_payload";
 import { Action } from "./siren";
-import { HalightLightningBitcoinHanEthereumEtherRequestBody, HalightLightningBitcoinHerc20EthereumErc20RequestBody, HanEthereumEtherHalightLightningBitcoinRequestBody, Herc20EthereumErc20HalightLightningBitcoinRequestBody, SwapRequest } from "./swaps_payload";
+import { HalightHerc20RequestBody, HbitHerc20RequestBody, Herc20HalightRequestBody, Herc20HbitRequestBody, SwapRequest } from "./swaps_payload";
 export interface Ledger {
     name: string;
     chain_id?: number;
@@ -71,28 +71,28 @@ export declare class Cnd {
      */
     executeSirenAction(action: Action, resolver?: FieldValueResolverFn): Promise<AxiosResponse>;
     /**
-     * Post a swap request on the lightning REST API route of cnd `/swaps/han/ethereum/ether/halight/lightning/bitcoin`
+     * Post a swap request on the REST API route of cnd `/swaps/herc20/halight`
      * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
      * @return The location of the swap (href) as returned by the REST API in the location header.
      */
-    createHanEthereumEtherHalightLightningBitcoin(body: HanEthereumEtherHalightLightningBitcoinRequestBody): Promise<string>;
+    createHerc20Halight(body: Herc20HalightRequestBody): Promise<string>;
     /**
-     * Post a swap request on the lightning REST API route of cnd `/swaps/herc20/ethereum/erc20/halight/lightning/bitcoin`
+     * Post a swap request on the REST API route of cnd `/swaps/halight/herc20`
      * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
      * @return The location of the swap (href) as returned by the REST API in the location header.
      */
-    createHerc20EthereumErc20HalightLightningBitcoin(body: Herc20EthereumErc20HalightLightningBitcoinRequestBody): Promise<string>;
+    createHalightHerc20(body: HalightHerc20RequestBody): Promise<string>;
     /**
-     * Post a swap request on the lightning REST API route of cnd `/swaps/halight/lightning/bitcoin/han/ethereum/ether`
+     * Post a swap request on the REST API route of cnd `/swaps/herc20/hbit`
      * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
      * @return The location of the swap (href) as returned by the REST API in the location header.
      */
-    createHalightLightningBitcoinHanEthereumEther(body: HalightLightningBitcoinHanEthereumEtherRequestBody): Promise<string>;
+    createHerc20Hbit(body: Herc20HbitRequestBody): Promise<string>;
     /**
-     * Post a swap request on the lightning REST API route of cnd `/swaps/halight/lightning/bitcoin/herc20/ethereum/erc20`
+     * Post a swap request on the REST API route of cnd `/swaps/hbit/herc20`
      * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
      * @return The location of the swap (href) as returned by the REST API in the location header.
      */
-    createHalightLightningBitcoinHerc20EthereumErc20(body: HalightLightningBitcoinHerc20EthereumErc20RequestBody): Promise<string>;
+    createHbitHerc20(body: HbitHerc20RequestBody): Promise<string>;
     private getInfo;
 }

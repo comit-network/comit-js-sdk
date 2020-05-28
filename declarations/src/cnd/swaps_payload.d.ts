@@ -30,29 +30,28 @@ interface RequestParams {
     amount: string;
     identity: string;
 }
-interface HanRequest {
-    absolute_expiry: number;
-}
 interface Herc20Request {
     contract_address: string;
     absolute_expiry: number;
 }
 interface HalightRequest {
     cltv_expiry: number;
+    network: string;
 }
 interface BitcoinRequest {
+    absolute_expiry: number;
     network: string;
 }
 interface EthereumRequest {
     chain_id: number;
 }
-export declare type HanEthereumEtherRequestParams = RequestParams & HanRequest & EthereumRequest;
-export declare type HalightLightningBitcoinRequestParams = RequestParams & HalightRequest & BitcoinRequest;
-export declare type Herc20EthereumErc20RequestParams = RequestParams & Herc20Request & EthereumRequest;
-export declare type HanEthereumEtherHalightLightningBitcoinRequestBody = CoreRequestBody<HanEthereumEtherRequestParams, HalightLightningBitcoinRequestParams>;
-export declare type Herc20EthereumErc20HalightLightningBitcoinRequestBody = CoreRequestBody<Herc20EthereumErc20RequestParams, HalightLightningBitcoinRequestParams>;
-export declare type HalightLightningBitcoinHanEthereumEtherRequestBody = CoreRequestBody<HalightLightningBitcoinRequestParams, HanEthereumEtherRequestParams>;
-export declare type HalightLightningBitcoinHerc20EthereumErc20RequestBody = CoreRequestBody<HalightLightningBitcoinRequestParams, Herc20EthereumErc20RequestParams>;
+export declare type HbitRequestParams = RequestParams & BitcoinRequest;
+export declare type HalightRequestParams = RequestParams & HalightRequest;
+export declare type Herc20RequestParams = RequestParams & Herc20Request & EthereumRequest;
+export declare type Herc20HalightRequestBody = CoreRequestBody<Herc20RequestParams, HalightRequestParams>;
+export declare type HalightHerc20RequestBody = CoreRequestBody<HalightRequestParams, Herc20RequestParams>;
+export declare type Herc20HbitRequestBody = CoreRequestBody<Herc20RequestParams, HbitRequestParams>;
+export declare type HbitHerc20RequestBody = CoreRequestBody<HbitRequestParams, Herc20RequestParams>;
 /**
  * The payload returned when fetching one swap on the `/swaps/:id` endpoint
  */
