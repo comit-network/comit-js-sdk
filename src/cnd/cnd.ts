@@ -6,10 +6,10 @@ import { problemResponseInterceptor } from "./axios_rfc7807_middleware";
 import { SwapSubEntity } from "./rfc003_payload";
 import { Action, Entity } from "./siren";
 import {
-  HalightLightningBitcoinHanEthereumEtherRequestBody,
-  HalightLightningBitcoinHerc20EthereumErc20RequestBody,
-  HanEthereumEtherHalightLightningBitcoinRequestBody,
-  Herc20EthereumErc20HalightLightningBitcoinRequestBody,
+  HalightHerc20RequestBody,
+  HbitHerc20RequestBody,
+  Herc20HalightRequestBody,
+  Herc20HbitRequestBody,
   SwapRequest
 } from "./swaps_payload";
 
@@ -140,65 +140,49 @@ export class Cnd {
   }
 
   /**
-   * Post a swap request on the lightning REST API route of cnd `/swaps/han/ethereum/ether/halight/lightning/bitcoin`
+   * Post a swap request on the REST API route of cnd `/swaps/herc20/halight`
    * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
    * @return The location of the swap (href) as returned by the REST API in the location header.
    */
-  public async createHanEthereumEtherHalightLightningBitcoin(
-    body: HanEthereumEtherHalightLightningBitcoinRequestBody
+  public async createHerc20Halight(
+    body: Herc20HalightRequestBody
   ): Promise<string> {
-    const response = await this.client.post(
-      "swaps/han/ethereum/ether/halight/lightning/bitcoin",
-      body
-    );
+    const response = await this.client.post("swaps/herc20/halight", body);
 
     return response.headers.location;
   }
 
   /**
-   * Post a swap request on the lightning REST API route of cnd `/swaps/herc20/ethereum/erc20/halight/lightning/bitcoin`
+   * Post a swap request on the REST API route of cnd `/swaps/halight/herc20`
    * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
    * @return The location of the swap (href) as returned by the REST API in the location header.
    */
-  public async createHerc20EthereumErc20HalightLightningBitcoin(
-    body: Herc20EthereumErc20HalightLightningBitcoinRequestBody
+  public async createHalightHerc20(
+    body: HalightHerc20RequestBody
   ): Promise<string> {
-    const response = await this.client.post(
-      "swaps/herc20/ethereum/erc20/halight/lightning/bitcoin",
-      body
-    );
+    const response = await this.client.post("swaps/halight/herc20", body);
 
     return response.headers.location;
   }
 
   /**
-   * Post a swap request on the lightning REST API route of cnd `/swaps/halight/lightning/bitcoin/han/ethereum/ether`
+   * Post a swap request on the REST API route of cnd `/swaps/herc20/hbit`
    * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
    * @return The location of the swap (href) as returned by the REST API in the location header.
    */
-  public async createHalightLightningBitcoinHanEthereumEther(
-    body: HalightLightningBitcoinHanEthereumEtherRequestBody
-  ): Promise<string> {
-    const response = await this.client.post(
-      "swaps/halight/lightning/bitcoin/han/ethereum/ether",
-      body
-    );
+  public async createHerc20Hbit(body: Herc20HbitRequestBody): Promise<string> {
+    const response = await this.client.post("swaps/herc20/hbit", body);
 
     return response.headers.location;
   }
 
   /**
-   * Post a swap request on the lightning REST API route of cnd `/swaps/halight/lightning/bitcoin/herc20/ethereum/erc20`
+   * Post a swap request on the REST API route of cnd `/swaps/hbit/herc20`
    * @param body The body to set in the request. The design being not yet finalised it is optional and of type `any`
    * @return The location of the swap (href) as returned by the REST API in the location header.
    */
-  public async createHalightLightningBitcoinHerc20EthereumErc20(
-    body: HalightLightningBitcoinHerc20EthereumErc20RequestBody
-  ): Promise<string> {
-    const response = await this.client.post(
-      "swaps/halight/lightning/bitcoin/herc20/ethereum/erc20",
-      body
-    );
+  public async createHbitHerc20(body: HbitHerc20RequestBody): Promise<string> {
+    const response = await this.client.post("swaps/hbit/herc20", body);
 
     return response.headers.location;
   }
