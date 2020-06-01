@@ -2,6 +2,7 @@ import { AxiosResponse } from "axios";
 import { LedgerAction } from "./cnd/action_payload";
 import { Cnd } from "./cnd/cnd";
 import { SwapDetails } from "./cnd/rfc003_payload";
+import { Action } from "./cnd/siren";
 import { Transaction } from "./transaction";
 import { AllWallets } from "./wallet";
 export declare class WalletError extends Error {
@@ -152,8 +153,9 @@ export declare class Swap {
      * @returns null if cnd hasn't seen a refund transaction, otherwise, {@link Transaction} if supported or the transaction id as string.
      */
     getBetaRefundTransaction(): Promise<Transaction | string | null>;
+    executeAction(action: Action): Promise<AxiosResponse>;
     private getTransaction;
-    private executeSirenAction;
+    private executeAvailableAction;
     private fieldValueResolver;
 }
 /**
