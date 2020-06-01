@@ -4,7 +4,7 @@ import pTimeout from "p-timeout";
 import { LedgerAction } from "./cnd/action_payload";
 import { Cnd, ledgerIsEthereum } from "./cnd/cnd";
 import { SwapDetails } from "./cnd/rfc003_payload";
-import { Field } from "./cnd/siren";
+import { Action, Field } from "./cnd/siren";
 import { Transaction } from "./transaction";
 import { sleep } from "./util/sleep";
 import { AllWallets, Wallets } from "./wallet";
@@ -152,7 +152,7 @@ export class Swap {
     { maxTimeoutSecs, tryIntervalSecs }: TryParams
   ): Promise<AxiosResponse<R>> {
     return pTimeout(
-      this.executeSirenAction(actionName, tryIntervalSecs),
+      this.executeAvailableAction(actionName, tryIntervalSecs),
       maxTimeoutSecs * 1000
     );
   }
@@ -447,6 +447,17 @@ export class Swap {
     return this.getTransaction(details, transactionId);
   }
 
+  public async executeAction(action: Action): Promise<AxiosResponse> {
+    return this.cnd.executeSirenAction(action!, async (field: Field) => {
+      try {
+        // Awaiting here allows us to have better context
+        return await this.fieldValueResolver(field);
+      } catch (error) {
+        throw new WalletError(action.name, error, field);
+      }
+    });
+  }
+
   private getTransaction(
     details: SwapDetails,
     transactionId: string | null
@@ -464,7 +475,7 @@ export class Swap {
     return transactionId;
   }
 
-  private async executeSirenAction(
+  private async executeAvailableAction(
     actionName: string,
     tryIntervalSecs: number
   ): Promise<AxiosResponse> {
@@ -486,14 +497,7 @@ export class Swap {
       }
 
       // This throws if cnd returns an error or there is a network error
-      return this.cnd.executeSirenAction(action!, async (field: Field) => {
-        try {
-          // Awaiting here allows us to have better context
-          return await this.fieldValueResolver(field);
-        } catch (error) {
-          throw new WalletError(actionName, error, field);
-        }
-      });
+      return this.executeAction(action);
     }
   }
 
