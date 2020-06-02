@@ -18,3 +18,4 @@ export { ExecutionParams, defaultLedgerParams, isValidExecutionParams, NetworkTy
 export { MakerNegotiator } from "./negotiation/maker/maker_negotiator";
 export { TakerNegotiator } from "./negotiation/taker/taker_negotiator";
 export { Lnd } from "./lnd";
+export { Action } from "./action";

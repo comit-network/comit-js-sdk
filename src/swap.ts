@@ -1,10 +1,12 @@
 import { AxiosResponse } from "axios";
 import { BigNumber } from "bignumber.js";
 import pTimeout from "p-timeout";
+import { Action } from "./action";
 import { LedgerAction } from "./cnd/action_payload";
 import { Cnd, ledgerIsEthereum } from "./cnd/cnd";
 import { SwapDetails } from "./cnd/rfc003_payload";
-import { Field } from "./cnd/siren";
+import { Action as SirenAction, Field } from "./cnd/siren";
+import { SwapResponse } from "./cnd/swaps_payload";
 import { Transaction } from "./transaction";
 import { sleep } from "./util/sleep";
 import { AllWallets, Wallets } from "./wallet";
@@ -33,6 +35,29 @@ export class Swap {
     wallets: AllWallets
   ) {
     this.wallets = new Wallets(wallets);
+  }
+
+  /**
+   * Retrieves the next recommended action of this {@link Swap} if there is any.
+   *
+   * @returns An {@link Action} that can be executed or null if no action is currently recommended.
+   */
+  public async nextAction(): Promise<Action | null> {
+    const actions = await this.cnd
+      .fetch<SwapResponse>(this.self)
+      .then(response => response.data.actions);
+
+    if (!actions || actions.length === 0) {
+      return null;
+    }
+
+    if (actions.length !== 1) {
+      throw new Error(
+        "Several actions returned by cnd, be sure to use cnd version 0.8.0 or above."
+      );
+    }
+
+    return new Action(actions[0], this);
   }
 
   /**
@@ -152,7 +177,7 @@ export class Swap {
     { maxTimeoutSecs, tryIntervalSecs }: TryParams
   ): Promise<AxiosResponse<R>> {
     return pTimeout(
-      this.executeSirenAction(actionName, tryIntervalSecs),
+      this.executeAvailableAction(actionName, tryIntervalSecs),
       maxTimeoutSecs * 1000
     );
   }
@@ -447,6 +472,17 @@ export class Swap {
     return this.getTransaction(details, transactionId);
   }
 
+  public async executeAction(action: SirenAction): Promise<AxiosResponse> {
+    return this.cnd.executeSirenAction(action!, async (field: Field) => {
+      try {
+        // Awaiting here allows us to have better context
+        return await this.fieldValueResolver(field);
+      } catch (error) {
+        throw new WalletError(action.name, error, field);
+      }
+    });
+  }
+
   private getTransaction(
     details: SwapDetails,
     transactionId: string | null
@@ -464,7 +500,7 @@ export class Swap {
     return transactionId;
   }
 
-  private async executeSirenAction(
+  private async executeAvailableAction(
     actionName: string,
     tryIntervalSecs: number
   ): Promise<AxiosResponse> {
@@ -486,14 +522,7 @@ export class Swap {
       }
 
       // This throws if cnd returns an error or there is a network error
-      return this.cnd.executeSirenAction(action!, async (field: Field) => {
-        try {
-          // Awaiting here allows us to have better context
-          return await this.fieldValueResolver(field);
-        } catch (error) {
-          throw new WalletError(actionName, error, field);
-        }
-      });
+      return this.executeAction(action);
     }
   }
 

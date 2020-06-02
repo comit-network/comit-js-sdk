@@ -1,7 +1,9 @@
 import { AxiosResponse } from "axios";
+import { Action } from "./action";
 import { LedgerAction } from "./cnd/action_payload";
 import { Cnd } from "./cnd/cnd";
 import { SwapDetails } from "./cnd/rfc003_payload";
+import { Action as SirenAction } from "./cnd/siren";
 import { Transaction } from "./transaction";
 import { AllWallets } from "./wallet";
 export declare class WalletError extends Error {
@@ -20,6 +22,12 @@ export declare class Swap {
     readonly self: string;
     private readonly wallets;
     constructor(cnd: Cnd, self: string, wallets: AllWallets);
+    /**
+     * Retrieves the next recommended action of this {@link Swap} if there is any.
+     *
+     * @returns An {@link Action} that can be executed or null if no action is currently recommended.
+     */
+    nextAction(): Promise<Action | null>;
     /**
      * Looks for and executes the accept action of this {@link Swap}.
      * If the {@link Swap} is not in the right state this call will throw a timeout exception.
@@ -152,8 +160,9 @@ export declare class Swap {
      * @returns null if cnd hasn't seen a refund transaction, otherwise, {@link Transaction} if supported or the transaction id as string.
      */
     getBetaRefundTransaction(): Promise<Transaction | string | null>;
+    executeAction(action: SirenAction): Promise<AxiosResponse>;
     private getTransaction;
-    private executeSirenAction;
+    private executeAvailableAction;
     private fieldValueResolver;
 }
 /**
