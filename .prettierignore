@@ -2,3 +2,4 @@ gen/
 dist/
 docs/
 coverage/
+declarations/

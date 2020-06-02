@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-   Support for `hbit-herc20` and `herc20-hbit` swaps.
+-   New `Swap.nextAction` interface, allows to get and execute the next recommended action returned by cnd 0.8.0 and above. 
+
+### Changed
+
+-   **Breaking API Change**: All the `create` routes for creating swaps were reduced to protocol names; ledger and asset were removed from the name. 
+-   **Breaking API Change**: All the `*RequestBody`s for creating swaps were reduced to protocol names; ledger and asset were removed from the name. 
+
+### Removed
+
+-   Remove deprecated `InMemoryBitcoinWallet`.
+
 ## [0.16.1] - 2020-06-02
 
 ### Added

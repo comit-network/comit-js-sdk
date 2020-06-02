@@ -1,0 +1,41 @@
+name: Check API Changes
+
+on: [pull_request]
+
+jobs:
+  check_api_changes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: yarn install
+        run: |
+          yarn install
+        env:
+          CI: true
+      - name: Ensure that declarations changes have been committed
+        run: |
+          yarn declarations
+          test 0 -eq $(git status --short |wc -l)
+      - name: Apply label if API changed
+        uses: technote-space/get-diff-action@v1
+        id: git_diff
+        with:
+          SUFFIX_FILTER: .d.ts
+          PREFIX_FILTER: declarations
+          SEPARATOR: ","
+      - name: Apply api-changes label
+        if: steps.git_diff.outputs.diff
+        uses: actions/github-script@0.9.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: ["api-changes"]
+              });
