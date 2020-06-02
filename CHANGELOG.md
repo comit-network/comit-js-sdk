@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-   New `Swap.nextAction` interface, allows to get and execute the next recommended action returned by cnd 0.8.0 and above.
+
 ## [0.16.0] - 2020-05-05
 
 ### Added
