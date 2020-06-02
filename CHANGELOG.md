@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 -   **Breaking API Change**: All the `create` routes for creating swaps were reduced to protocol names; ledger and asset were removed from the name. 
--   **Breaking API Change**: All the `*RequestBody`s for creating swaps were reduced to protocol names; ledger and asset were removed from the name. 
+-   **Breaking API Change**: All the `*RequestBody`s for creating swaps were reduced to protocol names; ledger and asset were removed from the name.
+-   **Breaking API Change**: Siren types are now exported as `siren` to avoid unsuspected name conflicts.  
 
 ### Removed
 

@@ -26,7 +26,10 @@ export {
   Step
 } from "./cnd/swaps_payload";
 export { Problem } from "./cnd/axios_rfc7807_middleware";
-export * from "./cnd/siren";
+
+import * as siren from "./cnd/siren";
+export { siren };
+
 export { Transaction, TransactionStatus } from "./transaction";
 
 export { Actor, createActor } from "./actor";
