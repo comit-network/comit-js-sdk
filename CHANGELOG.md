@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.1] - 2020-06-02
+
+### Added
+
+-   New `Swap.nextAction` interface, allows to get and execute the next recommended action returned by cnd 0.8.0 and above.
+
 ## [0.16.0] - 2020-05-05
 
 ### Added
@@ -272,7 +278,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.16.0...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.16.1...HEAD
+
+[0.16.1]: https://github.com/comit-network/comit-js-sdk/compare/0.15.6...0.16.1
 
 [0.16.0]: https://github.com/comit-network/comit-js-sdk/compare/0.15.6...0.16.0
 
