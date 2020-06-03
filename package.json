@@ -1,6 +1,6 @@
 {
   "name": "comit-sdk",
-  "version": "0.16.1",
+  "version": "0.17.0",
   "description": "An SDK for developing COMIT applications.",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -14,12 +14,12 @@
     "test": "tsc --noEmit && tslint -p . && prettier --check '**/*.{ts,js,json,yml}' && jest",
     "docs:clean": "rm -rf docs/",
     "docs": "npm run docs:clean && typedoc --plugin none && open docs/index.html",
-    "docs:md": "npm run docs:clean && typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs --theme docusaurus2"
+    "docs:md": "npm run docs:clean && typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs --theme docusaurus2",
+    "declarations": "rm -rf declarations/ && tsc --declaration --declarationDir 'declarations'"
   },
   "dependencies": {
     "@radar/lnrpc": "^0.9.1-beta",
     "axios": "^0.19.2",
-    "bcoin": "https://github.com/bcoin-org/bcoin#2496acc7a98a43f00a7b5728eb256877c1bbf001",
     "bignumber.js": "^9.0.0",
     "bitcoin-core": "^2.2.0",
     "content-type": "^1.0.4",

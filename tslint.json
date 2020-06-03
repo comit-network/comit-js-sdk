@@ -21,5 +21,8 @@
     "restrict-plus-operands": true,
     "typedef": [true, "call-signature", "property-declaration"]
   },
-  "rulesDirectory": []
+  "rulesDirectory": [],
+  "linterOptions": {
+    "exclude": ["declarations/*"]
+  }
 }

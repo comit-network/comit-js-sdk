@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0] - 2020-06-03
+
+### Added
+
+-   Support for `hbit-herc20` and `herc20-hbit` swaps.
+-   New `Swap.nextAction` interface, allows to get and execute the next recommended action returned by cnd 0.8.0 and above. 
+
+### Changed
+
+-   **Breaking API Change**: All the `create` routes for creating swaps were reduced to protocol names; ledger and asset were removed from the name. 
+-   **Breaking API Change**: All the `*RequestBody`s for creating swaps were reduced to protocol names; ledger and asset were removed from the name.
+-   **Breaking API Change**: Siren types are now exported as `siren` to avoid unsuspected name conflicts.  
+
+### Removed
+
+-   Remove deprecated `InMemoryBitcoinWallet`.
+
 ## [0.16.1] - 2020-06-02
 
 ### Added
@@ -278,7 +295,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.16.1...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.17.0...HEAD
+
+[0.17.0]: https://github.com/comit-network/comit-js-sdk/compare/0.16.1...0.17.0
 
 [0.16.1]: https://github.com/comit-network/comit-js-sdk/compare/0.15.6...0.16.1
 
