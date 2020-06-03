@@ -125,7 +125,11 @@ export class BitcoindWallet implements BitcoinWallet {
 
   public async getAddress(): Promise<string> {
     const res = await this.rpcClient.request({
-      data: { jsonrpc: "1.0", method: "getnewaddress", params: [] }
+      data: {
+        jsonrpc: "1.0",
+        method: "getnewaddress",
+        params: ["", "bech32"]
+      }
     });
 
     return res.data.result;
