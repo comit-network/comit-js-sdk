@@ -5,7 +5,7 @@ const defaultEthereumWallet = new EthereumWallet("");
 
 describe("Transaction", () => {
   it("returns failed for a failed Ethereum transaction", async () => {
-    const swapTransaction = new Transaction(
+    const transaction = new Transaction(
       { ethereum: defaultEthereumWallet },
       ""
     );
@@ -24,13 +24,13 @@ describe("Transaction", () => {
         };
       });
 
-    const status = await swapTransaction.status();
+    const status = await transaction.status();
 
     expect(status).toEqual(TransactionStatus.Failed);
   });
 
   it("returns pending for an unconfirmed Ethereum transaction", async () => {
-    const swapTransaction = new Transaction(
+    const transaction = new Transaction(
       { ethereum: defaultEthereumWallet },
       ""
     );
@@ -41,13 +41,13 @@ describe("Transaction", () => {
       };
     });
 
-    const status = await swapTransaction.status();
+    const status = await transaction.status();
 
     expect(status).toEqual(TransactionStatus.Pending);
   });
 
   it("returns confirmed for a mined Ethereum transaction", async () => {
-    const swapTransaction = new Transaction(
+    const transaction = new Transaction(
       { ethereum: defaultEthereumWallet },
       ""
     );
@@ -66,7 +66,7 @@ describe("Transaction", () => {
         };
       });
 
-    const status = await swapTransaction.status();
+    const status = await transaction.status();
 
     expect(status).toEqual(TransactionStatus.Confirmed);
   });
