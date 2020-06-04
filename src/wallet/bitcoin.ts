@@ -1,5 +1,8 @@
 import axios, { AxiosInstance, Method } from "axios";
 import { toBitcoin } from "satoshi-bitcoin";
+import { sleep } from "../util/sleep";
+
+const DEFAULT_REFRESH_INTERVAL_MS = 1000;
 
 /**
  * Interface defining the Bitcoin wallet functionalities needed by the SDK to execute a swap involving Bitcoin.
@@ -24,6 +27,28 @@ export interface BitcoinWallet {
   ): Promise<string>;
 
   getFee(): string;
+
+  getTransaction(transactionId: string): Promise<BitcoinTransaction>;
+
+  /**
+   * Only returns the transaction once the number of confirmations has been reached.
+   *
+   * @param transactionId
+   * @param confirmations
+   */
+  getTransactionWithConfirmations(
+    transactionId: string,
+    confirmations: number
+  ): Promise<BitcoinTransaction>;
+}
+
+/**
+ * A simplied representation of a Bitcoin transaction
+ */
+export interface BitcoinTransaction {
+  hex: string;
+  txid: string;
+  confirmations: number;
 }
 
 export interface BitcoindWalletArgs {
@@ -33,6 +58,7 @@ export interface BitcoindWalletArgs {
   walletDescriptor: string;
   walletName: string;
   rescan?: boolean;
+  refreshIntervalMs?: number;
 }
 
 /**
@@ -48,7 +74,8 @@ export class BitcoindWallet implements BitcoinWallet {
     password,
     walletDescriptor,
     walletName,
-    rescan
+    rescan,
+    refreshIntervalMs
   }: BitcoindWalletArgs): Promise<BitcoindWallet> {
     const auth = { username, password };
     const client = axios.create({
@@ -111,10 +138,13 @@ export class BitcoindWallet implements BitcoinWallet {
       }
     });
 
-    return new BitcoindWallet(walletClient);
+    return new BitcoindWallet(walletClient, refreshIntervalMs);
   }
 
-  private constructor(private rpcClient: AxiosInstance) {}
+  private constructor(
+    private rpcClient: AxiosInstance,
+    private refreshIntervalMs?: number
+  ) {}
 
   public async getBalance(): Promise<number> {
     const res = await this.rpcClient.request({
@@ -171,8 +201,41 @@ export class BitcoindWallet implements BitcoinWallet {
   }
 
   public getFee(): string {
-    // should be dynamic in a real application
+    // should be dynamic in a real application or use `estimatesmartfee`
     return "150";
+  }
+
+  public async getTransaction(
+    transactionId: string
+  ): Promise<BitcoinTransaction> {
+    const res = await this.rpcClient.request({
+      data: {
+        jsonrpc: "1.0",
+        method: "getrawtransaction",
+        params: [transactionId, true]
+      }
+    });
+    return res.data.result;
+  }
+
+  public async getTransactionWithConfirmations(
+    transactionId: string,
+    confirmations: number
+  ): Promise<BitcoinTransaction> {
+    while (true) {
+      const res = await this.rpcClient.request({
+        data: {
+          jsonrpc: "1.0",
+          method: "getrawtransaction",
+          params: [transactionId, true]
+        }
+      });
+      const transaction: BitcoinTransaction = res.data.result;
+      if (transaction.confirmations >= confirmations) {
+        return transaction;
+      }
+      await sleep(this.refreshInterval);
+    }
   }
 
   public async close(): Promise<void> {
@@ -195,6 +258,13 @@ export class BitcoindWallet implements BitcoinWallet {
         `This wallet is only connected to the ${network} network and cannot perform actions on the ${network} network`
       );
     }
+  }
+
+  private get refreshInterval(): number {
+    if (this.refreshIntervalMs) {
+      return this.refreshInterval;
+    }
+    return DEFAULT_REFRESH_INTERVAL_MS;
   }
 }
 

@@ -2,7 +2,7 @@
  * @ignore
  * @packageDocumentation
  */
-import { BitcoinWallet } from "../bitcoin";
+import { BitcoinTransaction, BitcoinWallet } from "../bitcoin";
 
 export class MockBitcoinWallet implements BitcoinWallet {
   public async broadcastTransaction(
@@ -36,5 +36,23 @@ export class MockBitcoinWallet implements BitcoinWallet {
     network: string
   ): Promise<string> {
     return Promise.resolve("");
+  }
+
+  // @ts-ignore
+  public async getTransaction(
+    // @ts-ignore
+    transactionId: string
+  ): Promise<BitcoinTransaction> {
+    return Promise.resolve((undefined as unknown) as BitcoinTransaction);
+  }
+
+  // @ts-ignore
+  public async getTransactionWithConfirmations(
+    // @ts-ignore
+    transactionId: string,
+    // @ts-ignore
+    confirmations: number
+  ): Promise<BitcoinTransaction> {
+    return Promise.resolve((undefined as unknown) as BitcoinTransaction);
   }
 }

@@ -1,3 +1,4 @@
+import { BitcoinWallet } from "./wallet/bitcoin";
 import { EthereumWallet } from "./wallet/ethereum";
 export declare enum TransactionStatus {
     /**
@@ -25,6 +26,7 @@ export declare class Transaction {
     id: string;
     constructor(wallet: {
         ethereum?: EthereumWallet;
+        bitcoin?: BitcoinWallet;
     }, id: string);
     /**
      * @param confirmations - Optional number of confirmations to wait for before returning.
@@ -33,5 +35,7 @@ export declare class Transaction {
      */
     status(confirmations?: number): Promise<TransactionStatus>;
     private ethereumStatus;
+    private bitcoinStatus;
+    private get bitcoinWallet();
     private get ethereumWallet();
 }

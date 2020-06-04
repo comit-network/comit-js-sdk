@@ -1,3 +1,4 @@
+import { BitcoinWallet } from "./wallet/bitcoin";
 import { EthereumWallet } from "./wallet/ethereum";
 
 export enum TransactionStatus {
@@ -24,7 +25,7 @@ export enum TransactionStatus {
  */
 export class Transaction {
   constructor(
-    private wallet: { ethereum?: EthereumWallet },
+    private wallet: { ethereum?: EthereumWallet; bitcoin?: BitcoinWallet },
     public id: string
   ) {}
 
@@ -36,6 +37,9 @@ export class Transaction {
   public async status(confirmations?: number): Promise<TransactionStatus> {
     if (!!this.wallet.ethereum) {
       return this.ethereumStatus(confirmations);
+    }
+    if (!!this.wallet.bitcoin) {
+      return this.bitcoinStatus(confirmations);
     }
     throw new Error("Wallet was not set");
   }
@@ -81,10 +85,39 @@ export class Transaction {
     }
   }
 
+  private async bitcoinStatus(
+    confirmations?: number
+  ): Promise<TransactionStatus> {
+    try {
+      if (!confirmations) {
+        const transaction = await this.bitcoinWallet.getTransaction(this.id);
+        if (transaction.confirmations === 0) {
+          return TransactionStatus.Pending;
+        }
+        return TransactionStatus.Confirmed;
+      } else {
+        await this.bitcoinWallet.getTransactionWithConfirmations(
+          this.id,
+          confirmations
+        );
+        return TransactionStatus.Confirmed;
+      }
+    } catch (e) {
+      return TransactionStatus.NotFound;
+    }
+  }
+
+  private get bitcoinWallet(): BitcoinWallet {
+    if (this.wallet.bitcoin) {
+      return this.wallet.bitcoin;
+    }
+    throw new Error("This is not a Bitcoin Transaction.");
+  }
+
   private get ethereumWallet(): EthereumWallet {
     if (this.wallet.ethereum) {
       return this.wallet.ethereum;
     }
-    throw new Error("This is not an Ethereum Swap Transaction.");
+    throw new Error("This is not an Ethereum Transaction.");
   }
 }
