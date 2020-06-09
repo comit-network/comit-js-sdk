@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 -   Support for `hbit-herc20` and `herc20-hbit` swaps.
--   New `Swap.nextAction` interface, allows to get and execute the next recommended action returned by cnd 0.8.0 and above. 
+-   New `Swap.nextAction` interface, allows to get and execute the next recommended action returned by cnd 0.8.0 and above.
+-   **Breaking API Change**: Add Bitcoin support for `Transaction` meaning that `Action.execute()` now returns `Transaction` if it's an action on the Bitcoin ledger.
 
 ### Changed
 

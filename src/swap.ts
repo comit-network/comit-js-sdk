@@ -198,7 +198,14 @@ export class Swap {
         const { hex, network } = ledgerAction.payload;
 
         try {
-          return this.wallets.bitcoin.broadcastTransaction(hex, network);
+          const transactionId = await this.wallets.bitcoin.broadcastTransaction(
+            hex,
+            network
+          );
+          return new Transaction(
+            { bitcoin: this.wallets.bitcoin },
+            transactionId
+          );
         } catch (error) {
           throw new WalletError(ledgerAction.type, error, { hex, network });
         }
@@ -208,7 +215,15 @@ export class Swap {
         const sats = parseInt(amount, 10);
 
         try {
-          return this.wallets.bitcoin.sendToAddress(to, sats, network);
+          const transactionId = await this.wallets.bitcoin.sendToAddress(
+            to,
+            sats,
+            network
+          );
+          return new Transaction(
+            { bitcoin: this.wallets.bitcoin },
+            transactionId
+          );
         } catch (error) {
           throw new WalletError(ledgerAction.type, error, {
             to,
