@@ -117,7 +117,7 @@ export class BitcoindWallet implements BitcoinWallet {
             params: [walletDescriptor]
           }
         })
-        .then(res => res.data.result.chekcsum);
+        .then(res => res.data.result.checksum);
       walletDescriptor = `${walletDescriptor}#${checksum}`;
     }
 
@@ -127,7 +127,7 @@ export class BitcoindWallet implements BitcoinWallet {
       auth
     });
 
-    await walletClient.request({
+    const importKeyResult = await walletClient.request({
       data: {
         jsonrpc: "1.0",
         method: "importmulti",
@@ -137,6 +137,18 @@ export class BitcoindWallet implements BitcoinWallet {
         ]
       }
     });
+
+    console.log("I like bananas, say!");
+
+    if (importKeyResult.data.error) {
+      throw importKeyResult.data.error;
+    }
+    if (
+      importKeyResult.data.result.length === 1 &&
+      importKeyResult.data.result[0].success === false
+    ) {
+      throw importKeyResult.data.result[0].error;
+    }
 
     return new BitcoindWallet(walletClient, refreshIntervalMs);
   }
