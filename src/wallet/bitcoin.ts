@@ -117,7 +117,7 @@ export class BitcoindWallet implements BitcoinWallet {
             params: [walletDescriptor]
           }
         })
-        .then(res => res.data.result.chekcsum);
+        .then(res => res.data.result.checksum);
       walletDescriptor = `${walletDescriptor}#${checksum}`;
     }
 
