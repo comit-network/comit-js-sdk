@@ -129,9 +129,17 @@ export class LightningWallet {
       );
     });
 
-    const status: OpenStatusUpdate = await pEvent(openChannel, "data");
+    let outpoint;
+    while (!outpoint) {
+      const status: OpenStatusUpdate = await pEvent(openChannel, "data");
+      try {
+        outpoint = outpointFromChannelStatusUpdate(status);
+      } catch (e) {
+        // Let's wait for another update
+      }
+    }
 
-    return outpointFromChannelStatusUpdate(status);
+    return outpoint;
   }
 
   public async sendPaymentWithRequest(
@@ -204,6 +212,7 @@ export interface Outpoint {
 }
 
 function outpointFromChannelStatusUpdate(status: OpenStatusUpdate): Outpoint {
+  console.log(status);
   let txId;
   let vout;
 
