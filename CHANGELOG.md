@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Do not throw if an unsupported channel update message is received from lnd when opening a channel, instead, wait for a new message.
+
 ## [0.17.0] - 2020-06-03
 
 ### Added
