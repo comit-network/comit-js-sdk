@@ -10,6 +10,22 @@ export interface BitcoinWallet {
     sendToAddress(address: string, satoshis: number, network: Network): Promise<string>;
     broadcastTransaction(transactionHex: string, network: Network): Promise<string>;
     getFee(): string;
+    getTransaction(transactionId: string): Promise<BitcoinTransaction>;
+    /**
+     * Only returns the transaction once the number of confirmations has been reached.
+     *
+     * @param transactionId
+     * @param confirmations
+     */
+    getTransactionWithConfirmations(transactionId: string, confirmations: number): Promise<BitcoinTransaction>;
+}
+/**
+ * A simplied representation of a Bitcoin transaction
+ */
+export interface BitcoinTransaction {
+    hex: string;
+    txid: string;
+    confirmations: number;
 }
 export interface BitcoindWalletArgs {
     url: string;
@@ -18,6 +34,7 @@ export interface BitcoindWalletArgs {
     walletDescriptor: string;
     walletName: string;
     rescan?: boolean;
+    refreshIntervalMs?: number;
 }
 /**
  * Instance of a bitcoind 0.19.1 wallet.
@@ -27,14 +44,18 @@ export interface BitcoindWalletArgs {
  */
 export declare class BitcoindWallet implements BitcoinWallet {
     private rpcClient;
-    static newInstance({ url, username, password, walletDescriptor, walletName, rescan }: BitcoindWalletArgs): Promise<BitcoindWallet>;
+    private refreshIntervalMs?;
+    static newInstance({ url, username, password, walletDescriptor, walletName, rescan, refreshIntervalMs }: BitcoindWalletArgs): Promise<BitcoindWallet>;
     private constructor();
     getBalance(): Promise<number>;
     getAddress(): Promise<string>;
     sendToAddress(address: string, satoshis: number, network: Network): Promise<string>;
     broadcastTransaction(transactionHex: string, network: Network): Promise<string>;
     getFee(): string;
+    getTransaction(transactionId: string): Promise<BitcoinTransaction>;
+    getTransactionWithConfirmations(transactionId: string, confirmations: number): Promise<BitcoinTransaction>;
     close(): Promise<void>;
     private assertNetwork;
+    private get refreshInterval();
 }
 export declare type Network = "main" | "test" | "regtest";
