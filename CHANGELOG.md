@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.1] - 2020-07-30
+
 ### Changed
 
-- Do not throw if an unsupported channel update message is received from lnd when opening a channel, instead, wait for a new message.
+-   Do not throw if an unsupported channel update message is received from lnd when opening a channel, instead, wait for a new message.
 
 ## [0.17.0] - 2020-06-03
 
@@ -300,7 +302,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Common code that can be used to build applications on top of COMIT.
 
-[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.17.0...HEAD
+[Unreleased]: https://github.com/comit-network/comit-js-sdk/compare/0.17.1...HEAD
+
+[0.17.1]: https://github.com/comit-network/comit-js-sdk/compare/0.17.0...0.17.1
 
 [0.17.0]: https://github.com/comit-network/comit-js-sdk/compare/0.16.1...0.17.0
 
